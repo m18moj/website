@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GTA V script pack from ScriptForge: 20 ready-to-use scripts for driving, heists, police AI, and open-world mission systems.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80">
+    <title>GTA V Script Pack | ScriptForge</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <script src="../js/error-reporter.js"></script>
+</head>
+<body data-pack-id="gta-v" data-pack-name="GTA V Pack" data-root-prefix="../">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40">
+                    <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                    <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                    <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                    <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                </svg>
+                ScriptForge
+            </a>
+            <div class="nav-menu" id="navMenu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../pages/games.html" class="nav-link">Games</a>
+                <a href="../pages/catalog.html" class="nav-link">Catalog</a>
+                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+            </div>
+            <div class="nav-actions">
+                <span id="authControl" class="auth-control"></span>
+                <a href="../pages/checkout.html" class="cart-btn" aria-label="View basket">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main class="page-shell">
+        <div class="container breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a> / <a href="../pages/games.html">Games</a> / <span>GTA V</span>
+        </div>
+        <div class="page-header">
+            <p class="eyebrow">GTA V</p>
+            <h1>Open World Script Pack</h1>
+            <p class="tech-stack"><strong>Built for:</strong> Single-Player GTA V via ScriptHookVDotNet (C#)</p>
+            <p>20 scripts for driving, missions, urban activity, police AI, and story-driven systems. Check the boxes below to build the exact bundle you need — full pack price is <span data-usd-price="62">$62</span>.</p>
+        </div>
+        <div class="game-cover">
+            <div class="game-cover-art gta" role="img" aria-label="GTA V themed artwork">
+                <span class="game-cover-badge">GTA V</span>
+            </div>
+        </div>
+        <div class="container script-toolbar">
+            <div class="script-toolbar-actions">
+                <button type="button" class="toolbar-btn" id="selectAllScripts">Select all</button>
+                <button type="button" class="toolbar-btn" id="deselectAllScripts">Deselect all</button>
+            </div>
+            <p id="packSelectionTotal" class="pack-selection-total"></p>
+        </div>
+        <div class="container script-grid">
+            <article class="script-card" data-script-id="driving-controller" data-script="Vehicle Handling &amp; Damage Model" data-price="4"><h3>1. Vehicle Handling &amp; Damage Model</h3><p>Grip-based handling per vehicle class with crumple damage, tire blowouts, and engine failure states.</p><div class="script-meta"><span>Vehicles</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="mission-event-trigger" data-script="Mission Trigger &amp; Checkpoint Flow" data-price="3"><h3>2. Mission Trigger &amp; Checkpoint Flow</h3><p>Scripted mission beats, checkpoint respawns, and branching objective triggers by zone entry.</p><div class="script-meta"><span>Missions</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="police-chase-system" data-script="Wanted Chase &amp; Roadblock AI" data-price="4"><h3>3. Wanted Chase &amp; Roadblock AI</h3><p>Escalating pursuit units, spike strips, and roadblock spawning tied to wanted level.</p><div class="script-meta"><span>AI</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="npc-traffic-ai" data-script="Pedestrian &amp; Traffic AI" data-price="3"><h3>4. Pedestrian &amp; Traffic AI</h3><p>Lane-following traffic AI, pedestrian pathing, and reaction behavior — flee, call police, or panic.</p><div class="script-meta"><span>AI</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="wanted-level-manager" data-script="Wanted Level &amp; Heat Decay" data-price="3"><h3>5. Wanted Level &amp; Heat Decay</h3><p>Star-rating heat system with line-of-sight loss, hideout cooldown, and bribe/heat-reduction items.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="heist-preparation-flow" data-script="Heist Setup &amp; Crew Payout" data-price="4"><h3>6. Heist Setup &amp; Crew Payout</h3><p>Multi-stage heist prep missions, crew-cut payout splits, and approach-choice branching.</p><div class="script-meta"><span>Missions</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="economy-property-system" data-script="Property Ownership &amp; Income" data-price="3"><h3>7. Property Ownership &amp; Income</h3><p>Purchasable properties, passive income ticks, and garage/vehicle storage per owned property.</p><div class="script-meta"><span>Economy</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="character-interaction-system" data-script="NPC Dialogue &amp; Relationship" data-price="3"><h3>8. NPC Dialogue &amp; Relationship</h3><p>Branching NPC conversations with relationship-level gating and context-sensitive interaction prompts.</p><div class="script-meta"><span>Dialogue</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="weapon-combat-controller" data-script="Cover-Based Combat System" data-price="4"><h3>9. Cover-Based Combat System</h3><p>Cover snapping, blind-fire, and lock-on-assist combat loop for third-person gunfights.</p><div class="script-meta"><span>Combat</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="save-progression-state" data-script="Save Slot &amp; World State" data-price="3"><h3>10. Save Slot &amp; World State</h3><p>Full save/load of player stats, owned assets, and world-state flags like completed missions and unlocks.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="garage-vehicle-storage-manager" data-script="Garage &amp; Vehicle Storage Manager" data-price="3"><h3>11. Garage &amp; Vehicle Storage Manager</h3><p>Owned-vehicle garage storage with retrieval, valet, and impound-recovery flows.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="in-game-phone-contact-menu" data-script="In-Game Phone &amp; Contact Menu" data-price="3"><h3>12. In-Game Phone &amp; Contact Menu</h3><p>A phone overlay with a contacts list that triggers calls, texts, and app-style menus.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="weather-time-of-day-controller" data-script="Weather &amp; Time-of-Day Controller" data-price="2"><h3>13. Weather &amp; Time-of-Day Controller</h3><p>Scripted weather transitions and a time-of-day cycle independent of the game's default clock.</p><div class="script-meta"><span>World</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="gang-territory-turf-control" data-script="Gang Territory &amp; Turf Control" data-price="4"><h3>14. Gang Territory &amp; Turf Control</h3><p>Map-zone territory ownership that shifts based on scripted turf-war outcomes.</p><div class="script-meta"><span>World</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="stock-market-investment-system" data-script="Stock Market &amp; Investment System" data-price="3"><h3>15. Stock Market &amp; Investment System</h3><p>A fluctuating in-game stock market with buy/sell orders and event-driven price swings.</p><div class="script-meta"><span>Economy</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="character-switch-camera-transition" data-script="Character Switch &amp; Camera Transition" data-price="3"><h3>16. Character Switch &amp; Camera Transition</h3><p>The signature swooping camera transition when switching between playable characters.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="stunt-jump-trick-score-tracker" data-script="Stunt Jump &amp; Trick Score Tracker" data-price="2"><h3>17. Stunt Jump &amp; Trick Score Tracker</h3><p>Stunt-jump zone detection with air-time and trick-based scoring.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="clothing-character-customization-menu" data-script="Clothing &amp; Character Customization Menu" data-price="3"><h3>18. Clothing &amp; Character Customization Menu</h3><p>A wardrobe menu for outfit slots, saved looks, and quick-change presets.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="random-world-event-spawner" data-script="Random World Event Spawner" data-price="3"><h3>19. Random World Event Spawner</h3><p>Ambient random events (robberies, hitchhikers, street races) spawned on a weighted timer.</p><div class="script-meta"><span>World</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="parachute-skydiving-controller" data-script="Parachute &amp; Skydiving Controller" data-price="2"><h3>20. Parachute &amp; Skydiving Controller</h3><p>Freefall and parachute deployment physics with a landing-accuracy scoring option.</p><div class="script-meta"><span>Movement</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+        </div>
+        <div class="page-actions">
+            <button id="addSelectedToCart" class="btn btn-primary" type="button">Add selected to basket</button>
+            <a href="../pages/checkout.html" class="btn btn-secondary">View basket</a>
+            <a href="../pages/client-gta-v.html" class="btn btn-secondary">View the real ForgeClient menu</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40">
+                        <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                        <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                        <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                        <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                    </svg>
+                    ScriptForge
+                </a>
+                <p>Premium, production-ready game systems for developers, indies, and studios.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.com" target="_blank" rel="noreferrer" aria-label="Discord">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.56A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.56 9.38.56 9.38.56s7.5 0 9.38-.56a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.6 15.6V8.4l6.4 3.6-6.4 3.6z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <a href="../pages/games.html">Games</a>
+                <a href="../pages/catalog.html">Catalog</a>
+                <a href="../pages/checkout.html">Basket</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="../pages/login.html">Sign in</a>
+                <a href="../pages/register.html">Create account</a>
+                <a href="../pages/account.html">My orders</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="https://discord.com" target="_blank" rel="noreferrer">Discord community</a>
+                <a href="../pages/privacy.html">Privacy policy</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>Built for developers, by developers.</p>
+        </div>
+    </footer>
+    <div class="sticky-mobile-cta">
+        <button type="button" class="btn btn-primary" data-sticky-forward="addSelectedToCart">Add selected to basket</button>
+    </div>
+    <script src="../js/site.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/currency.js"></script>
+    <script src="../js/site-flags.js"></script>
+    <script src="../js/search.js"></script>
+</body>
+</html>

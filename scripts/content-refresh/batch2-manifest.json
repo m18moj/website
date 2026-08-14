@@ -1,0 +1,650 @@
+{
+  "apex": [
+    {
+      "id": "weapon-attachment-hop-up-system",
+      "title": "Weapon Attachment & Hop-Up System",
+      "category": "Weapons",
+      "description": "Scope, mag, and hop-up attachment slots with stat modifiers layered onto a base weapon.",
+      "price": 3
+    },
+    {
+      "id": "death-recap-damage-log",
+      "title": "Death Recap & Damage Log",
+      "category": "Feedback",
+      "description": "A post-death breakdown of exactly what damaged you, from what, and in what order.",
+      "price": 2
+    },
+    {
+      "id": "banner-collection-respawn-beacon",
+      "title": "Banner Collection & Respawn Beacon",
+      "category": "Systems",
+      "description": "Collectible squadmate banners and a respawn-beacon flow to bring them back into the match.",
+      "price": 3
+    },
+    {
+      "id": "smart-ping-priority-queue",
+      "title": "Smart Ping Priority Queue",
+      "category": "Squad",
+      "description": "Ranks and filters context pings by relevance so the most urgent callout always surfaces first.",
+      "price": 2
+    },
+    {
+      "id": "legend-select-draft-lock",
+      "title": "Legend Select & Draft Lock",
+      "category": "Systems",
+      "description": "Character-select flow with pick/lock timers and duplicate-pick prevention within a squad.",
+      "price": 2
+    },
+    {
+      "id": "care-package-drop-loot-table",
+      "title": "Care Package Drop & Loot Table",
+      "category": "Loot",
+      "description": "High-tier care package spawning with its own weighted loot table, separate from ground loot.",
+      "price": 3
+    },
+    {
+      "id": "climb-traversal-assist",
+      "title": "Climb & Traversal Assist",
+      "category": "Movement",
+      "description": "Ledge grabs, mantling, and zipline traversal layered on top of core movement.",
+      "price": 3
+    },
+    {
+      "id": "finisher-execution-sequence",
+      "title": "Finisher & Execution Sequence",
+      "category": "Combat",
+      "description": "Scripted finisher animations and hit-confirm sequencing on a knocked-down target.",
+      "price": 2
+    },
+    {
+      "id": "team-composition-synergy-tracker",
+      "title": "Team Composition Synergy Tracker",
+      "category": "Systems",
+      "description": "Tracks squad legend picks and surfaces synergy bonuses for compatible team compositions.",
+      "price": 2
+    },
+    {
+      "id": "season-battle-pass-challenges",
+      "title": "Season Battle Pass & Challenges",
+      "category": "Progression",
+      "description": "Season XP curve, tiered battle-pass rewards, and daily/weekly challenge tracking.",
+      "price": 3
+    }
+  ],
+  "call-of-duty": [
+    {
+      "id": "gunsmith-attachment-tree",
+      "title": "Gunsmith Attachment Tree",
+      "category": "Weapons",
+      "description": "A branching attachment tree per weapon with conflicting-slot rules and stat previews.",
+      "price": 4
+    },
+    {
+      "id": "weapon-camo-challenge-tracker",
+      "title": "Weapon Camo Challenge Tracker",
+      "category": "Progression",
+      "description": "Per-weapon camo unlock challenges (kills, headshots, streaks) with progress tracking.",
+      "price": 2
+    },
+    {
+      "id": "prestige-rank-reset-system",
+      "title": "Prestige & Rank Reset System",
+      "category": "Progression",
+      "description": "Prestige-tier rank resets with carried-over cosmetic unlocks and reset bonuses.",
+      "price": 3
+    },
+    {
+      "id": "field-upgrade-charge-system",
+      "title": "Field Upgrade Charge System",
+      "category": "Equipment",
+      "description": "Charge-based field upgrades that regenerate over time instead of using ammo/pickups.",
+      "price": 2
+    },
+    {
+      "id": "killcam-replay-capture",
+      "title": "Killcam & Replay Capture",
+      "category": "Feedback",
+      "description": "Rolling buffer capture of the last few seconds before a death, replayable from the killer's view.",
+      "price": 3
+    },
+    {
+      "id": "ground-loot-contract-system",
+      "title": "Ground Loot & Contract System",
+      "category": "Systems",
+      "description": "Battle-royale-style ground loot spawning paired with optional side-contract objectives.",
+      "price": 4
+    },
+    {
+      "id": "vehicle-handling-mounted-weapons",
+      "title": "Vehicle Handling & Mounted Weapons",
+      "category": "Vehicles",
+      "description": "Drivable vehicle physics with a mounted-weapon seat that overrides normal aiming.",
+      "price": 4
+    },
+    {
+      "id": "clan-tag-squad-identity-system",
+      "title": "Clan Tag & Squad Identity System",
+      "category": "Systems",
+      "description": "Clan tag display, squad banners, and identity persistence across matches.",
+      "price": 2
+    },
+    {
+      "id": "combat-record-stat-tracking",
+      "title": "Combat Record & Stat Tracking",
+      "category": "Systems",
+      "description": "Persistent per-weapon and per-mode stat tracking across sessions, not just per-match.",
+      "price": 2
+    },
+    {
+      "id": "wave-based-horde-round-system",
+      "title": "Wave-Based Horde Round System",
+      "category": "Systems",
+      "description": "Escalating enemy wave spawning with round-based difficulty scaling and between-round shopping.",
+      "price": 4
+    }
+  ],
+  "fortnite": [
+    {
+      "id": "structure-edit-piece-confirm",
+      "title": "Structure Edit & Piece Confirm",
+      "category": "Building",
+      "description": "Edit-pattern selection with confirm/cancel and a piece-swap-while-editing safeguard.",
+      "price": 3
+    },
+    {
+      "id": "named-location-loot-tiering",
+      "title": "Named Location Loot Tiering",
+      "category": "Loot",
+      "description": "Point-of-interest loot density tiers so named locations feel meaningfully different to drop into.",
+      "price": 2
+    },
+    {
+      "id": "vehicle-driving-fuel-system",
+      "title": "Vehicle Driving & Fuel System",
+      "category": "Vehicles",
+      "description": "Car and boat driving physics with a fuel-consumption and refuel-can mechanic.",
+      "price": 3
+    },
+    {
+      "id": "fishing-consumable-loot-system",
+      "title": "Fishing & Consumable Loot System",
+      "category": "Gameplay",
+      "description": "Fishing-spot interaction yielding weapons, consumables, and healing items.",
+      "price": 2
+    },
+    {
+      "id": "reboot-van-teammate-revive",
+      "title": "Reboot Van & Teammate Revive",
+      "category": "Systems",
+      "description": "Eliminated-teammate reboot card collection and a reboot-van respawn flow.",
+      "price": 3
+    },
+    {
+      "id": "crafting-upgrade-bench",
+      "title": "Crafting & Upgrade Bench",
+      "category": "Crafting",
+      "description": "Weapon-upgrade bench stations that consume materials to boost rarity tier.",
+      "price": 3
+    },
+    {
+      "id": "mythic-weapon-ability-system",
+      "title": "Mythic Weapon Ability System",
+      "category": "Weapons",
+      "description": "Special mythic-tier weapons with a unique triggered ability beyond normal fire modes.",
+      "price": 4
+    },
+    {
+      "id": "season-quest-xp-milestone-tracker",
+      "title": "Season Quest & XP Milestone Tracker",
+      "category": "Progression",
+      "description": "Weekly quest tracking with milestone-based bonus XP rewards.",
+      "price": 2
+    },
+    {
+      "id": "locker-cosmetic-equip-system",
+      "title": "Locker & Cosmetic Equip System",
+      "category": "Systems",
+      "description": "Skin, back-bling, and emote equip management with a locker-style selection UI.",
+      "price": 2
+    },
+    {
+      "id": "creative-island-trigger-device-system",
+      "title": "Creative Island Trigger & Device System",
+      "category": "Systems",
+      "description": "A generic trigger/device framework for building custom game modes on a creative island.",
+      "price": 3
+    }
+  ],
+  "gta-v": [
+    {
+      "id": "garage-vehicle-storage-manager",
+      "title": "Garage & Vehicle Storage Manager",
+      "category": "Systems",
+      "description": "Owned-vehicle garage storage with retrieval, valet, and impound-recovery flows.",
+      "price": 3
+    },
+    {
+      "id": "in-game-phone-contact-menu",
+      "title": "In-Game Phone & Contact Menu",
+      "category": "Systems",
+      "description": "A phone overlay with a contacts list that triggers calls, texts, and app-style menus.",
+      "price": 3
+    },
+    {
+      "id": "weather-time-of-day-controller",
+      "title": "Weather & Time-of-Day Controller",
+      "category": "World",
+      "description": "Scripted weather transitions and a time-of-day cycle independent of the game's default clock.",
+      "price": 2
+    },
+    {
+      "id": "gang-territory-turf-control",
+      "title": "Gang Territory & Turf Control",
+      "category": "World",
+      "description": "Map-zone territory ownership that shifts based on scripted turf-war outcomes.",
+      "price": 4
+    },
+    {
+      "id": "stock-market-investment-system",
+      "title": "Stock Market & Investment System",
+      "category": "Economy",
+      "description": "A fluctuating in-game stock market with buy/sell orders and event-driven price swings.",
+      "price": 3
+    },
+    {
+      "id": "character-switch-camera-transition",
+      "title": "Character Switch & Camera Transition",
+      "category": "Systems",
+      "description": "The signature swooping camera transition when switching between playable characters.",
+      "price": 3
+    },
+    {
+      "id": "stunt-jump-trick-score-tracker",
+      "title": "Stunt Jump & Trick Score Tracker",
+      "category": "Systems",
+      "description": "Stunt-jump zone detection with air-time and trick-based scoring.",
+      "price": 2
+    },
+    {
+      "id": "clothing-character-customization-menu",
+      "title": "Clothing & Character Customization Menu",
+      "category": "Systems",
+      "description": "A wardrobe menu for outfit slots, saved looks, and quick-change presets.",
+      "price": 3
+    },
+    {
+      "id": "random-world-event-spawner",
+      "title": "Random World Event Spawner",
+      "category": "World",
+      "description": "Ambient random events (robberies, hitchhikers, street races) spawned on a weighted timer.",
+      "price": 3
+    },
+    {
+      "id": "parachute-skydiving-controller",
+      "title": "Parachute & Skydiving Controller",
+      "category": "Movement",
+      "description": "Freefall and parachute deployment physics with a landing-accuracy scoring option.",
+      "price": 2
+    }
+  ],
+  "minecraft": [
+    {
+      "id": "custom-enchantment-registry",
+      "title": "Custom Enchantment Registry",
+      "category": "Systems",
+      "description": "A registry for defining new enchantments with their own apply/trigger logic beyond vanilla.",
+      "price": 3
+    },
+    {
+      "id": "player-shop-trading-stall",
+      "title": "Player Shop & Trading Stall",
+      "category": "Economy",
+      "description": "Player-run shop stalls with listed items, prices, and a purchase-transaction flow.",
+      "price": 3
+    },
+    {
+      "id": "land-claim-protection-system",
+      "title": "Land Claim & Protection System",
+      "category": "Systems",
+      "description": "Chunk-based land claiming with build/break protection for the claiming player.",
+      "price": 4
+    },
+    {
+      "id": "custom-boss-mob-arena",
+      "title": "Custom Boss Mob & Arena",
+      "category": "AI",
+      "description": "A scripted boss mob with phase-based attack patterns inside a dedicated arena region.",
+      "price": 4
+    },
+    {
+      "id": "custom-crop-growth-system",
+      "title": "Custom Crop Growth System",
+      "category": "Gameplay",
+      "description": "Custom crop types with staged growth, fertilizer effects, and yield-on-harvest logic.",
+      "price": 2
+    },
+    {
+      "id": "warp-point-teleportation",
+      "title": "Warp Point & Teleportation",
+      "category": "Systems",
+      "description": "Named warp points with a teleport menu and optional cooldown/cost per use.",
+      "price": 2
+    },
+    {
+      "id": "pvp-arena-kit-system",
+      "title": "PvP Arena & Kit System",
+      "category": "Combat",
+      "description": "Arena queueing with preset combat kits handed out on match start.",
+      "price": 3
+    },
+    {
+      "id": "scoreboard-stats-display",
+      "title": "Scoreboard & Stats Display",
+      "category": "Systems",
+      "description": "A live sidebar scoreboard showing custom per-player stats pulled from your plugin's data.",
+      "price": 2
+    },
+    {
+      "id": "custom-crafting-recipe-system",
+      "title": "Custom Crafting Recipe System",
+      "category": "Crafting",
+      "description": "Registers new shaped/shapeless recipes at runtime beyond the vanilla recipe book.",
+      "price": 2
+    },
+    {
+      "id": "pet-companion-follower",
+      "title": "Pet & Companion Follower",
+      "category": "Gameplay",
+      "description": "A tameable companion entity that follows, fights alongside, and levels up with the player.",
+      "price": 3
+    }
+  ],
+  "pubg": [
+    {
+      "id": "throwable-utility-grenade-system",
+      "title": "Throwable & Utility Grenade System",
+      "category": "Equipment",
+      "description": "Frag, smoke, and stun throwable physics with cook timers and effect-zone application.",
+      "price": 3
+    },
+    {
+      "id": "stance-prone-movement",
+      "title": "Stance & Prone Movement",
+      "category": "Movement",
+      "description": "Stand/crouch/prone stance switching with accuracy and movement-speed modifiers per stance.",
+      "price": 2
+    },
+    {
+      "id": "weapon-attachment-loadout",
+      "title": "Weapon Attachment Loadout",
+      "category": "Weapons",
+      "description": "Scope, grip, and magazine attachment slots with per-weapon compatibility rules.",
+      "price": 3
+    },
+    {
+      "id": "red-zone-bombing-event",
+      "title": "Red Zone Bombing Event",
+      "category": "Events",
+      "description": "A random artillery-strike zone that telegraphs then deals area damage on a timer.",
+      "price": 3
+    },
+    {
+      "id": "care-package-airdrop",
+      "title": "Care Package Airdrop",
+      "category": "Loot",
+      "description": "Flare-triggered supply-plane routing and a high-tier loot crate on landing.",
+      "price": 3
+    },
+    {
+      "id": "spectator-killer-cam-system",
+      "title": "Spectator & Killer-Cam System",
+      "category": "HUD",
+      "description": "Free-cam and killer-cam spectating for eliminated players until the match ends.",
+      "price": 2
+    },
+    {
+      "id": "downed-state-team-revive",
+      "title": "Downed State & Team Revive",
+      "category": "Systems",
+      "description": "A crawl-and-call-for-help downed state with a team-revive interaction window.",
+      "price": 3
+    },
+    {
+      "id": "ranked-mmr-tier-system",
+      "title": "Ranked MMR & Tier System",
+      "category": "Progression",
+      "description": "Placement-based MMR gain/loss with tier promotion and demotion protection.",
+      "price": 2
+    },
+    {
+      "id": "inventory-weight-encumbrance",
+      "title": "Inventory Weight & Encumbrance",
+      "category": "Inventory",
+      "description": "Carry-weight limits with movement-speed penalties past an encumbrance threshold.",
+      "price": 2
+    },
+    {
+      "id": "safe-zone-rotation-predictor",
+      "title": "Safe Zone Rotation Predictor",
+      "category": "World",
+      "description": "A heuristic predictor that estimates the next safe-zone center before it's revealed.",
+      "price": 3
+    }
+  ],
+  "roblox": [
+    {
+      "id": "team-select-spawn-system",
+      "title": "Team Select & Spawn System",
+      "category": "Systems",
+      "description": "A team-select lobby UI with team-specific spawn point assignment.",
+      "price": 2
+    },
+    {
+      "id": "global-leaderboard-stats",
+      "title": "Global Leaderboard & Stats",
+      "category": "Systems",
+      "description": "OrderedDataStore-backed global leaderboards ranked by any tracked stat.",
+      "price": 3
+    },
+    {
+      "id": "admin-command-moderation",
+      "title": "Admin Command & Moderation",
+      "category": "Systems",
+      "description": "A chat-command framework for kick/ban/teleport-style admin actions, gated by a role table.",
+      "price": 3
+    },
+    {
+      "id": "chat-tag-filter-system",
+      "title": "Chat Tag & Filter System",
+      "category": "Systems",
+      "description": "Custom chat tags per player rank plus TextService-based message filtering.",
+      "price": 2
+    },
+    {
+      "id": "npc-quest-giver-dialogue",
+      "title": "NPC Quest Giver & Dialogue",
+      "category": "Dialogue",
+      "description": "ProximityPrompt-driven NPC dialogue trees that hand out and track quests.",
+      "price": 3
+    },
+    {
+      "id": "vehicleseat-drivable-vehicle",
+      "title": "VehicleSeat & Drivable Vehicle",
+      "category": "Systems",
+      "description": "A VehicleSeat-based drivable car with throttle, steering, and occupancy detection.",
+      "price": 3
+    },
+    {
+      "id": "custom-animation-controller",
+      "title": "Custom Animation Controller",
+      "category": "Systems",
+      "description": "An Animator-based controller for blending and prioritizing custom animation tracks.",
+      "price": 2
+    },
+    {
+      "id": "particle-vfx-trigger",
+      "title": "Particle & VFX Trigger",
+      "category": "Systems",
+      "description": "A reusable ParticleEmitter/Trail trigger system for hit effects and ability visuals.",
+      "price": 2
+    },
+    {
+      "id": "player-trading-system",
+      "title": "Player Trading System",
+      "category": "Systems",
+      "description": "A server-validated two-player trade window with offer confirmation on both sides.",
+      "price": 4
+    },
+    {
+      "id": "anti-exploit-remote-validation",
+      "title": "Anti-Exploit Remote Validation",
+      "category": "Security",
+      "description": "Server-side RemoteEvent argument validation and rate-limiting to reject exploited client calls.",
+      "price": 4
+    }
+  ],
+  "skyrim": [
+    {
+      "id": "follower-recruitment-management",
+      "title": "Follower Recruitment & Management",
+      "category": "Systems",
+      "description": "Recruitable follower dialogue, inventory sharing, and a follower-roster management system.",
+      "price": 3
+    },
+    {
+      "id": "spell-learning-tome-system",
+      "title": "Spell Learning & Tome System",
+      "category": "Systems",
+      "description": "Spell tome reading that teaches spells and tracks a player's known-spell list.",
+      "price": 2
+    },
+    {
+      "id": "dragon-shout-word-wall",
+      "title": "Dragon Shout & Word Wall",
+      "category": "Systems",
+      "description": "Word wall discovery, shout word unlocking, and shout cooldown/charge management.",
+      "price": 3
+    },
+    {
+      "id": "marriage-player-home",
+      "title": "Marriage & Player Home",
+      "category": "Systems",
+      "description": "A marriage dialogue flow plus player-home ownership with storage and a resting bonus.",
+      "price": 3
+    },
+    {
+      "id": "crime-bounty-tracking",
+      "title": "Crime & Bounty Tracking",
+      "category": "Systems",
+      "description": "Witnessed-crime detection that accrues a bounty and triggers guard hostility per hold.",
+      "price": 2
+    },
+    {
+      "id": "perk-respec-legendary-skill",
+      "title": "Perk Respec & Legendary Skill",
+      "category": "Progression",
+      "description": "Perk-point refund on respec, and legendary-skill reset for past-100 skill leveling.",
+      "price": 2
+    },
+    {
+      "id": "follower-combat-ai",
+      "title": "Follower Combat AI",
+      "category": "AI",
+      "description": "Combat-style AI packages for followers — flanking, healing casts, and retreat-at-low-health.",
+      "price": 3
+    },
+    {
+      "id": "merchant-restock-inventory",
+      "title": "Merchant Restock & Inventory",
+      "category": "Economy",
+      "description": "Timed merchant gold and inventory restocking with per-vendor specialty item pools.",
+      "price": 2
+    },
+    {
+      "id": "weather-seasonal-effects",
+      "title": "Weather & Seasonal Effects",
+      "category": "World",
+      "description": "Weather-triggered gameplay effects (frost damage in storms, stealth bonus in fog).",
+      "price": 2
+    },
+    {
+      "id": "daedric-artifact-quest-tracker",
+      "title": "Daedric Artifact Quest Tracker",
+      "category": "Quests",
+      "description": "A tracker for the Daedric Prince quest line with artifact-collection progress.",
+      "price": 3
+    }
+  ],
+  "valorant": [
+    {
+      "id": "ultimate-orb-pickup-charge",
+      "title": "Ultimate Orb Pickup & Charge",
+      "category": "Abilities",
+      "description": "Map-placed ultimate orbs that grant bonus ultimate charge on pickup.",
+      "price": 2
+    },
+    {
+      "id": "spike-plant-defuse-sequence",
+      "title": "Spike Plant & Defuse Sequence",
+      "category": "Systems",
+      "description": "Plant/defuse interaction timers with a progress bar and interrupt-on-damage rule.",
+      "price": 3
+    },
+    {
+      "id": "agent-select-lock-in",
+      "title": "Agent Select & Lock-In",
+      "category": "Systems",
+      "description": "Agent-select screen flow with per-team duplicate-pick prevention and lock-in confirmation.",
+      "price": 2
+    },
+    {
+      "id": "minimap-callout-marker",
+      "title": "Minimap & Callout Marker",
+      "category": "HUD",
+      "description": "A minimap overlay with named callout zones and pingable enemy-position markers.",
+      "price": 2
+    },
+    {
+      "id": "weapon-inspect-skin-display",
+      "title": "Weapon Inspect & Skin Display",
+      "category": "Systems",
+      "description": "A weapon-inspect animation sequence that showcases equipped skins and finishers.",
+      "price": 2
+    },
+    {
+      "id": "ranked-rating-progression",
+      "title": "Ranked Rating Progression",
+      "category": "Progression",
+      "description": "Match-result-based RR gain/loss with rank-tier promotion series handling.",
+      "price": 2
+    },
+    {
+      "id": "team-composition-analyzer",
+      "title": "Team Composition Analyzer",
+      "category": "Systems",
+      "description": "Analyzes a team's agent picks and flags role gaps (no sentinel, no controller, etc).",
+      "price": 2
+    },
+    {
+      "id": "smoke-wall-ability-collision",
+      "title": "Smoke & Wall Ability Collision",
+      "category": "Combat",
+      "description": "Volumetric collision detection for smoke/wall abilities blocking sightlines and bullets.",
+      "price": 3
+    },
+    {
+      "id": "death-replay-kill-cam",
+      "title": "Death Replay & Kill Cam",
+      "category": "Feedback",
+      "description": "A short replay buffer showing the killer's perspective right after a player dies.",
+      "price": 3
+    },
+    {
+      "id": "leaver-penalty-queue-restriction",
+      "title": "Leaver Penalty & Queue Restriction",
+      "category": "Systems",
+      "description": "Match-abandon detection with escalating queue-time penalties for repeat leavers.",
+      "price": 2
+    }
+  ]
+}

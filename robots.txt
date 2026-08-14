@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /pages/checkout.html
+Disallow: /pages/account.html
+Disallow: /pages/thank-you.html
+
+Sitemap: https://scriptforge.gg/sitemap.xml

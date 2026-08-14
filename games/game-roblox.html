@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Roblox script pack from ScriptForge: 20 ready-to-use Roblox Studio scripts for DataStores, leaderstats, tycoons, gamepasses, and RemoteEvent systems.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=1200&q=80">
+    <title>Roblox Script Pack | ScriptForge</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <script src="../js/error-reporter.js"></script>
+</head>
+<body data-pack-id="roblox" data-pack-name="Roblox Pack" data-root-prefix="../">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40">
+                    <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                    <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                    <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                    <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                </svg>
+                ScriptForge
+            </a>
+            <div class="nav-menu" id="navMenu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../pages/games.html" class="nav-link">Games</a>
+                <a href="../pages/catalog.html" class="nav-link">Catalog</a>
+                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+            </div>
+            <div class="nav-actions">
+                <span id="authControl" class="auth-control"></span>
+                <a href="../pages/checkout.html" class="cart-btn" aria-label="View basket">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main class="page-shell">
+        <div class="container breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a> / <a href="../pages/games.html">Games</a> / <span>Roblox</span>
+        </div>
+        <div class="page-header">
+            <p class="eyebrow">Roblox</p>
+            <h1>Creator Platform Script Pack</h1>
+            <p class="tech-stack"><strong>Built for:</strong> Roblox Studio (Luau Scripts)</p>
+            <p>20 Roblox Studio scripts for DataStore-backed saving, leaderstats, tycoons, gamepasses, and RemoteEvent-synced systems. Check the boxes below to build the exact bundle you need — full pack price is <span data-usd-price="60">$60</span>.</p>
+        </div>
+        <div class="game-cover">
+            <div class="game-cover-art ruin" role="img" aria-label="Roblox themed artwork">
+                <span class="game-cover-badge">Roblox</span>
+            </div>
+        </div>
+        <div class="container script-toolbar">
+            <div class="script-toolbar-actions">
+                <button type="button" class="toolbar-btn" id="selectAllScripts">Select all</button>
+                <button type="button" class="toolbar-btn" id="deselectAllScripts">Deselect all</button>
+            </div>
+            <p id="packSelectionTotal" class="pack-selection-total"></p>
+        </div>
+        <div class="container script-grid">
+            <article class="script-card" data-script-id="resource-gathering" data-script="Tool-Based Resource Nodes" data-price="3"><h3>1. Tool-Based Resource Nodes</h3><p>ProximityPrompt-triggered resource nodes (trees, rocks, ore) with respawn timers and tool-tier gating.</p><div class="script-meta"><span>Gameplay</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="hunger-thirst-system" data-script="Leaderstats &amp; Currency System" data-price="3"><h3>2. Leaderstats &amp; Currency System</h3><p>IntValue leaderstats for coins and XP with DataStore-backed saving and a stat-change event bus.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="weather-cycle" data-script="Day-Night Cycle &amp; Lighting" data-price="2"><h3>3. Day-Night Cycle &amp; Lighting</h3><p>TweenService-driven Lighting property cycling for a smooth in-game day/night loop.</p><div class="script-meta"><span>World</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="base-building-placement" data-script="Tycoon Building &amp; Purchase System" data-price="4"><h3>4. Tycoon Building &amp; Purchase System</h3><p>Classic Roblox tycoon droppers, conveyors, and button-purchase upgrades gated by cash.</p><div class="script-meta"><span>Tycoon</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="crafting-system" data-script="Gamepass &amp; Dev Product Shop" data-price="4"><h3>5. Gamepass &amp; Dev Product Shop</h3><p>MarketplaceService-integrated gamepass and developer-product purchase flow with receipt handling.</p><div class="script-meta"><span>Monetization</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="enemy-night-patrol-ai" data-script="NPC Patrol &amp; Humanoid AI" data-price="3"><h3>6. NPC Patrol &amp; Humanoid AI</h3><p>Humanoid:MoveTo patrol routes, PathfindingService chase logic, and simple attack-cooldown AI.</p><div class="script-meta"><span>AI</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="event-trigger-manager" data-script="Round-Based Minigame Manager" data-price="4"><h3>7. Round-Based Minigame Manager</h3><p>Lobby-to-round state machine for round-based minigames, with intermission timers and team balancing.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="inventory-storage" data-script="RemoteEvent Inventory Sync" data-price="3"><h3>8. RemoteEvent Inventory Sync</h3><p>Server-authoritative inventory with RemoteEvent-synced UI and exploit-resistant item validation.</p><div class="script-meta"><span>Inventory</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="progression-unlocks" data-script="Obby Checkpoint &amp; Stage System" data-price="3"><h3>9. Obby Checkpoint &amp; Stage System</h3><p>Checkpoint-touch save points, stage progression, and leaderboard-tracked completion times for obbies.</p><div class="script-meta"><span>Progression</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="auto-save-recovery" data-script="DataStore Auto-Save &amp; Backup" data-price="3"><h3>10. DataStore Auto-Save &amp; Backup</h3><p>Scheduled DataStoreService saves with retry-on-fail, session-locking, and BindToClose data protection.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="team-select-spawn-system" data-script="Team Select &amp; Spawn System" data-price="2"><h3>11. Team Select &amp; Spawn System</h3><p>A team-select lobby UI with team-specific spawn point assignment.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="global-leaderboard-stats" data-script="Global Leaderboard &amp; Stats" data-price="3"><h3>12. Global Leaderboard &amp; Stats</h3><p>OrderedDataStore-backed global leaderboards ranked by any tracked stat.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="admin-command-moderation" data-script="Admin Command &amp; Moderation" data-price="3"><h3>13. Admin Command &amp; Moderation</h3><p>A chat-command framework for kick/ban/teleport-style admin actions, gated by a role table.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="chat-tag-filter-system" data-script="Chat Tag &amp; Filter System" data-price="2"><h3>14. Chat Tag &amp; Filter System</h3><p>Custom chat tags per player rank plus TextService-based message filtering.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="npc-quest-giver-dialogue" data-script="NPC Quest Giver &amp; Dialogue" data-price="3"><h3>15. NPC Quest Giver &amp; Dialogue</h3><p>ProximityPrompt-driven NPC dialogue trees that hand out and track quests.</p><div class="script-meta"><span>Dialogue</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="vehicleseat-drivable-vehicle" data-script="VehicleSeat &amp; Drivable Vehicle" data-price="3"><h3>16. VehicleSeat &amp; Drivable Vehicle</h3><p>A VehicleSeat-based drivable car with throttle, steering, and occupancy detection.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="custom-animation-controller" data-script="Custom Animation Controller" data-price="2"><h3>17. Custom Animation Controller</h3><p>An Animator-based controller for blending and prioritizing custom animation tracks.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="particle-vfx-trigger" data-script="Particle &amp; VFX Trigger" data-price="2"><h3>18. Particle &amp; VFX Trigger</h3><p>A reusable ParticleEmitter/Trail trigger system for hit effects and ability visuals.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="player-trading-system" data-script="Player Trading System" data-price="4"><h3>19. Player Trading System</h3><p>A server-validated two-player trade window with offer confirmation on both sides.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="anti-exploit-remote-validation" data-script="Anti-Exploit Remote Validation" data-price="4"><h3>20. Anti-Exploit Remote Validation</h3><p>Server-side RemoteEvent argument validation and rate-limiting to reject exploited client calls.</p><div class="script-meta"><span>Security</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+        </div>
+        <div class="page-actions">
+            <button id="addSelectedToCart" class="btn btn-primary" type="button">Add selected to basket</button>
+            <a href="../pages/checkout.html" class="btn btn-secondary">View basket</a>
+            <a href="../pages/client-roblox.html" class="btn btn-secondary">Preview in ForgeClient</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40">
+                        <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                        <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                        <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                        <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                    </svg>
+                    ScriptForge
+                </a>
+                <p>Premium, production-ready game systems for developers, indies, and studios.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.com" target="_blank" rel="noreferrer" aria-label="Discord">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.56A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.56 9.38.56 9.38.56s7.5 0 9.38-.56a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.6 15.6V8.4l6.4 3.6-6.4 3.6z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <a href="../pages/games.html">Games</a>
+                <a href="../pages/catalog.html">Catalog</a>
+                <a href="../pages/checkout.html">Basket</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="../pages/login.html">Sign in</a>
+                <a href="../pages/register.html">Create account</a>
+                <a href="../pages/account.html">My orders</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="https://discord.com" target="_blank" rel="noreferrer">Discord community</a>
+                <a href="../pages/privacy.html">Privacy policy</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>Built for developers, by developers.</p>
+        </div>
+    </footer>
+    <div class="sticky-mobile-cta">
+        <button type="button" class="btn btn-primary" data-sticky-forward="addSelectedToCart">Add selected to basket</button>
+    </div>
+    <script src="../js/site.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/currency.js"></script>
+    <script src="../js/site-flags.js"></script>
+    <script src="../js/search.js"></script>
+</body>
+</html>

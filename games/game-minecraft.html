@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Minecraft script pack from ScriptForge: 20 ready-to-use scripts for mining, crafting, survival, and world-building systems.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80">
+    <title>Minecraft Script Pack | ScriptForge</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <script src="../js/error-reporter.js"></script>
+</head>
+<body data-pack-id="minecraft" data-pack-name="Minecraft Pack" data-root-prefix="../">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40">
+                    <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                    <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                    <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                    <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                </svg>
+                ScriptForge
+            </a>
+            <div class="nav-menu" id="navMenu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="../pages/games.html" class="nav-link">Games</a>
+                <a href="../pages/catalog.html" class="nav-link">Catalog</a>
+                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+            </div>
+            <div class="nav-actions">
+                <span id="authControl" class="auth-control"></span>
+                <a href="../pages/checkout.html" class="cart-btn" aria-label="View basket">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    <main class="page-shell">
+        <div class="container breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Home</a> / <a href="../pages/games.html">Games</a> / <span>Minecraft</span>
+        </div>
+        <div class="page-header">
+            <p class="eyebrow">Minecraft</p>
+            <h1>Sandbox Script Pack</h1>
+            <p class="tech-stack"><strong>Built for:</strong> Bukkit/Spigot/Paper Plugins (Java)</p>
+            <p>20 production-ready scripts for mining, crafting, survival systems, and world-building loops. Check the boxes below to build the exact bundle you need — full pack price is <span data-usd-price="57">$57</span>.</p>
+        </div>
+        <div class="game-cover">
+            <div class="game-cover-art arcane" role="img" aria-label="Minecraft themed artwork">
+                <span class="game-cover-badge">Minecraft</span>
+            </div>
+        </div>
+        <div class="container script-toolbar">
+            <div class="script-toolbar-actions">
+                <button type="button" class="toolbar-btn" id="selectAllScripts">Select all</button>
+                <button type="button" class="toolbar-btn" id="deselectAllScripts">Deselect all</button>
+            </div>
+            <p id="packSelectionTotal" class="pack-selection-total"></p>
+        </div>
+        <div class="container script-grid">
+            <article class="script-card" data-script-id="sword-combo-controller" data-script="Melee Combo &amp; Critical Hits" data-price="3"><h3>1. Melee Combo &amp; Critical Hits</h3><p>Chained melee combos, sprint-critical hits, and knockback tuning for close-range combat.</p><div class="script-meta"><span>Combat</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="mana-and-stamina-system" data-script="Stamina &amp; Hunger Bar System" data-price="3"><h3>2. Stamina &amp; Hunger Bar System</h3><p>Action-based stamina drain — sprinting, mining, jumping — with regen tied to hunger and rest state.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="enemy-aggro-ai" data-script="Mob Aggro &amp; Pathfinding AI" data-price="3"><h3>3. Mob Aggro &amp; Pathfinding AI</h3><p>Line-of-sight aggro range, pack-hunting behavior, and A*-style pathfinding around terrain.</p><div class="script-meta"><span>AI</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="loot-drop-manager" data-script="Block &amp; Mob Drop Tables" data-price="3"><h3>4. Block &amp; Mob Drop Tables</h3><p>Weighted drop tables for block breaks and mob kills, with fortune/looting-style multipliers.</p><div class="script-meta"><span>Loot</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="skill-tree-progression" data-script="Tool &amp; Enchant Progression" data-price="3"><h3>5. Tool &amp; Enchant Progression</h3><p>Tiered tool upgrades and an enchantment-style skill tree gated by XP levels.</p><div class="script-meta"><span>Progression</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="quest-objective-tracker" data-script="Advancement &amp; Quest Tracker" data-price="3"><h3>6. Advancement &amp; Quest Tracker</h3><p>Achievement-style advancement tree with hidden and visible quests plus multi-step objective chains.</p><div class="script-meta"><span>Quests</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="inventory-equipment" data-script="Inventory, Hotbar &amp; Crafting Grid" data-price="3"><h3>7. Inventory, Hotbar &amp; Crafting Grid</h3><p>Stackable inventory, drag-drop hotbar, and a 3x3 crafting grid with shaped-recipe matching.</p><div class="script-meta"><span>Inventory</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="dialogue-branch-system" data-script="Villager Trade &amp; Dialogue" data-price="3"><h3>8. Villager Trade &amp; Dialogue</h3><p>Branching villager dialogue with trade-offer rotation and reputation-based price scaling.</p><div class="script-meta"><span>Dialogue</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="camera-follow-controller" data-script="Third-Person Camera Rig" data-price="2"><h3>9. Third-Person Camera Rig</h3><p>Smooth follow camera with collision avoidance, shoulder-swap, and first/third-person toggle.</p><div class="script-meta"><span>Camera</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="save-load-profile" data-script="World Save &amp; Chunk Persistence" data-price="3"><h3>10. World Save &amp; Chunk Persistence</h3><p>Per-world save slots with chunk-based persistence for placed blocks and container contents.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="custom-enchantment-registry" data-script="Custom Enchantment Registry" data-price="3"><h3>11. Custom Enchantment Registry</h3><p>A registry for defining new enchantments with their own apply/trigger logic beyond vanilla.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="player-shop-trading-stall" data-script="Player Shop &amp; Trading Stall" data-price="3"><h3>12. Player Shop &amp; Trading Stall</h3><p>Player-run shop stalls with listed items, prices, and a purchase-transaction flow.</p><div class="script-meta"><span>Economy</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="land-claim-protection-system" data-script="Land Claim &amp; Protection System" data-price="4"><h3>13. Land Claim &amp; Protection System</h3><p>Chunk-based land claiming with build/break protection for the claiming player.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="custom-boss-mob-arena" data-script="Custom Boss Mob &amp; Arena" data-price="4"><h3>14. Custom Boss Mob &amp; Arena</h3><p>A scripted boss mob with phase-based attack patterns inside a dedicated arena region.</p><div class="script-meta"><span>AI</span><span class="script-price" data-usd-price="4">$4</span></div></article>
+            <article class="script-card" data-script-id="custom-crop-growth-system" data-script="Custom Crop Growth System" data-price="2"><h3>15. Custom Crop Growth System</h3><p>Custom crop types with staged growth, fertilizer effects, and yield-on-harvest logic.</p><div class="script-meta"><span>Gameplay</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="warp-point-teleportation" data-script="Warp Point &amp; Teleportation" data-price="2"><h3>16. Warp Point &amp; Teleportation</h3><p>Named warp points with a teleport menu and optional cooldown/cost per use.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="pvp-arena-kit-system" data-script="PvP Arena &amp; Kit System" data-price="3"><h3>17. PvP Arena &amp; Kit System</h3><p>Arena queueing with preset combat kits handed out on match start.</p><div class="script-meta"><span>Combat</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+            <article class="script-card" data-script-id="scoreboard-stats-display" data-script="Scoreboard &amp; Stats Display" data-price="2"><h3>18. Scoreboard &amp; Stats Display</h3><p>A live sidebar scoreboard showing custom per-player stats pulled from your plugin's data.</p><div class="script-meta"><span>Systems</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="custom-crafting-recipe-system" data-script="Custom Crafting Recipe System" data-price="2"><h3>19. Custom Crafting Recipe System</h3><p>Registers new shaped/shapeless recipes at runtime beyond the vanilla recipe book.</p><div class="script-meta"><span>Crafting</span><span class="script-price" data-usd-price="2">$2</span></div></article>
+            <article class="script-card" data-script-id="pet-companion-follower" data-script="Pet &amp; Companion Follower" data-price="3"><h3>20. Pet &amp; Companion Follower</h3><p>A tameable companion entity that follows, fights alongside, and levels up with the player.</p><div class="script-meta"><span>Gameplay</span><span class="script-price" data-usd-price="3">$3</span></div></article>
+        </div>
+        <div class="page-actions">
+            <button id="addSelectedToCart" class="btn btn-primary" type="button">Add selected to basket</button>
+            <a href="../pages/checkout.html" class="btn btn-secondary">View basket</a>
+            <a href="../pages/client-minecraft.html" class="btn btn-secondary">View the real Plugin Manager</a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40">
+                        <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                        <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                        <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                        <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                    </svg>
+                    ScriptForge
+                </a>
+                <p>Premium, production-ready game systems for developers, indies, and studios.</p>
+                <div class="footer-socials">
+                    <a href="https://discord.com" target="_blank" rel="noreferrer" aria-label="Discord">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>
+                    </a>
+                    <a href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.56A3.02 3.02 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.56 9.38.56 9.38.56s7.5 0 9.38-.56a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8zM9.6 15.6V8.4l6.4 3.6-6.4 3.6z"/></svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <a href="../pages/games.html">Games</a>
+                <a href="../pages/catalog.html">Catalog</a>
+                <a href="../pages/checkout.html">Basket</a>
+            </div>
+            <div class="footer-col">
+                <h4>Account</h4>
+                <a href="../pages/login.html">Sign in</a>
+                <a href="../pages/register.html">Create account</a>
+                <a href="../pages/account.html">My orders</a>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="https://discord.com" target="_blank" rel="noreferrer">Discord community</a>
+                <a href="../pages/privacy.html">Privacy policy</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>Built for developers, by developers.</p>
+        </div>
+    </footer>
+    <div class="sticky-mobile-cta">
+        <button type="button" class="btn btn-primary" data-sticky-forward="addSelectedToCart">Add selected to basket</button>
+    </div>
+    <script src="../js/site.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/currency.js"></script>
+    <script src="../js/site-flags.js"></script>
+    <script src="../js/search.js"></script>
+</body>
+</html>

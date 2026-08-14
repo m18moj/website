@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScriptForge | Admin Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body data-root-prefix="../">
+    <div class="admin-container">
+        <nav class="admin-nav">
+            <div class="admin-logo">
+                <a href="../index.html">← Back to Store</a>
+            </div>
+            <div class="admin-user-info">
+                <span id="adminEmail"></span>
+                <button id="adminLogoutBtn" type="button">Logout</button>
+            </div>
+        </nav>
+
+        <div id="adminGate" class="admin-gate" hidden>
+            <p>Admin access required.</p>
+            <a href="../pages/login.html?redirect=../admin/admin.html" class="btn btn-primary">Sign in</a>
+        </div>
+
+        <div class="admin-layout" id="adminLayout" hidden>
+            <aside class="admin-sidebar">
+                <nav class="admin-menu">
+                    <a href="#" class="menu-item active" data-admin-tab="dashboard">📊 Dashboard</a>
+                    <a href="#" class="menu-item" data-admin-tab="users">👥 Users</a>
+                    <a href="#" class="menu-item" data-admin-tab="orders">📋 Orders</a>
+                    <a href="#" class="menu-item" data-admin-tab="catalog">🎮 Catalog</a>
+                    <a href="#" class="menu-item" data-admin-tab="promoCodes">💸 Promo Codes</a>
+                    <a href="#" class="menu-item" data-admin-tab="bundles">📦 Bundles</a>
+                    <a href="#" class="menu-item" data-admin-tab="reviews">⭐ Reviews</a>
+                    <a href="#" class="menu-item" data-admin-tab="auditLog">🛡️ Audit Log</a>
+                    <a href="#" class="menu-item" data-admin-tab="errorLog">🐛 Error Log</a>
+                    <a href="#" class="menu-item" data-admin-tab="settings">⚙️ Settings</a>
+                    <a href="#" class="menu-item" data-admin-tab="mySecurity">🔒 My Security</a>
+                </nav>
+            </aside>
+
+            <main class="admin-content">
+                <!-- Dashboard Tab -->
+                <div class="admin-tab active" id="dashboard">
+                    <div class="section-header">
+                        <h1>Dashboard</h1>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Total Users</div>
+                            <div class="stat-value" id="totalUsers">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Admins</div>
+                            <div class="stat-value" id="totalAdmins">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Paid Orders</div>
+                            <div class="stat-value" id="totalOrders">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-value" id="totalRevenue">$0</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Top Packs by Orders</h2>
+                        <div id="analyticsTopPacksContainer"></div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>System Status</h2>
+                        <div id="systemStatusContainer"></div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Recent Orders</h2>
+                        <div id="recentOrdersContainer"></div>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div class="admin-tab" id="users">
+                    <div class="section-header">
+                        <h1>User Management</h1>
+                        <input type="search" id="userSearchInput" class="admin-search" placeholder="Search by username…">
+                    </div>
+                    <div id="usersContainer"></div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div class="admin-tab" id="orders">
+                    <div class="section-header">
+                        <h1>Order Management</h1>
+                        <div class="section-header-actions">
+                            <input type="search" id="orderSearchInput" class="admin-search" placeholder="Search by customer or order ID…">
+                            <a href="/api/admin/orders/export.csv" class="btn btn-secondary" download>Export CSV</a>
+                        </div>
+                    </div>
+                    <div id="ordersContainer"></div>
+                </div>
+
+                <!-- Catalog Tab -->
+                <div class="admin-tab" id="catalog">
+                    <div class="section-header">
+                        <h1>Catalog</h1>
+                        <button type="button" class="btn btn-primary" id="showAddPackForm">+ New pack</button>
+                    </div>
+                    <p class="empty-state">What's actually for sale — this is the exact data checkout prices every order from, so changes here take effect immediately. Hidden packs/scripts stay in the database but can't be browsed or bought.</p>
+
+                    <form id="addPackForm" class="catalog-edit-form" hidden novalidate>
+                        <h3>New pack</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="newPackName">Pack name</label>
+                                <input id="newPackName" required maxlength="80" placeholder="e.g. Terraria Pack">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPackGameTitle">Game title</label>
+                                <input id="newPackGameTitle" maxlength="80" placeholder="e.g. Terraria">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPackGenre">Genre</label>
+                                <select id="newPackGenre">
+                                    <option value="sandbox">Sandbox</option>
+                                    <option value="battle-royale">Battle Royale</option>
+                                    <option value="rpg">RPG</option>
+                                    <option value="shooter">Shooter</option>
+                                    <option value="creator">Creator</option>
+                                    <option value="open-world">Open World</option>
+                                    <option value="other" selected>Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPackDetailUrl">Detail page URL (optional)</label>
+                                <input id="newPackDetailUrl" maxlength="200" placeholder="games/game-terraria.html">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPackDescription">Description</label>
+                            <textarea id="newPackDescription" maxlength="400" rows="2" placeholder="Shown on the catalog listing card."></textarea>
+                        </div>
+                        <p id="addPackError" class="form-error" role="alert" hidden></p>
+                        <div class="catalog-form-actions">
+                            <button type="submit" class="btn btn-primary">Create pack</button>
+                            <button type="button" class="btn btn-secondary" id="cancelAddPackForm">Cancel</button>
+                        </div>
+                    </form>
+
+                    <div id="catalogContainer"></div>
+                </div>
+
+                <!-- Promo Codes Tab -->
+                <div class="admin-tab" id="promoCodes">
+                    <div class="section-header">
+                        <h1>Promo Codes</h1>
+                        <button type="button" class="btn btn-primary" id="showAddPromoForm">+ New code</button>
+                    </div>
+
+                    <form id="addPromoForm" class="catalog-edit-form" hidden novalidate>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="newPromoCode">Code</label>
+                                <input id="newPromoCode" required maxlength="30" placeholder="e.g. WELCOME10" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPromoType">Type</label>
+                                <select id="newPromoType">
+                                    <option value="percent">Percent off</option>
+                                    <option value="fixed">Fixed amount off (USD)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPromoValue">Value</label>
+                                <input id="newPromoValue" type="number" min="0.01" step="0.01" required placeholder="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPromoMaxUses">Max uses (optional)</label>
+                                <input id="newPromoMaxUses" type="number" min="1" step="1" placeholder="Unlimited">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPromoExpires">Expires (optional)</label>
+                                <input id="newPromoExpires" type="date">
+                            </div>
+                        </div>
+                        <p id="addPromoError" class="form-error" role="alert" hidden></p>
+                        <div class="catalog-form-actions">
+                            <button type="submit" class="btn btn-primary">Create code</button>
+                            <button type="button" class="btn btn-secondary" id="cancelAddPromoForm">Cancel</button>
+                        </div>
+                    </form>
+
+                    <div id="promoCodesContainer"></div>
+                </div>
+
+                <!-- Bundles Tab -->
+                <div class="admin-tab" id="bundles">
+                    <div class="section-header">
+                        <h1>Bundles</h1>
+                        <button type="button" class="btn btn-primary" id="showAddBundleForm">+ New bundle</button>
+                    </div>
+                    <p class="empty-state">A bundle's discount applies automatically at checkout when a basket's packs exactly match the bundle's pack list — no code needed.</p>
+
+                    <form id="addBundleForm" class="catalog-edit-form" hidden novalidate>
+                        <div class="form-group">
+                            <label for="newBundleName">Name</label>
+                            <input id="newBundleName" required maxlength="100" placeholder="e.g. Shooter Starter Bundle">
+                        </div>
+                        <div class="form-group">
+                            <label for="newBundleDescription">Description</label>
+                            <textarea id="newBundleDescription" maxlength="400" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="newBundlePacks">Packs (hold Ctrl/Cmd to select multiple, at least 2)</label>
+                            <select id="newBundlePacks" multiple size="6"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="newBundleDiscount">Discount %</label>
+                            <input id="newBundleDiscount" type="number" min="0" max="90" step="1" required placeholder="15">
+                        </div>
+                        <p id="addBundleError" class="form-error" role="alert" hidden></p>
+                        <div class="catalog-form-actions">
+                            <button type="submit" class="btn btn-primary">Create bundle</button>
+                            <button type="button" class="btn btn-secondary" id="cancelAddBundleForm">Cancel</button>
+                        </div>
+                    </form>
+
+                    <div id="bundlesContainer"></div>
+                </div>
+
+                <!-- Reviews Tab -->
+                <div class="admin-tab" id="reviews">
+                    <div class="section-header">
+                        <h1>Reviews</h1>
+                    </div>
+                    <p class="empty-state">Pick a pack to see its reviews. Only customers who've actually bought a pack can review it.</p>
+                    <div class="form-group" style="max-width: 320px;">
+                        <label for="reviewsPackSelect">Pack</label>
+                        <select id="reviewsPackSelect"></select>
+                    </div>
+                    <div id="reviewsContainer"></div>
+                </div>
+
+                <!-- Audit Log Tab -->
+                <div class="admin-tab" id="auditLog">
+                    <div class="section-header">
+                        <h1>Audit Log</h1>
+                    </div>
+                    <p class="empty-state">Every role change, account unlock/delete, and order status change made from this dashboard, most recent first.</p>
+                    <div id="auditLogContainer"></div>
+                </div>
+
+                <!-- Error Log Tab -->
+                <div class="admin-tab" id="errorLog">
+                    <div class="section-header">
+                        <h1>Error Log</h1>
+                        <button type="button" class="btn btn-secondary" id="clearErrorLogBtn">Clear log</button>
+                    </div>
+                    <p class="empty-state">Server errors and reported client-side JavaScript errors, most recent first.</p>
+                    <div id="errorLogContainer"></div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="admin-tab" id="settings">
+                    <div class="section-header">
+                        <h1>Settings</h1>
+                    </div>
+                    <p class="empty-state">Feature flags for the live site — changes apply immediately, no restart needed.</p>
+                    <div id="settingsContainer"></div>
+                </div>
+
+                <!-- My Security Tab -->
+                <div class="admin-tab" id="mySecurity">
+                    <div class="section-header">
+                        <h1>My Security</h1>
+                    </div>
+                    <p class="empty-state">Two-factor authentication is available to admin accounts only. Manage your own password and 2FA here — this affects only the account you're signed in as.</p>
+
+                    <div class="security-box">
+                        <div class="security-row">
+                            <div>
+                                <h3>Password</h3>
+                                <p>Change the password used to sign in.</p>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="togglePasswordForm">Change password</button>
+                        </div>
+                        <form id="passwordForm" class="security-inline-form" hidden novalidate>
+                            <div class="form-group">
+                                <label for="currentPassword">Current password</label>
+                                <input id="currentPassword" type="password" autocomplete="current-password" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New password</label>
+                                <input id="newPassword" type="password" autocomplete="new-password" minlength="8" required>
+                            </div>
+                            <p id="passwordError" class="form-error" role="alert" hidden></p>
+                            <button class="btn btn-primary" type="submit">Update password</button>
+                        </form>
+
+                        <div class="security-row">
+                            <div>
+                                <h3>Two-factor authentication</h3>
+                                <p id="totpStatus">Checking status…</p>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="totpToggleBtn" hidden></button>
+                        </div>
+
+                        <div id="totpSetupBox" class="security-inline-form" hidden>
+                            <p>Scan this into your authenticator app (Google Authenticator, Authy, 1Password, etc.), or enter the code manually:</p>
+                            <p class="totp-secret" id="totpSecretText"></p>
+                            <div class="form-group">
+                                <label for="totpEnableCode">Enter the 6-digit code it shows</label>
+                                <input id="totpEnableCode" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code">
+                            </div>
+                            <p id="totpSetupError" class="form-error" role="alert" hidden></p>
+                            <button type="button" class="btn btn-primary" id="totpConfirmBtn">Confirm and enable</button>
+                        </div>
+
+                        <div id="totpDisableBox" class="security-inline-form" hidden>
+                            <div class="form-group">
+                                <label for="totpDisablePassword">Confirm your password to disable 2FA</label>
+                                <input id="totpDisablePassword" type="password" autocomplete="current-password">
+                            </div>
+                            <p id="totpDisableError" class="form-error" role="alert" hidden></p>
+                            <button type="button" class="btn btn-secondary" id="totpDisableBtn">Disable 2FA</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

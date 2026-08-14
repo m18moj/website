@@ -1,0 +1,11 @@
+node_modules/
+.env
+data/
+*.log
+npm-debug.log*
+# Ignore binary tools
+tools/
+*.exe
+.wrangler/
+# Local IDE/tool state, not meant to be shared
+.claude/

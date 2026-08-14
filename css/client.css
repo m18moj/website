@@ -1,0 +1,246 @@
+/* "Client" showcase pages — a desktop-app-styled preview of the scripts in a
+   pack, purely visual/organizational. It does not connect to, launch, or
+   modify any game; it's a nicer way to browse what a pack contains. */
+
+.client-shell {
+    max-width: 960px;
+    margin: 0 auto;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    background: var(--bg-secondary);
+}
+
+.client-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    position: relative;
+    color: #fff;
+}
+
+.client-titlebar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 20, 0.35);
+    pointer-events: none;
+}
+
+.client-titlebar-dots {
+    display: flex;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.client-titlebar-dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.client-titlebar-dots span:nth-child(1) { background: #ff5f56; }
+.client-titlebar-dots span:nth-child(2) { background: #ffbd2e; }
+.client-titlebar-dots span:nth-child(3) { background: #27c93f; }
+
+.client-titlebar-name {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.client-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: 480px;
+}
+
+.client-sidebar {
+    background: var(--bg-tertiary);
+    border-right: 1px solid var(--border-color);
+    padding: 1.25rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.client-sidebar-heading {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    padding: 0 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.client-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.client-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.client-tab.active {
+    background: var(--bg-primary);
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.client-panel {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.client-panel[hidden] {
+    display: none;
+}
+
+.client-panel-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.client-panel-heading h2 {
+    font-size: 1.15rem;
+}
+
+.client-panel-heading span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.client-script-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.client-script-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    transition: var(--transition);
+}
+
+.client-script-row:hover {
+    border-color: var(--accent-cyan);
+    transform: translateX(2px);
+}
+
+.client-script-index {
+    color: var(--text-secondary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.client-script-info strong {
+    display: block;
+    font-size: 0.95rem;
+}
+
+.client-script-info p {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.client-script-category {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(0, 217, 255, 0.12);
+    color: var(--accent-cyan);
+    white-space: nowrap;
+}
+
+.client-script-price {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--accent-purple);
+    white-space: nowrap;
+}
+
+.client-about-text p {
+    margin-bottom: 0.9rem;
+    color: var(--text-secondary);
+    max-width: 60ch;
+}
+
+.client-about-text strong {
+    color: var(--text-primary);
+}
+
+.client-statusbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+.client-notice {
+    max-width: 960px;
+    margin: 1rem auto 0;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid var(--border-color);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+}
+
+@media (max-width: 720px) {
+    .client-body {
+        grid-template-columns: 1fr;
+    }
+    .client-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .client-script-row {
+        grid-template-columns: 20px 1fr;
+        grid-template-areas: "idx info" ". meta";
+    }
+    .client-script-category,
+    .client-script-price {
+        grid-column: 2;
+    }
+}

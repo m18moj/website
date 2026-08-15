@@ -8,16 +8,32 @@ const discordLinksModel = require('../models/discordLinks');
 const usersModel = require('../../server/models/users');
 
 async function handleAutomod(message) {
-  const reason = automod.checkMessage(message);
-  if (!reason) return;
+  const hit = automod.checkMessage(message);
+  if (!hit) return;
 
   await message.delete().catch(() => {});
+
+  const cfg = automod.getAutomodConfig(message.guild.id);
+  automod.recordInfraction(message, hit.rule, 'delete');
+  const tier = automod.determineEscalation(message.guild.id, message.author.id, cfg);
+
+  let punishmentNote = '';
+  if (tier.action === 'timeout' && message.member) {
+    await message.member.timeout(tier.durationMs, `Automod escalation: ${hit.reason}`).catch(() => {});
+    punishmentNote = ` and timed out for ${Math.round(tier.durationMs / 60000)} minute(s)`;
+    await logAction(message.guild, message.client.user, message.author, 'timeout', `Automod escalation: ${hit.reason}`, tier.durationMs).catch(() => {});
+  } else if (tier.action === 'kick' && message.member && message.member.kickable) {
+    await message.member.kick(`Automod escalation: ${hit.reason}`).catch(() => {});
+    punishmentNote = ' and removed from the server';
+    await logAction(message.guild, message.client.user, message.author, 'kick', `Automod escalation: ${hit.reason}`).catch(() => {});
+  } else {
+    await logAction(message.guild, message.client.user, message.author, 'warn', `Automod: ${hit.reason}`).catch(() => {});
+  }
+
   await message.channel
-    .send({ content: `${message.author}, that message was removed automatically (${reason}).` })
+    .send({ content: `${message.author}, that message was removed automatically (${hit.reason})${punishmentNote}.` })
     .then((notice) => setTimeout(() => notice.delete().catch(() => {}), 8000))
     .catch(() => {});
-
-  await logAction(message.guild, message.client.user, message.author, 'warn', `Automod: ${reason}`).catch(() => {});
 }
 
 // DMs to the bot are treated as a chat with the shared assistant — the same

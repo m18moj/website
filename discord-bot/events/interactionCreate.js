@@ -1,5 +1,6 @@
 const { Events } = require('discord.js');
-const { openTicket } = require('../ticketActions');
+const { openTicket, buildCategoryPrompt } = require('../ticketActions');
+const ticketsModel = require('../models/tickets');
 
 async function handleSlashCommand(interaction) {
   const command = interaction.client.commands.get(interaction.commandName);
@@ -14,14 +15,27 @@ async function handleSlashCommand(interaction) {
   }
 }
 
+// Get Support button no longer opens a ticket directly — it first shows a
+// category picker (required, per the fixed category list) and the ticket is
+// only created once one is chosen, see handleTicketCategorySelect below.
 async function handleOpenTicketButton(interaction) {
-  await interaction.deferReply({ ephemeral: true });
-  const result = await openTicket(interaction);
-  if (result.error) return interaction.editReply(result.error);
-  if (result.alreadyOpen) {
-    return interaction.editReply(result.thread ? `You already have an open ticket: ${result.thread}` : 'You already have an open ticket.');
+  const existing = ticketsModel.openTicketForUser(interaction.guild.id, interaction.user.id);
+  if (existing) {
+    const thread = await interaction.guild.channels.fetch(existing.thread_id).catch(() => null);
+    return interaction.reply({ content: thread ? `You already have an open ticket: ${thread}` : 'You already have an open ticket.', ephemeral: true });
   }
-  await interaction.editReply(`Ticket opened: ${result.thread}`);
+  await interaction.reply(buildCategoryPrompt());
+}
+
+async function handleTicketCategorySelect(interaction) {
+  await interaction.deferUpdate();
+  const category = interaction.values[0];
+  const result = await openTicket(interaction, category);
+  if (result.error) return interaction.editReply({ content: result.error, components: [] });
+  if (result.alreadyOpen) {
+    return interaction.editReply({ content: result.thread ? `You already have an open ticket: ${result.thread}` : 'You already have an open ticket.', components: [] });
+  }
+  await interaction.editReply({ content: `Ticket opened: ${result.thread}`, components: [] });
 }
 
 async function handleAckRulesButton(interaction) {
@@ -62,9 +76,12 @@ module.exports = {
       return;
     }
 
-    if (interaction.isStringSelectMenu() && interaction.customId.startsWith('sf-game-roles:')) {
-      const guildId = interaction.customId.split(':')[1];
-      return handleGameRolesSelect(interaction, guildId);
+    if (interaction.isStringSelectMenu()) {
+      if (interaction.customId === 'sf-ticket-category') return handleTicketCategorySelect(interaction);
+      if (interaction.customId.startsWith('sf-game-roles:')) {
+        const guildId = interaction.customId.split(':')[1];
+        return handleGameRolesSelect(interaction, guildId);
+      }
     }
   }
 };

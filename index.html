@@ -19,7 +19,7 @@
 <body data-root-prefix="">
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">
+            <a href="/" class="nav-logo">
                 <svg class="logo-icon" viewBox="0 0 40 40">
                     <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
                     <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
@@ -29,14 +29,13 @@
                 ScripForge
             </a>
             <div class="nav-menu" id="navMenu">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="pages/games.html" class="nav-link">Games</a>
-                <a href="pages/catalog.html" class="nav-link">Catalog</a>
-                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="pages/services" class="nav-link">Services</a>
+                <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
             </div>
             <div class="nav-actions">
                 <span id="authControl" class="auth-control"></span>
-                <a href="pages/checkout.html" class="cart-btn" aria-label="View basket">
+                <a href="pages/checkout" class="cart-btn" aria-label="View basket">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -60,12 +59,12 @@
                 <h1>Ready-made gameplay modules for your next build.</h1>
                 <p>Explore reusable systems for combat, progression, inventory, economy, and world logic — built to help teams prototype faster, iterate smarter, and keep momentum moving.</p>
                 <div class="hero-cta">
-                    <a class="btn btn-primary" href="pages/games.html">Explore the library</a>
-                    <a class="btn btn-secondary" id="heroSecondaryCta" href="pages/catalog.html">View the catalog</a>
+                    <a class="btn btn-primary" href="pages/games">Explore the library</a>
+                    <a class="btn btn-secondary" id="heroSecondaryCta" href="pages/catalog">View the catalog</a>
                 </div>
                 <div class="cta-mini-row">
-                    <a href="pages/catalog.html">Browse by genre</a>
-                    <a href="https://discord.com" target="_blank" rel="noreferrer">Join the community</a>
+                    <a href="pages/catalog">Browse by genre</a>
+                    <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer">Join the community</a>
                     <span>Built for prototypes and live projects</span>
                 </div>
                 <div class="trust-indicators">
@@ -145,9 +144,14 @@
                 <p>Each game has a dedicated script pack with example systems and ready-to-integrate modules.</p>
             </div>
 
-            <div class="game-grid">
+            <!-- Top 6, 2 rows x 3 columns (see .game-grid-popular) — the
+                 remaining 3 original games plus every admin-added pack are
+                 still fully browsable via "View Full Catalogue" below. -->
+            <div class="game-grid game-grid-popular">
                 <article class="game-card">
-                    <div class="game-splash arcane" data-game="MINECRAFT"></div>
+                    <div class="game-splash arcane" data-game="MINECRAFT">
+                        <span class="chip chip-bestseller">🔥 Best Seller</span>
+                    </div>
                     <div class="game-card-body">
                         <span class="chip">Sandbox</span>
                         <h3>Minecraft</h3>
@@ -156,7 +160,10 @@
                             <span>20 scripts</span>
                             <span data-usd-price="57" data-price-suffix=" pack">$57 pack</span>
                         </div>
-                        <a href="games/game-minecraft.html" class="btn btn-secondary">Open Pack</a>
+                        <div class="card-actions">
+                            <a href="games/game-minecraft" class="btn btn-secondary">Open Pack</a>
+                            <a href="pages/client-minecraft" class="btn-text-link">View client →</a>
+                        </div>
                     </div>
                 </article>
 
@@ -170,12 +177,16 @@
                             <span>20 scripts</span>
                             <span data-usd-price="51" data-price-suffix=" pack">$51 pack</span>
                         </div>
-                        <a href="games/game-fortnite.html" class="btn btn-secondary">Open Pack</a>
+                        <div class="card-actions">
+                            <a href="games/game-fortnite" class="btn btn-secondary">Open Pack</a>
+                        </div>
                     </div>
                 </article>
 
                 <article class="game-card">
-                    <div class="game-splash ruin" data-game="ROBLOX"></div>
+                    <div class="game-splash ruin" data-game="ROBLOX">
+                        <span class="chip chip-bestseller">🔥 Best Seller</span>
+                    </div>
                     <div class="game-card-body">
                         <span class="chip">Creator Platform</span>
                         <h3>Roblox</h3>
@@ -184,7 +195,9 @@
                             <span>20 scripts</span>
                             <span data-usd-price="60" data-price-suffix=" pack">$60 pack</span>
                         </div>
-                        <a href="games/game-roblox.html" class="btn btn-secondary">Open Pack</a>
+                        <div class="card-actions">
+                            <a href="games/game-roblox" class="btn btn-secondary">Open Pack</a>
+                        </div>
                     </div>
                 </article>
 
@@ -198,7 +211,10 @@
                             <span>20 scripts</span>
                             <span data-usd-price="62" data-price-suffix=" pack">$62 pack</span>
                         </div>
-                        <a href="games/game-gta-v.html" class="btn btn-secondary">Open Pack</a>
+                        <div class="card-actions">
+                            <a href="games/game-gta-v" class="btn btn-secondary">Open Pack</a>
+                            <a href="pages/client-gta-v" class="btn-text-link">View client →</a>
+                        </div>
                     </div>
                 </article>
 
@@ -212,7 +228,9 @@
                             <span>20 scripts</span>
                             <span data-usd-price="49" data-price-suffix=" pack">$49 pack</span>
                         </div>
-                        <a href="games/game-valorant.html" class="btn btn-secondary">Open Pack</a>
+                        <div class="card-actions">
+                            <a href="games/game-valorant" class="btn btn-secondary">Open Pack</a>
+                        </div>
                     </div>
                 </article>
 
@@ -226,51 +244,16 @@
                             <span>20 scripts</span>
                             <span data-usd-price="52" data-price-suffix=" pack">$52 pack</span>
                         </div>
-                        <a href="games/game-apex-legends.html" class="btn btn-secondary">Open Pack</a>
-                    </div>
-                </article>
-
-                <article class="game-card">
-                    <div class="game-splash pubg" data-game="PUBG"></div>
-                    <div class="game-card-body">
-                        <span class="chip">Survival Shooter</span>
-                        <h3>PUBG</h3>
-                        <p>Safe zones, loot drops, squad systems, and survival loops for mixed combat builds.</p>
-                        <div class="card-meta">
-                            <span>20 scripts</span>
-                            <span data-usd-price="56" data-price-suffix=" pack">$56 pack</span>
+                        <div class="card-actions">
+                            <a href="games/game-apex-legends" class="btn btn-secondary">Open Pack</a>
                         </div>
-                        <a href="games/game-pubg.html" class="btn btn-secondary">Open Pack</a>
                     </div>
                 </article>
+            </div>
 
-                <article class="game-card">
-                    <div class="game-splash cod" data-game="COD"></div>
-                    <div class="game-card-body">
-                        <span class="chip">Modern Warfare</span>
-                        <h3>Call of Duty</h3>
-                        <p>Weapon balance, loadouts, score events, and mission systems for action-heavy gameplay.</p>
-                        <div class="card-meta">
-                            <span>20 scripts</span>
-                            <span data-usd-price="61" data-price-suffix=" pack">$61 pack</span>
-                        </div>
-                        <a href="games/game-call-of-duty.html" class="btn btn-secondary">Open Pack</a>
-                    </div>
-                </article>
-
-                <article class="game-card">
-                    <div class="game-splash skyrim" data-game="SKYRIM"></div>
-                    <div class="game-card-body">
-                        <span class="chip">Fantasy RPG</span>
-                        <h3>Skyrim</h3>
-                        <p>Quest chains, perk systems, loot progression, and world discovery tools for RPGs.</p>
-                        <div class="card-meta">
-                            <span>20 scripts</span>
-                            <span data-usd-price="53" data-price-suffix=" pack">$53 pack</span>
-                        </div>
-                        <a href="games/game-skyrim.html" class="btn btn-secondary">Open Pack</a>
-                    </div>
-                </article>
+            <div class="section-cta">
+                <a href="pages/catalog" class="btn btn-primary">View Full Catalogue</a>
+                <p>PUBG, Call of Duty, Skyrim, and every admin-added pack are in there too.</p>
             </div>
         </div>
     </section>
@@ -281,14 +264,14 @@
                 <p class="eyebrow">Need a full stack?</p>
                 <h2>Need a complete game system instead of isolated scripts?</h2>
             </div>
-            <a href="https://discord.com" target="_blank" rel="noreferrer" class="btn btn-primary">Chat on Discord</a>
+            <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer" class="btn btn-primary">Chat on Discord</a>
         </div>
     </section>
 
     <footer class="site-footer">
         <div class="container footer-grid">
             <div class="footer-brand">
-                <a href="index.html" class="footer-logo">
+                <a href="/" class="footer-logo">
                     <svg class="logo-icon" viewBox="0 0 40 40">
                         <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
                         <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
@@ -299,7 +282,7 @@
                 </a>
                 <p>Premium, production-ready game systems for developers, indies, and studios.</p>
                 <div class="footer-socials">
-                    <a href="https://discord.com" target="_blank" rel="noreferrer" aria-label="Discord">
+                    <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer" aria-label="Discord">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>
                     </a>
                     <a href="https://www.youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube">
@@ -309,20 +292,19 @@
             </div>
             <div class="footer-col">
                 <h4>Shop</h4>
-                <a href="pages/games.html">Games</a>
-                <a href="pages/catalog.html">Catalog</a>
-                <a href="pages/checkout.html">Basket</a>
+                <a href="pages/services">Services</a>
+                <a href="pages/checkout">Basket</a>
             </div>
             <div class="footer-col">
                 <h4>Account</h4>
-                <a href="pages/login.html">Sign in</a>
-                <a href="pages/register.html">Create account</a>
-                <a href="pages/account.html">My orders</a>
+                <a href="pages/login">Sign in</a>
+                <a href="pages/register">Create account</a>
+                <a href="pages/account">My orders</a>
             </div>
             <div class="footer-col">
                 <h4>Support</h4>
-                <a href="https://discord.com" target="_blank" rel="noreferrer">Discord community</a>
-                <a href="pages/privacy.html">Privacy policy</a>
+                <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer">Discord community</a>
+                <a href="pages/privacy">Privacy policy</a>
             </div>
         </div>
         <div class="container footer-bottom">
@@ -332,7 +314,7 @@
     </footer>
 
     <div class="sticky-mobile-cta">
-        <a href="pages/catalog.html" class="btn btn-primary">Browse packs</a>
+        <a href="pages/catalog" class="btn btn-primary">Browse packs</a>
     </div>
     <script src="js/site.js"></script>
     <script src="js/auth.js"></script>

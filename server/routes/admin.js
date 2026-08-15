@@ -1,4 +1,5 @@
 const os = require('os');
+const crypto = require('crypto');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { body, validationResult, param } = require('express-validator');
@@ -21,15 +22,36 @@ const errorLogModel = require('../models/errorLog');
 const { fulfillOrder } = require('../orderFulfillment');
 const discordLinks = require('../../discord-bot/models/discordLinks');
 const discordRest = require('../../discord-bot/discordRest');
+const productAnnounce = require('../../discord-bot/productAnnounce');
 const db = require('../db');
 const packageJson = require('../../package.json');
 const { serializeOrder, serializeAdminOrder } = require('../serialize');
 
 const router = express.Router();
+const BCRYPT_ROUNDS = 12;
 
 // Set once, when this module first loads at server boot — used to compute
 // uptime for the System Status panel.
 const SERVER_STARTED_AT = new Date();
+
+// How long a "temporary" admin-created account stays valid for, keyed by the
+// option the dashboard's New User form sends. Sign-in is refused once this
+// passes (see usersModel.getAccountBlock) — nothing deletes the row, so an
+// admin can still find and extend/convert it afterward.
+const TEMP_ACCOUNT_DURATIONS_MS = {
+  '1h': 60 * 60 * 1000,
+  '24h': 24 * 60 * 60 * 1000,
+  '7d': 7 * 24 * 60 * 60 * 1000,
+  '30d': 30 * 24 * 60 * 60 * 1000
+};
+
+function randomUsername() {
+  return `guest_${crypto.randomBytes(3).toString('hex')}`;
+}
+
+function randomPassword() {
+  return crypto.randomBytes(9).toString('base64url');
+}
 
 // Every route below requires an authenticated session belonging to a user
 // whose role is currently 'admin' in the database (checked fresh per request
@@ -52,6 +74,74 @@ router.get('/stats', (req, res) => {
 router.get('/users', (req, res) => {
   res.json({ users: usersModel.listAll() });
 });
+
+// Admin-created accounts, for QA/demos and one-off "let me try this as a
+// customer" checks — the only HTTP-reachable way to create a user besides
+// self-registration. Always a 'customer' (see usersModel.createAdminUser for
+// why granting admin can't happen this way). Username/password are optional;
+// when omitted, one is generated and returned once in the response body —
+// same pattern as a password reset token, this is the only time the caller
+// ever sees the raw generated password, since only its bcrypt hash is stored.
+router.post(
+  '/users',
+  verifyCsrfToken,
+  [
+    body('username').optional({ nullable: true }).trim().matches(/^[a-zA-Z0-9_-]{3,24}$/)
+      .withMessage('Username must be 3-24 characters: letters, numbers, underscores, or hyphens only.'),
+    body('password').optional({ nullable: true }).isString().isLength({ min: 8, max: 128 })
+      .withMessage('Password must be at least 8 characters.'),
+    body('isTest').optional().isBoolean(),
+    body('expiresIn').optional({ nullable: true }).isIn(Object.keys(TEMP_ACCOUNT_DURATIONS_MS))
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+      let username = (req.body.username || '').trim();
+      if (username) {
+        if (usersModel.findByUsername(username)) {
+          return res.status(409).json({ error: 'That username is already taken.' });
+        }
+      } else {
+        do {
+          username = randomUsername();
+        } while (usersModel.findByUsername(username));
+      }
+
+      const generatedPassword = req.body.password ? null : randomPassword();
+      const password = req.body.password || generatedPassword;
+
+      const expiresAt = req.body.expiresIn
+        ? new Date(Date.now() + TEMP_ACCOUNT_DURATIONS_MS[req.body.expiresIn]).toISOString()
+        : null;
+
+      const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+      const user = usersModel.createAdminUser({
+        username,
+        passwordHash,
+        isTest: Boolean(req.body.isTest),
+        expiresAt,
+        createdBy: req.currentUser.username
+      });
+
+      auditLog.record({
+        actor: req.currentUser,
+        action: 'user.create',
+        target: user.username,
+        details: { isTest: Boolean(req.body.isTest), expiresAt, temporary: Boolean(expiresAt) }
+      });
+
+      res.status(201).json({
+        user,
+        generatedUsername: req.body.username ? null : username,
+        generatedPassword
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // Everything about one user in a single response — profile, login history,
 // and purchase summary — so the dashboard doesn't need three round trips (or
@@ -129,13 +219,22 @@ router.get('/orders/export.csv', (req, res) => {
   res.send(header + rows);
 });
 
+// Demote-only. Granting admin access is deliberately impossible from any web
+// UI/API — the only way to create an admin is the `npm run create-admin` CLI
+// (server/scripts/create-admin.js), run locally on the machine itself. This
+// used to also accept role: 'admin' (the dashboard's old "Make Admin"
+// button), which meant a compromised admin session could mint arbitrary new
+// admins over HTTP; that capability has been removed entirely rather than
+// just hidden in the UI.
 router.patch(
   '/users/:id/role',
   verifyCsrfToken,
-  [param('id').isInt().toInt(), body('role').isIn(['customer', 'admin'])],
+  [param('id').isInt().toInt(), body('role').equals('customer')],
   (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: 'Admin access can only be granted via the create-admin CLI on the server itself — this endpoint can only demote an admin to customer.' });
+    }
 
     const targetId = req.params.id;
     if (targetId === req.currentUser.id) {
@@ -144,13 +243,14 @@ router.patch(
 
     const target = usersModel.findById(targetId);
     if (!target) return res.status(404).json({ error: 'User not found.' });
+    if (target.role !== 'admin') return res.status(400).json({ error: 'That account is already a customer.' });
 
-    const updated = usersModel.setRole(targetId, req.body.role);
+    const updated = usersModel.setRole(targetId, 'customer');
     auditLog.record({
       actor: req.currentUser,
       action: 'user.role.change',
       target: target.username,
-      details: { from: target.role, to: req.body.role }
+      details: { from: target.role, to: 'customer' }
     });
     res.json({ user: updated });
   }
@@ -248,6 +348,71 @@ router.post('/users/:id/unban', verifyCsrfToken, [param('id').isInt().toInt()], 
   res.json({ user: updated });
 });
 
+// Marks an account's own purchases/activity as QA/demo data rather than a
+// real customer, so the dashboard's revenue and buyer counts aren't
+// misleading. Doesn't affect the account's ability to sign in or buy.
+router.patch(
+  '/users/:id/test',
+  verifyCsrfToken,
+  [param('id').isInt().toInt(), body('isTest').isBoolean()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
+
+    const target = usersModel.findById(req.params.id);
+    if (!target) return res.status(404).json({ error: 'User not found.' });
+
+    const updated = usersModel.setTestFlag(req.params.id, req.body.isTest);
+    auditLog.record({
+      actor: req.currentUser,
+      action: req.body.isTest ? 'user.test.mark' : 'user.test.unmark',
+      target: target.username
+    });
+    res.json({ user: updated });
+  }
+);
+
+// Lets an admin briefly sign in "as" a non-admin account to check exactly
+// what that account can see/do — genuinely switches the session's identity
+// (req.session.userId/role) rather than just changing the UI, so every
+// permission check downstream sees the real target account. The original
+// admin identity is kept in req.session.impersonatorId so
+// POST /api/auth/stop-impersonating can restore it; that route deliberately
+// lives outside this admin-only router since, while impersonating, the
+// session's role is the target's (often 'customer'), which requireAdmin
+// above would reject.
+router.post(
+  '/users/:id/impersonate',
+  verifyCsrfToken,
+  [param('id').isInt().toInt()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
+
+    const targetId = req.params.id;
+    if (targetId === req.currentUser.id) {
+      return res.status(400).json({ error: "You're already signed in as yourself." });
+    }
+
+    const target = usersModel.findById(targetId);
+    if (!target) return res.status(404).json({ error: 'User not found.' });
+    if (target.role === 'admin') {
+      return res.status(400).json({ error: "You can't view the site as another admin account." });
+    }
+
+    const block = usersModel.getAccountBlock(target);
+    if (block) return res.status(400).json({ error: `That account can't be viewed right now: ${block.message}` });
+
+    req.session.impersonatorId = req.currentUser.id;
+    req.session.impersonatorUsername = req.currentUser.username;
+    req.session.userId = target.id;
+    req.session.role = target.role;
+
+    auditLog.record({ actor: req.currentUser, action: 'user.impersonate.start', target: target.username });
+    res.json({ user: usersModel.toPublicUser(target) });
+  }
+);
+
 router.delete('/users/:id', verifyCsrfToken, [param('id').isInt().toInt()], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
@@ -294,6 +459,32 @@ router.patch(
   }
 );
 
+// Marks a single order as QA/demo data (a Stripe test-mode checkout, a
+// manually-created order for a walkthrough, etc.) so it's excluded from the
+// dashboard's real revenue and paid-order totals (see orders.js stats()).
+// Doesn't change the order's status, so a paid test order still shows up in
+// the customer's own purchase/license history for testing downloads.
+router.patch(
+  '/orders/:id/test',
+  verifyCsrfToken,
+  [param('id').isInt().toInt(), body('isTest').isBoolean()],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
+
+    const existing = ordersModel.findById(req.params.id);
+    if (!existing) return res.status(404).json({ error: 'Order not found.' });
+
+    const updated = ordersModel.setTestFlag(req.params.id, req.body.isTest);
+    auditLog.record({
+      actor: req.currentUser,
+      action: req.body.isTest ? 'order.test.mark' : 'order.test.unmark',
+      target: `order #${req.params.id}`
+    });
+    res.json({ order: serializeOrder(updated) });
+  }
+);
+
 router.get('/audit-log', (req, res) => {
   res.json({ entries: auditLog.recent(200) });
 });
@@ -307,6 +498,14 @@ router.get('/catalog', (req, res) => {
   res.json({ catalog: catalogModel.listAll({ includeHidden: true }) });
 });
 
+// Fire-and-forget catalogue-channel resync after any catalog mutation —
+// each of productAnnounce's functions already catches its own errors and
+// returns { ok: false } rather than throwing, so this never risks the
+// catalog write itself failing because Discord is unreachable.
+function resyncCatalogueChannel() {
+  productAnnounce.syncCatalogueChannel().catch(() => {});
+}
+
 const packBody = [
   body('packName').trim().isLength({ min: 1, max: 80 }),
   body('gameTitle').optional({ nullable: true }).trim().isLength({ max: 80 }),
@@ -315,12 +514,17 @@ const packBody = [
   body('detailUrl').optional({ nullable: true }).trim().isLength({ max: 200 })
 ];
 
-router.post('/catalog/packs', verifyCsrfToken, packBody, (req, res) => {
+router.post('/catalog/packs', verifyCsrfToken, packBody, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid pack details.' });
 
   const pack = catalogModel.createPack(req.body);
   auditLog.record({ actor: req.currentUser, action: 'catalog.pack.create', target: pack.packId });
+  // New packs are visible immediately (no separate "publish" step), so this
+  // is the one true "product launch" moment — announce it here. Best-effort:
+  // Discord being unreachable/unconfigured must never fail catalog creation.
+  await productAnnounce.announceNewProduct(pack.packId).catch(() => {});
+  await productAnnounce.syncCatalogueChannel().catch(() => {});
   res.status(201).json({ pack });
 });
 
@@ -336,6 +540,7 @@ router.patch(
     if (!pack) return res.status(404).json({ error: 'Pack not found.' });
 
     auditLog.record({ actor: req.currentUser, action: 'catalog.pack.update', target: pack.packId });
+    resyncCatalogueChannel();
     res.json({ pack });
   }
 );
@@ -344,7 +549,7 @@ router.patch(
   '/catalog/packs/:packId/hidden',
   verifyCsrfToken,
   [param('packId').isString().notEmpty(), body('hidden').isBoolean()],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
 
@@ -356,6 +561,12 @@ router.patch(
       action: req.body.hidden ? 'catalog.pack.hide' : 'catalog.pack.show',
       target: pack.packId
     });
+
+    // A pack made visible for the first time (e.g. created hidden, finished
+    // being prepped, then published) is just as much a "launch" as a
+    // brand-new pack — announceNewProduct() is itself dedupe-safe either way.
+    if (!req.body.hidden) await productAnnounce.announceNewProduct(pack.packId).catch(() => {});
+    resyncCatalogueChannel();
     res.json({ pack });
   }
 );
@@ -369,6 +580,7 @@ router.delete('/catalog/packs/:packId', verifyCsrfToken, [param('packId').isStri
 
   catalogModel.deletePack(req.params.packId);
   auditLog.record({ actor: req.currentUser, action: 'catalog.pack.delete', target: req.params.packId });
+  resyncCatalogueChannel();
   res.json({ ok: true });
 });
 
@@ -391,6 +603,7 @@ router.post(
     if (!pack) return res.status(404).json({ error: 'Pack not found.' });
 
     auditLog.record({ actor: req.currentUser, action: 'catalog.script.create', target: `${req.params.packId}/${req.body.title}` });
+    resyncCatalogueChannel();
     res.status(201).json({ pack });
   }
 );
@@ -407,6 +620,7 @@ router.patch(
     if (!pack) return res.status(404).json({ error: 'Script not found.' });
 
     auditLog.record({ actor: req.currentUser, action: 'catalog.script.update', target: `${req.params.packId}/${req.params.scriptId}` });
+    resyncCatalogueChannel();
     res.json({ pack });
   }
 );
@@ -427,6 +641,7 @@ router.patch(
       action: req.body.hidden ? 'catalog.script.hide' : 'catalog.script.show',
       target: `${req.params.packId}/${req.params.scriptId}`
     });
+    resyncCatalogueChannel();
     res.json({ pack });
   }
 );

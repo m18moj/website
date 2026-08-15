@@ -109,6 +109,11 @@ body {
     border-left-color: var(--accent-cyan);
 }
 
+.menu-item-external {
+    margin-top: auto;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
 .admin-content {
     flex: 1;
     overflow-y: auto;
@@ -420,6 +425,21 @@ body {
 .form-group input:focus {
     outline: none;
     border-color: var(--accent-cyan);
+}
+
+.form-checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 400 !important;
+    cursor: pointer;
+}
+
+.form-group input.form-checkbox-input {
+    width: auto;
+    padding: 0;
+    background: none;
+    border: none;
 }
 
 .form-error {
@@ -884,6 +904,16 @@ body {
 .status-refunded {
     background: rgba(168, 85, 247, 0.2);
     color: var(--accent-purple);
+}
+
+.status-test {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.status-temp {
+    background: rgba(0, 217, 255, 0.15);
+    color: var(--accent-cyan);
 }
 
 .admin-row-actions {

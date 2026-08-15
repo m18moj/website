@@ -35,7 +35,9 @@ const statements = {
   `),
   setScriptVersion: db.prepare(`
     UPDATE scripts SET version = @version, changelog = @changelog WHERE pack_id = @packId AND id = @scriptId
-  `)
+  `),
+  markPackAnnounced: db.prepare(`UPDATE packs SET discord_announced_at = datetime('now'), discord_message_id = ? WHERE id = ?`),
+  rawPack: db.prepare('SELECT * FROM packs WHERE id = ?')
 };
 
 function slugify(text) {
@@ -260,6 +262,17 @@ function priceCart(rawCart) {
   return { packs, totalCents };
 }
 
+// Server-only, unfiltered by hidden/etc — used by the Discord announcement
+// sync to check discord_announced_at/discord_message_id, which aren't part
+// of the public packOut() shape.
+function getRawPack(packId) {
+  return statements.rawPack.get(packId);
+}
+
+function markPackAnnounced(packId, messageId) {
+  statements.markPackAnnounced.run(messageId || null, packId);
+}
+
 module.exports = {
   listAll,
   getPack,
@@ -276,5 +289,7 @@ module.exports = {
   getScriptFileRecord,
   setScriptFile,
   addChangelogEntry,
-  priceCart
+  priceCart,
+  getRawPack,
+  markPackAnnounced
 };

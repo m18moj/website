@@ -2,8 +2,8 @@ const db = require('../db');
 
 const statements = {
   insertOrder: db.prepare(`
-    INSERT INTO orders (user_id, stripe_session_id, payment_provider, status, total_cents, currency)
-    VALUES (@userId, @stripeSessionId, @paymentProvider, 'pending', @totalCents, @currency)
+    INSERT INTO orders (user_id, stripe_session_id, payment_provider, status, total_cents, currency, customer_notes)
+    VALUES (@userId, @stripeSessionId, @paymentProvider, 'pending', @totalCents, @currency, @customerNotes)
   `),
   insertItem: db.prepare(`
     INSERT INTO order_items (order_id, pack_id, pack_name, script_id, script_title, price_cents)
@@ -30,23 +30,27 @@ const statements = {
   // Grouped by currency, not summed across them — orders can now be placed
   // in GBP, USD, or EUR, and adding raw cents from different currencies
   // together would produce a meaningless number.
+  // Excludes is_test orders so admin-generated QA/demo purchases never
+  // inflate the real revenue figure shown on the dashboard.
   revenueByCurrency: db.prepare(`
     SELECT currency, COALESCE(SUM(total_cents), 0) AS total_cents
-    FROM orders WHERE status = 'paid'
+    FROM orders WHERE status = 'paid' AND is_test = 0
     GROUP BY currency
   `),
-  countPaid: db.prepare(`SELECT COUNT(*) AS count FROM orders WHERE status = 'paid'`),
+  countPaid: db.prepare(`SELECT COUNT(*) AS count FROM orders WHERE status = 'paid' AND is_test = 0`),
   setStatus: db.prepare(`UPDATE orders SET status = ? WHERE id = ?`),
   revenueByCurrencyForUser: db.prepare(`
     SELECT currency, COALESCE(SUM(total_cents), 0) AS total_cents
     FROM orders WHERE user_id = ? AND status = 'paid'
     GROUP BY currency
   `),
-  setPromoDiscount: db.prepare(`UPDATE orders SET promo_code = ?, discount_cents = ? WHERE id = ?`)
+  setPromoDiscount: db.prepare(`UPDATE orders SET promo_code = ?, discount_cents = ? WHERE id = ?`),
+  setTestFlag: db.prepare(`UPDATE orders SET is_test = ? WHERE id = ?`),
+  setServiceTicketChannel: db.prepare(`UPDATE orders SET service_ticket_channel_id = ? WHERE id = ?`)
 };
 
-const createOrder = db.transaction(({ userId, stripeSessionId = null, paymentProvider = 'stripe', totalCents, currency, packs }) => {
-  const order = statements.insertOrder.run({ userId, stripeSessionId, paymentProvider, totalCents, currency });
+const createOrder = db.transaction(({ userId, stripeSessionId = null, paymentProvider = 'stripe', totalCents, currency, packs, customerNotes = null }) => {
+  const order = statements.insertOrder.run({ userId, stripeSessionId, paymentProvider, totalCents, currency, customerNotes: customerNotes || null });
   const orderId = order.lastInsertRowid;
 
   for (const pack of packs) {
@@ -163,6 +167,15 @@ function setPromoDiscount(orderId, promoCode, discountCents) {
   statements.setPromoDiscount.run(promoCode, discountCents, orderId);
 }
 
+function setTestFlag(orderId, isTest) {
+  statements.setTestFlag.run(isTest ? 1 : 0, orderId);
+  return withItems(statements.findById.get(orderId));
+}
+
+function setServiceTicketChannel(orderId, channelId) {
+  statements.setServiceTicketChannel.run(channelId, orderId);
+}
+
 module.exports = {
   createOrder,
   findBySessionId,
@@ -178,5 +191,7 @@ module.exports = {
   topPacks,
   setStatus,
   setPromoDiscount,
+  setTestFlag,
+  setServiceTicketChannel,
   ORDER_STATUSES
 };

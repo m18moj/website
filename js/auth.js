@@ -33,6 +33,7 @@
 
   let csrfToken = null;
   let currentUser = null;
+  let impersonating = null;
 
   function escapeHtml(value) {
     return String(value)
@@ -103,6 +104,18 @@
   async function loadCurrentUser() {
     const data = await apiFetch('/api/auth/me');
     currentUser = data.user;
+    impersonating = data.impersonating || null;
+    return currentUser;
+  }
+
+  // Ends an admin's "view as" session (see js/admin.js's per-user Impersonate
+  // button) and restores their own identity — the CSRF token stays valid
+  // across the switch since it's tied to the session, not to which user id
+  // the session currently represents.
+  async function stopImpersonating() {
+    const data = await apiFetch('/api/auth/stop-impersonating', { method: 'POST' });
+    currentUser = data.user;
+    impersonating = null;
     return currentUser;
   }
 
@@ -110,9 +123,10 @@
     return apiFetch('/api/auth/captcha');
   }
 
-  async function register(username, password, captchaAnswer, email) {
-    const data = await apiFetch('/api/auth/register', { method: 'POST', body: { username, password, captchaAnswer, email } });
+  async function register(username, nickname, password, captchaAnswer, email) {
+    const data = await apiFetch('/api/auth/register', { method: 'POST', body: { username, nickname, password, captchaAnswer, email } });
     currentUser = data.user;
+    impersonating = null;
     csrfToken = data.csrfToken;
     return currentUser;
   }
@@ -125,12 +139,14 @@
     csrfToken = data.csrfToken;
     if (data.requiresTotp) return { requiresTotp: true };
     currentUser = data.user;
+    impersonating = null;
     return currentUser;
   }
 
   async function loginTotp(code) {
     const data = await apiFetch('/api/auth/login-totp', { method: 'POST', body: { code } });
     currentUser = data.user;
+    impersonating = null;
     csrfToken = data.csrfToken;
     return currentUser;
   }
@@ -138,6 +154,7 @@
   async function logout() {
     await apiFetch('/api/auth/logout', { method: 'POST' });
     currentUser = null;
+    impersonating = null;
     await refreshCsrfToken();
     renderAuthControl();
   }
@@ -155,10 +172,10 @@
     const prefix = pathPrefix();
 
     if (currentUser) {
-      cta.href = `${prefix}pages/account.html`;
+      cta.href = `${prefix}pages/account`;
       cta.textContent = 'View Your Orders';
     } else {
-      cta.href = `${prefix}pages/register.html`;
+      cta.href = `${prefix}pages/register`;
       cta.textContent = 'Create a Free Account';
     }
   }
@@ -175,9 +192,26 @@
     });
   }
 
+  function bindExitImpersonation(id) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      try {
+        await stopImpersonating();
+        window.location.reload();
+      } catch (err) {
+        btn.disabled = false;
+        if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
+      }
+    });
+  }
+
   function renderAuthControl() {
     renderHeroCta();
     const container = document.getElementById('authControl');
+    const navbar = document.getElementById('navbar');
+    if (navbar) navbar.classList.toggle('navbar-impersonating', Boolean(impersonating));
     if (!container) return;
     const prefix = pathPrefix();
     const navMenu = document.getElementById('navMenu');
@@ -185,23 +219,49 @@
     if (existingMobileSection) existingMobileSection.remove();
 
     if (!currentUser) {
-      container.innerHTML = `<a href="${prefix}pages/login.html" class="auth-btn auth-btn-outline">Sign In</a>`;
+      container.innerHTML = `<a href="${prefix}pages/login" class="auth-btn auth-btn-outline">Sign In</a>`;
       return;
     }
 
-    const adminLink = currentUser.role === 'admin'
-      ? `<a href="${prefix}admin/admin.html" class="nav-link">Admin</a>`
+    // Shown instead of the "Admin" link while an admin is impersonating
+    // (currentUser.role is the *impersonated* account's role at that point,
+    // so adminLink below is already correctly empty) — always visible in the
+    // sticky nav, not just on the page where "View as" was clicked, so an
+    // admin can never lose track of which identity they're browsing as.
+    const impersonationNotice = impersonating
+      ? `
+        <span class="impersonation-pill" title="Viewing the site as ${escapeHtml(impersonating.asUsername)}">
+          Viewing as ${escapeHtml(impersonating.asUsername)}
+        </span>
+        <button type="button" class="auth-btn auth-btn-outline impersonation-exit-btn" id="exitImpersonateBtn">Exit</button>
+      `
       : '';
+
+    const adminLink = currentUser.role === 'admin'
+      ? `<a href="${prefix}admin/admin" class="nav-link admin-link">Admin</a>`
+      : '';
+
+    // Nicknames are capped at 8 characters (server-enforced) specifically so
+    // this never breaks the navbar's width the way a long username could —
+    // the display name shown here is always short by construction. The
+    // avatar is a plain initial-in-a-circle (no upload/avatar system exists
+    // to source a real image from) — small, fixed-size, and never grows with
+    // the name underneath it.
+    const displayName = currentUser.nickname || currentUser.username;
+    const initial = displayName.trim().charAt(0).toUpperCase() || '?';
 
     container.innerHTML = `
       <div class="account-menu">
-        <a href="${prefix}pages/account.html" class="account-name">Hi, ${escapeHtml(currentUser.username)}</a>
-        <a href="${prefix}pages/downloads.html" class="nav-link">Downloads</a>
+        ${impersonationNotice}
+        <a href="${prefix}pages/downloads" class="nav-link">Downloads</a>
         ${adminLink}
-        <button type="button" class="auth-btn auth-btn-outline" id="logoutBtn">Log out</button>
+        <a href="${prefix}pages/account" class="account-chip" title="Account settings">
+          <span class="account-chip-avatar" aria-hidden="true">${escapeHtml(initial)}</span>
+          <span class="account-chip-name">${escapeHtml(displayName)}</span>
+        </a>
       </div>
     `;
-    bindLogout('logoutBtn');
+    bindExitImpersonation('exitImpersonateBtn');
 
     // The account-menu above is hidden below 768px (too wide for the top
     // bar next to the cart icon and hamburger), so mirror the same links
@@ -210,13 +270,18 @@
       const mobileSection = document.createElement('div');
       mobileSection.className = 'nav-menu-account';
       mobileSection.innerHTML = `
-        <a href="${prefix}pages/account.html" class="nav-link">Hi, ${escapeHtml(currentUser.username)}</a>
-        <a href="${prefix}pages/downloads.html" class="nav-link">Downloads</a>
+        ${impersonating ? `<span class="impersonation-pill">Viewing as ${escapeHtml(impersonating.asUsername)}</span><button type="button" class="nav-link nav-link-button" id="exitImpersonateBtnMobile">Exit view-as</button>` : ''}
+        <a href="${prefix}pages/account" class="nav-link account-chip-mobile">
+          <span class="account-chip-avatar" aria-hidden="true">${escapeHtml(initial)}</span>
+          ${escapeHtml(displayName)}
+        </a>
+        <a href="${prefix}pages/downloads" class="nav-link">Downloads</a>
         ${adminLink}
         <button type="button" class="nav-link nav-link-button" id="logoutBtnMobile">Log out</button>
       `;
       navMenu.appendChild(mobileSection);
       bindLogout('logoutBtnMobile');
+      bindExitImpersonation('exitImpersonateBtnMobile');
     }
   }
 
@@ -239,8 +304,10 @@
     login,
     loginTotp,
     logout,
+    stopImpersonating,
     getCsrfToken: () => csrfToken,
     getCurrentUser: () => currentUser,
+    getImpersonating: () => impersonating,
     escapeHtml
   };
 })();

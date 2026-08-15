@@ -1,5 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const QRCode = require('qrcode');
 const { body, validationResult } = require('express-validator');
 
 const { requireAuth } = require('../middleware/auth');
@@ -12,10 +14,27 @@ const settingsModel = require('../models/settings');
 const wishlistModel = require('../models/wishlist');
 const catalogModel = require('../models/catalog');
 const reviewsModel = require('../models/reviews');
+const totp = require('../totp');
 const { serializeOrder } = require('../serialize');
 
 const router = express.Router();
 const BCRYPT_ROUNDS = 12;
+
+function generateRecoveryCodes(count = 10) {
+  // XXXX-XXXX, from an unambiguous alphabet (no 0/O/1/I) — 10 codes, each
+  // single-use. Returned raw exactly once; only bcrypt hashes are persisted.
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const codes = [];
+  for (let i = 0; i < count; i += 1) {
+    let code = '';
+    for (let j = 0; j < 8; j += 1) {
+      if (j === 4) code += '-';
+      code += alphabet[crypto.randomInt(alphabet.length)];
+    }
+    codes.push(code);
+  }
+  return codes;
+}
 
 router.get('/orders', requireAuth, (req, res) => {
   const orders = ordersModel.ordersForUser(req.session.userId).map(serializeOrder);
@@ -143,6 +162,116 @@ router.post(
       auditLog.record({ actor: user, action: 'password.change', target: user.username });
 
       res.json({ ok: true });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post(
+  '/nickname',
+  requireAuth,
+  verifyCsrfToken,
+  securityActionLimiter,
+  [body('nickname').trim().matches(usersModel.NICKNAME_PATTERN).withMessage('Nickname must be 1-8 characters (letters, numbers, spaces, - or _).')],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+    const updated = usersModel.setNickname(req.session.userId, req.body.nickname.trim());
+    res.json({ user: usersModel.toPublicUser(updated) });
+  }
+);
+
+// Self-service TOTP 2FA, available to every account (not just admins — see
+// server/routes/admin.js for the parallel admin-dashboard copy of this flow,
+// kept separate only so "My Security" in the admin panel doesn't change).
+router.get('/2fa/setup', requireAuth, securityActionLimiter, async (req, res, next) => {
+  try {
+    const secret = totp.generateSecret();
+    usersModel.setTotpSecret(req.currentUser.id, secret);
+    const otpauthUri = totp.generateOtpAuthUri({ secret, label: req.currentUser.username, issuer: 'ScripForge' });
+    const qrCodeDataUrl = await QRCode.toDataURL(otpauthUri, { margin: 1, width: 240 });
+
+    res.json({ secret, otpauthUri, qrCodeDataUrl });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post(
+  '/2fa/enable',
+  requireAuth,
+  verifyCsrfToken,
+  securityActionLimiter,
+  [body('code').isString().notEmpty()],
+  async (req, res, next) => {
+    try {
+      const user = usersModel.findById(req.currentUser.id);
+      if (!user.totp_secret) return res.status(400).json({ error: 'Start setup first by requesting a new 2FA secret.' });
+
+      if (!totp.verifyTotp(req.body.code, user.totp_secret)) {
+        return res.status(401).json({ error: 'That code is incorrect or expired. Try the next code your app generates.' });
+      }
+
+      usersModel.enableTotp(user.id);
+
+      const rawCodes = generateRecoveryCodes();
+      const hashedCodes = await Promise.all(rawCodes.map((code) => bcrypt.hash(code, BCRYPT_ROUNDS)));
+      usersModel.setRecoveryCodes(user.id, hashedCodes);
+
+      auditLog.record({ actor: req.currentUser, action: '2fa.enable', target: user.username });
+      res.json({ ok: true, recoveryCodes: rawCodes });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post(
+  '/2fa/disable',
+  requireAuth,
+  verifyCsrfToken,
+  securityActionLimiter,
+  [body('password').isString().notEmpty()],
+  async (req, res, next) => {
+    try {
+      const user = usersModel.findById(req.currentUser.id);
+      const valid = await bcrypt.compare(req.body.password, user.password_hash);
+      if (!valid) return res.status(401).json({ error: 'Password is incorrect.' });
+
+      usersModel.disableTotp(user.id);
+      auditLog.record({ actor: req.currentUser, action: '2fa.disable', target: user.username });
+      res.json({ ok: true });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// Invalidates every existing recovery code and issues a fresh set — requires
+// the current password (same bar as disabling 2FA outright) since this is
+// shown raw exactly once and is powerful enough to bypass a lost authenticator.
+router.post(
+  '/2fa/recovery-codes/regenerate',
+  requireAuth,
+  verifyCsrfToken,
+  securityActionLimiter,
+  [body('password').isString().notEmpty()],
+  async (req, res, next) => {
+    try {
+      const user = usersModel.findById(req.currentUser.id);
+      if (!user.totp_enabled) return res.status(400).json({ error: '2FA is not enabled on this account.' });
+
+      const valid = await bcrypt.compare(req.body.password, user.password_hash);
+      if (!valid) return res.status(401).json({ error: 'Password is incorrect.' });
+
+      const rawCodes = generateRecoveryCodes();
+      const hashedCodes = await Promise.all(rawCodes.map((code) => bcrypt.hash(code, BCRYPT_ROUNDS)));
+      usersModel.setRecoveryCodes(user.id, hashedCodes);
+
+      auditLog.record({ actor: req.currentUser, action: '2fa.recovery_codes.regenerate', target: user.username });
+      res.json({ ok: true, recoveryCodes: rawCodes });
     } catch (err) {
       next(err);
     }

@@ -9,6 +9,8 @@ const email = require('./email');
 const { serializeOrder } = require('./serialize');
 const discordLinks = require('../discord-bot/models/discordLinks');
 const discordRest = require('../discord-bot/discordRest');
+const productAnnounce = require('../discord-bot/productAnnounce');
+const { createServiceOrderTicket } = require('../discord-bot/serviceOrderTicket');
 
 async function fulfillOrder(orderId) {
   const order = ordersModel.withItems(ordersModel.findById(orderId));
@@ -28,13 +30,34 @@ async function fulfillOrder(orderId) {
   // If this account is already linked to a Discord account, their first
   // paid order is exactly the moment /verify would have granted the
   // Verified role anyway — do it automatically so a customer who linked
-  // before buying doesn't need to run /verify again after paying.
+  // before buying doesn't need to run /verify again after paying. Still
+  // membership-gated: syncVerifiedRole's PUT only succeeds if Discord itself
+  // confirms they're in the guild (adding a role to a non-member 404s).
   const link = discordLinks.findByUserId(order.user_id);
   if (link) {
     try {
-      await discordRest.syncVerifiedRole(link.discord_id, { add: true });
+      const result = await discordRest.syncVerifiedRole(link.discord_id, { add: true });
+      if (result.ok) discordLinks.setMemberVerified(link.discord_id);
     } catch (err) {
       console.error('Failed to sync Discord Verified role:', err.message);
+    }
+  }
+
+  // Best-effort, self-cooldown'd (see productAnnounce.syncBestSellers) — a
+  // paid order is the natural trigger for refreshing "Best Sellers" without
+  // needing a scheduler/cron process.
+  productAnnounce.syncBestSellers().catch(() => {});
+
+  // Discord bots, websites, and SMM plans are build-to-order — there's no
+  // file to deliver, so the "fulfillment" is a staff conversation. Opens
+  // automatically rather than waiting on the customer to notice and open a
+  // ticket themselves.
+  if (user) {
+    try {
+      const channelId = await createServiceOrderTicket(order, user);
+      if (channelId) ordersModel.setServiceTicketChannel(order.id, channelId);
+    } catch (err) {
+      console.error('Failed to open Discord service ticket:', err.message);
     }
   }
 }

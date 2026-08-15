@@ -9,6 +9,7 @@
     if (order.status === 'paid') {
       heading.textContent = 'Payment received — thanks!';
       message.textContent = 'Your scripts are unlocked, and your order is saved to your account.';
+      document.getElementById('nextStepsSection').hidden = false;
     } else if (pending) {
       heading.textContent = 'Waiting for payment confirmation…';
       message.textContent = order.paymentProvider === 'crypto'

@@ -2,13 +2,13 @@
   function isSafeRedirect(target) {
     if (!target) return false;
     if (target.includes('://') || target.startsWith('//') || target.includes(':')) return false;
-    return /^[a-zA-Z0-9/_.-]+\.html$/.test(target);
+    return /^[a-zA-Z0-9/_-]+$/.test(target);
   }
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
     const target = params.get('redirect');
-    return isSafeRedirect(target) ? target : 'games.html';
+    return isSafeRedirect(target) ? target : 'games';
   }
 
   async function refreshCaptcha() {

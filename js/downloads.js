@@ -58,25 +58,34 @@
             return;
         }
 
-        const withFile = items.filter((item) => item.hasFile).length;
-        downloadAllRow.hidden = false;
-        downloadAllHint.textContent = withFile === items.length
-            ? `${items.length} script${items.length === 1 ? '' : 's'} in the bundle.`
-            : `${withFile} of ${items.length} scripts have a file ready — the rest will be added automatically once they do.`;
+        const downloadable = items.filter((item) => !item.isService);
+        const withFile = downloadable.filter((item) => item.hasFile).length;
+        downloadAllRow.hidden = downloadable.length === 0;
+        downloadAllHint.textContent = downloadable.length === 0
+            ? ''
+            : withFile === downloadable.length
+                ? `${downloadable.length} script${downloadable.length === 1 ? '' : 's'} in the bundle.`
+                : `${withFile} of ${downloadable.length} scripts have a file ready — the rest will be added automatically once they do.`;
 
         container.innerHTML = items.map((item) => `
       <div class="download-row">
         <div class="download-info">
           <h4>${escapeHtml(item.packName)} — ${escapeHtml(item.scriptTitle)}</h4>
           <small>
-            ${item.version ? `v${escapeHtml(item.version)}` : ''}
-            ${item.activated ? ' · Activated on this device' : ' · Not yet activated (activates on first download)'}
-            ${item.downloadCount ? ` · Downloaded ${item.downloadCount}×` : ''}
+            ${item.isService
+              ? 'A team member will follow up in your Discord ticket to scope, build, and deliver this.'
+              : `${item.version ? `v${escapeHtml(item.version)}` : ''}
+                 ${item.activated ? ' · Activated on this device' : ' · Not yet activated (activates on first download)'}
+                 ${item.downloadCount ? ` · Downloaded ${item.downloadCount}×` : ''}`}
           </small>
         </div>
-        ${item.hasFile
-          ? '<span class="status-badge status-success">In your zip</span>'
-          : '<span class="status-badge status-pending">File coming soon</span>'}
+        ${item.isService
+          ? (item.serviceTicketUrl
+              ? `<a href="${escapeHtml(item.serviceTicketUrl)}" target="_blank" rel="noreferrer" class="status-badge status-success">Open Discord ticket</a>`
+              : '<span class="status-badge status-pending">Opening your ticket…</span>')
+          : (item.hasFile
+              ? '<span class="status-badge status-success">In your zip</span>'
+              : '<span class="status-badge status-pending">File coming soon</span>')}
       </div>
     `).join('');
     }

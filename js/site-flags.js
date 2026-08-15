@@ -2,7 +2,7 @@
   const BANNER_DISMISS_KEY = 'scripforge_banner_dismissed';
   // Pages an admin must still be able to reach even while maintenance mode
   // is on for everyone else — otherwise there'd be no way to turn it back off.
-  const MAINTENANCE_ALLOWLIST = ['/pages/login.html', '/admin/admin.html'];
+  const MAINTENANCE_ALLOWLIST = ['/pages/login', '/admin/admin'];
 
   let flags = null;
   const ready = fetch('/api/settings/public')

@@ -3,10 +3,14 @@ const path = require('path');
 const express = require('express');
 const archiver = require('archiver');
 
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { downloadLimiter, zipDownloadLimiter } = require('../middleware/rateLimit');
 const licensesModel = require('../models/licenses');
 const catalogModel = require('../models/catalog');
+const auditLog = require('../models/auditLog');
+const ordersModel = require('../models/orders');
+const { isServicePack } = require('../servicePacks');
+const discordConfig = require('../../discord-bot/config');
 
 const router = express.Router();
 const ROOT = path.join(__dirname, '..', '..');
@@ -17,13 +21,57 @@ function safeFilename(str) {
   return String(str).replace(/[\\/:*?"<>|]/g, '-').trim() || 'file';
 }
 
+// Every catalog script, flattened out of packs/scripts, for the admin
+// full-catalog-access view below — shaped like a license-list item so the
+// existing frontend rendering (js/downloads.js) doesn't need to branch on role.
+function allCatalogItems() {
+  const items = [];
+  for (const pack of catalogModel.listAll({ includeHidden: true })) {
+    for (const script of pack.scripts) {
+      items.push({
+        licenseKey: null,
+        packId: pack.packId,
+        packName: pack.packName,
+        scriptId: script.id,
+        scriptTitle: script.title,
+        version: script.version,
+        hasFile: script.hasFile,
+        isService: isServicePack(pack.packId),
+        serviceTicketUrl: null,
+        activated: false,
+        downloadCount: 0,
+        downloadCap: null,
+        adminAccess: true
+      });
+    }
+  }
+  return items;
+}
+
 // Every purchased script the signed-in user has a license for, with its
-// live catalog data (title, version, changelog) joined in.
+// live catalog data (title, version, changelog) joined in. Admins instead see
+// every script in the catalog — purchases don't gate their access.
 router.get('/', requireAuth, (req, res) => {
+  if (req.currentUser.role === 'admin') {
+    return res.json({ items: allCatalogItems() });
+  }
+
   const licenses = licensesModel.listForUser(req.session.userId);
+  const orderCache = new Map();
   const items = licenses.map((license) => {
     const script = catalogModel.getScript(license.pack_id, license.script_id, { includeHidden: true });
     const pack = catalogModel.getPack(license.pack_id, { includeHidden: true });
+    const isService = isServicePack(license.pack_id);
+
+    let serviceTicketUrl = null;
+    if (isService) {
+      if (!orderCache.has(license.order_id)) orderCache.set(license.order_id, ordersModel.findById(license.order_id));
+      const order = orderCache.get(license.order_id);
+      if (order && order.service_ticket_channel_id && discordConfig.GUILD_ID) {
+        serviceTicketUrl = `https://discord.com/channels/${discordConfig.GUILD_ID}/${order.service_ticket_channel_id}`;
+      }
+    }
+
     return {
       licenseKey: license.license_key,
       packId: license.pack_id,
@@ -32,6 +80,8 @@ router.get('/', requireAuth, (req, res) => {
       scriptTitle: script ? script.title : license.script_id,
       version: script ? script.version : null,
       hasFile: script ? script.hasFile : false,
+      isService,
+      serviceTicketUrl,
       activated: Boolean(license.device_fingerprint),
       downloadCount: license.download_count,
       downloadCap: licensesModel.DOWNLOAD_CAP
@@ -63,6 +113,52 @@ function watermarkFor(fileExt, { username, licenseKey, orderId, downloadedAt }) 
   // .cs, .java, and anything else C-style-comment-friendly
   return `/*\n * ${lines.join('\n * ')}\n */\n\n`;
 }
+
+// Same idea as watermarkFor above, but for admins pulling a script they don't
+// hold a purchased license for — there's no license key or order to stamp,
+// so the watermark says so plainly instead of printing blank/fake fields.
+function adminWatermarkFor(fileExt, { username, downloadedAt }) {
+  const lines = [
+    'ScripForge — Admin copy (full catalog access, no purchase license)',
+    `Accessed by: ${username}`,
+    `Downloaded: ${downloadedAt}`
+  ];
+
+  if (fileExt === 'lua') return `--[[\n  ${lines.join('\n  ')}\n]]\n\n`;
+  if (fileExt === 'psc') return lines.map((l) => `; ${l}`).join('\n') + '\n\n';
+  return `/*\n * ${lines.join('\n * ')}\n */\n\n`;
+}
+
+// Admin single-script download — no license required, since admins have
+// standing access to the whole catalog. Kept as its own path (rather than
+// folded into the licenseKey route above) so a license lookup is never on
+// the code path for a request that isn't presenting one.
+router.get('/admin/:packId/:scriptId/file', downloadLimiter, requireAdmin, (req, res) => {
+  const record = catalogModel.getScriptFileRecord(req.params.packId, req.params.scriptId);
+  if (!record || !record.file_path) {
+    return res.status(404).json({ error: "This script's file isn't available yet." });
+  }
+
+  const fullPath = path.join(ROOT, record.file_path);
+  if (!fs.existsSync(fullPath)) {
+    return res.status(404).json({ error: "This script's file is missing on the server." });
+  }
+
+  const original = fs.readFileSync(fullPath, 'utf8');
+  const downloadedAt = new Date().toISOString();
+  const watermark = adminWatermarkFor(record.file_ext, { username: req.currentUser.username, downloadedAt });
+
+  auditLog.record({
+    actor: req.currentUser,
+    action: 'downloads.admin_file',
+    target: `${req.params.packId}/${req.params.scriptId}`
+  });
+
+  const filename = path.basename(record.file_path);
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.send(watermark + original);
+});
 
 // A GET (not a POST) so a plain link/window.location works for the actual
 // file save — the tradeoff is that binding a license to a device happens as
@@ -124,6 +220,66 @@ router.get('/:licenseKey/file', downloadLimiter, requireAuth, (req, res) => {
   res.send(watermark + original);
 });
 
+// Admins aren't gated by licenses at all — this bundles every script in the
+// catalog that currently has a file, regardless of who (if anyone) has
+// purchased it. No device binding applies since there's no license to bind.
+function sendAdminCatalogZip(req, res) {
+  const toInclude = [];
+  for (const pack of catalogModel.listAll({ includeHidden: true })) {
+    for (const script of pack.scripts) {
+      const record = catalogModel.getScriptFileRecord(pack.packId, script.id);
+      const fullPath = record && record.file_path ? path.join(ROOT, record.file_path) : null;
+      if (record && record.file_path && fs.existsSync(fullPath)) {
+        toInclude.push({ pack, script, record, fullPath });
+      }
+    }
+  }
+
+  if (toInclude.length === 0) {
+    return res.status(404).json({ error: 'No scripts in the catalog have a downloadable file yet.' });
+  }
+
+  const filename = `ScripForge-${safeFilename(req.currentUser.username)}-admin-full-catalog.zip`;
+  res.setHeader('Content-Type', 'application/zip');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  archive.on('error', (err) => {
+    console.error('Admin catalog zip download failed:', err.message);
+    if (!res.headersSent) res.status(500).json({ error: 'Could not build the catalog bundle. Please try again.' });
+  });
+  archive.on('end', () => {
+    auditLog.record({ actor: req.currentUser, action: 'downloads.admin_full_catalog_zip', target: `${toInclude.length} scripts` });
+  });
+
+  archive.pipe(res);
+
+  const downloadedAt = new Date().toISOString();
+  const manifestLines = [
+    'ScripForge — Full Catalog (Admin Access)',
+    `Accessed by: ${req.currentUser.username}`,
+    `Bundled: ${downloadedAt}`,
+    '',
+    'This archive was generated via admin catalog access, not a purchased',
+    'license. Every file carries its own header noting that.',
+    '',
+    'Contents:'
+  ];
+  for (const { pack, script } of toInclude) {
+    manifestLines.push(`  - ${pack.packName} / ${script.title}`);
+  }
+  archive.append(manifestLines.join('\n') + '\n', { name: 'README.txt' });
+
+  for (const { pack, script, record, fullPath } of toInclude) {
+    const original = fs.readFileSync(fullPath, 'utf8');
+    const watermark = adminWatermarkFor(record.file_ext, { username: req.currentUser.username, downloadedAt });
+    const entryName = `${safeFilename(pack.packName)}/${safeFilename(script.title)}.${record.file_ext}`;
+    archive.append(watermark + original, { name: entryName });
+  }
+
+  archive.finalize();
+}
+
 // The download manager's one and only customer-facing button: every script
 // the signed-in user has ever been issued a license for, watermarked
 // individually and bundled into a single zip, plus a README.txt manifest
@@ -132,6 +288,10 @@ router.get('/:licenseKey/file', downloadLimiter, requireAuth, (req, res) => {
 // license the moment an order's payment webhook confirms it, with no admin
 // step involved; this route just changes how the customer receives it.
 router.get('/zip', zipDownloadLimiter, requireAuth, (req, res) => {
+  if (req.currentUser.role === 'admin') {
+    return sendAdminCatalogZip(req, res);
+  }
+
   const deviceFingerprint = String(req.query.fp || '');
   const logBase = { ip: req.ip, deviceFingerprint, userAgent: req.headers['user-agent'] };
 

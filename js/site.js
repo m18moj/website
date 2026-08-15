@@ -378,7 +378,29 @@
     const toggle = document.getElementById('mobileToggle');
     const menu = document.getElementById('navMenu');
     if (!toggle || !menu) return;
-    toggle.addEventListener('click', () => menu.classList.toggle('active'));
+
+    function setOpen(open) {
+      menu.classList.toggle('active', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      // Locks background scroll while the dropdown covers the page — without
+      // this, a long page scrolls underneath the open menu on touch devices,
+      // which reads as broken rather than a deliberate overlay.
+      document.body.classList.toggle('mobile-menu-open', open);
+    }
+
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.addEventListener('click', () => setOpen(!menu.classList.contains('active')));
+
+    // Tapping a link inside the open menu should navigate AND close it —
+    // without this the menu stays open underneath the next page until
+    // manually dismissed, which is what actually looked "broken" on mobile.
+    menu.addEventListener('click', (event) => {
+      if (event.target.closest('a, button')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', () => {

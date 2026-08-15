@@ -83,7 +83,7 @@ const SEED_CATALOG = [
     "splash": "apex",
     "dataGame": "APEX",
     "description": "Movement, abilities, loot pickups, squads, and battle royale pacing loops.",
-    "detailUrl": "games/game-apex-legends.html"
+    "detailUrl": "games/game-apex-legends"
   },
   {
     "packId": "call-of-duty",
@@ -166,7 +166,7 @@ const SEED_CATALOG = [
     "splash": "cod",
     "dataGame": "COD",
     "description": "Killstreaks, weapon handling, score events, and objective-based flow.",
-    "detailUrl": "games/game-call-of-duty.html"
+    "detailUrl": "games/game-call-of-duty"
   },
   {
     "packId": "fortnite",
@@ -249,7 +249,7 @@ const SEED_CATALOG = [
     "splash": "neon",
     "dataGame": "FORTNITE",
     "description": "Building controls, loot logic, combat flow, shields, and progression loops.",
-    "detailUrl": "games/game-fortnite.html"
+    "detailUrl": "games/game-fortnite"
   },
   {
     "packId": "gta-v",
@@ -332,7 +332,7 @@ const SEED_CATALOG = [
     "splash": "gta",
     "dataGame": "GTA V",
     "description": "Driving, missions, police chase logic, NPC behavior, and activity loops.",
-    "detailUrl": "games/game-gta-v.html"
+    "detailUrl": "games/game-gta-v"
   },
   {
     "packId": "minecraft",
@@ -415,7 +415,7 @@ const SEED_CATALOG = [
     "splash": "arcane",
     "dataGame": "MINECRAFT",
     "description": "Mining, crafting, survival loops, world generation, and resource systems.",
-    "detailUrl": "games/game-minecraft.html"
+    "detailUrl": "games/game-minecraft"
   },
   {
     "packId": "pubg",
@@ -498,7 +498,7 @@ const SEED_CATALOG = [
     "splash": "pubg",
     "dataGame": "PUBG",
     "description": "Safe-zone logic, loot flow, weapons, squad systems, and survival pressure.",
-    "detailUrl": "games/game-pubg.html"
+    "detailUrl": "games/game-pubg"
   },
   {
     "packId": "roblox",
@@ -581,7 +581,7 @@ const SEED_CATALOG = [
     "splash": "ruin",
     "dataGame": "ROBLOX",
     "description": "Quests, leaderboards, economy, social systems, and tycoon gameplay loops.",
-    "detailUrl": "games/game-roblox.html"
+    "detailUrl": "games/game-roblox"
   },
   {
     "packId": "skyrim",
@@ -664,7 +664,7 @@ const SEED_CATALOG = [
     "splash": "skyrim",
     "dataGame": "SKYRIM",
     "description": "Quests, perk progression, loot loops, world events, and RPG systems.",
-    "detailUrl": "games/game-skyrim.html"
+    "detailUrl": "games/game-skyrim"
   },
   {
     "packId": "valorant",
@@ -747,7 +747,7 @@ const SEED_CATALOG = [
     "splash": "valorant",
     "dataGame": "VALORANT",
     "description": "Round flow, abilities, recoil, buy phase, and competitive match systems.",
-    "detailUrl": "games/game-valorant.html"
+    "detailUrl": "games/game-valorant"
   }
 ];
 

@@ -13,6 +13,7 @@ const { verifyCsrfToken } = require('../middleware/csrf');
 const { discordLinkLimiter } = require('../middleware/rateLimit');
 const ordersModel = require('../models/orders');
 const auditLog = require('../models/auditLog');
+const promoCodesModel = require('../models/promoCodes');
 const config = require('../../discord-bot/config');
 const discordLinks = require('../../discord-bot/models/discordLinks');
 const discordRest = require('../../discord-bot/discordRest');
@@ -29,7 +30,7 @@ function isConfigured() {
 function accountUrl(req, query) {
   const origin = `${req.protocol}://${req.get('host')}`;
   const qs = new URLSearchParams(query).toString();
-  return `${origin}/pages/account.html${qs ? `?${qs}` : ''}`;
+  return `${origin}/pages/account${qs ? `?${qs}` : ''}`;
 }
 
 async function fetchWithTimeout(url, options, timeoutMs = 10000) {
@@ -136,12 +137,24 @@ router.get('/callback', requireAuth, discordLinkLimiter, async (req, res) => {
       details: { discordTag }
     });
 
-    const hasPaidOrder = ordersModel.ordersForUser(req.session.userId).some((o) => o.status === 'paid');
-    if (hasPaidOrder) {
-      await discordRest.syncVerifiedRole(discordUser.id, { add: true });
+    // The Verified role (and the one-time welcome discount) are only ever
+    // granted after confirming, server-side via the bot's own token, that
+    // this Discord account is actually a member of the configured guild —
+    // never just because the OAuth identity check succeeded, and no longer
+    // gated on having a paid order (linking and buying are independent).
+    const membership = await discordRest.isGuildMember(discordUser.id);
+    let redirectExtra = {};
+    if (membership.known && membership.member) {
+      const roleResult = await discordRest.syncVerifiedRole(discordUser.id, { add: true });
+      if (roleResult.ok) {
+        discordLinks.setMemberVerified(discordUser.id);
+        const promo = promoCodesModel.issueDiscordVerifyDiscount(req.session.userId, req.currentUser.username);
+        discordLinks.setDiscountCode(discordUser.id, promo.code);
+        redirectExtra = { verified: '1', promo: promo.code };
+      }
     }
 
-    return res.redirect(accountUrl(req, { discord: 'linked' }));
+    return res.redirect(accountUrl(req, { discord: 'linked', ...redirectExtra }));
   } catch (err) {
     console.error('[discord-link] callback error:', err.message);
     return res.redirect(accountUrl(req, { discord: 'error', reason: 'unknown' }));

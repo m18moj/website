@@ -307,15 +307,29 @@ ensureColumn('users', 'totp_secret', 'TEXT');
 ensureColumn('users', 'totp_enabled', 'INTEGER NOT NULL DEFAULT 0');
 ensureColumn('users', 'last_login_at', 'TEXT');
 ensureColumn('users', 'last_login_ip', 'TEXT');
+// Recovery codes for TOTP: JSON array of bcrypt hashes, each single-use.
+// Never store the raw codes — only shown once, at generation time.
+ensureColumn('users', 'totp_recovery_codes', 'TEXT');
+// Mandatory, max 8 characters, shown everywhere in place of the (potentially
+// long) username — see server/routes/account.js POST /nickname. Nullable at
+// the schema level only so this additive migration never breaks existing
+// rows; every account created after this shipped is required to set one
+// during registration, and pre-existing accounts are prompted on next login.
+ensureColumn('users', 'nickname', 'TEXT');
 ensureColumn('orders', 'payment_provider', "TEXT NOT NULL DEFAULT 'stripe'");
+
+// One-time cleanup for rows seeded back when pack detail pages were linked
+// with a literal .html extension — the site now serves clean, extensionless
+// URLs (see server/index.js), so any leftover suffix here would produce a
+// dead link. Idempotent: a no-op once every row has already been migrated.
+db.exec(`UPDATE packs SET detail_url = substr(detail_url, 1, length(detail_url) - 5) WHERE detail_url LIKE '%.html'`);
 ensureColumn('orders', 'coinbase_charge_id', 'TEXT');
 ensureColumn('orders', 'coinbase_charge_code', 'TEXT');
 db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_coinbase_charge_id ON orders(coinbase_charge_id)');
 
-// 2FA is admin-only policy (customers get a CAPTCHA instead). This is a
-// no-op after the first boot post-change; it only matters if a customer
-// account had 2FA on from before that policy existed.
-db.exec(`UPDATE users SET totp_secret = NULL, totp_enabled = 0 WHERE role != 'admin' AND totp_enabled = 1`);
+// 2FA (TOTP) is available to every account, customer and admin alike — see
+// server/routes/account.js. (Previously admin-only; that restriction has
+// been lifted, so this file no longer wipes non-admin TOTP on boot.)
 
 // Manual moderation: `disabled` is a single-click, no-paper-trail toggle for
 // quick use; the ban_* columns are the more formal action (a reason, a
@@ -346,6 +360,93 @@ ensureColumn('scripts', 'preview_snippet', 'TEXT');
 
 ensureColumn('orders', 'promo_code', 'TEXT');
 ensureColumn('orders', 'discount_cents', 'INTEGER NOT NULL DEFAULT 0');
+
+// is_test marks data an admin generated on purpose (QA, demos, staging
+// checkout runs) so it can be excluded from real revenue/customer totals
+// without deleting it. expires_at turns an admin-created account into a
+// temporary one — checked alongside disabled/ban_* in getAccountBlock()
+// rather than being swept by a background job, since simply refusing
+// sign-in at expiry is enough and needs no cron/cleanup process.
+ensureColumn('users', 'is_test', 'INTEGER NOT NULL DEFAULT 0');
+ensureColumn('users', 'expires_at', 'TEXT');
+ensureColumn('users', 'created_by', 'TEXT');
+ensureColumn('orders', 'is_test', 'INTEGER NOT NULL DEFAULT 0');
+
+// Optional per-code owner: when set, only that account may redeem the code —
+// used for the one-time 15%-off code issued automatically when a customer
+// verifies their Discord account (see server/models/promoCodes.js issueDiscordVerifyDiscount).
+// `source` distinguishes admin-created codes from system-issued ones in the
+// admin dashboard's Promo Codes list.
+ensureColumn('promo_codes', 'owner_user_id', 'INTEGER');
+ensureColumn('promo_codes', 'source', "TEXT NOT NULL DEFAULT 'manual'");
+
+// Discord product-announcement dedupe: set the moment a pack is posted to the
+// announcements channel so a restart/re-save never double-posts it. message_id
+// lets the catalogue-channel sync edit the existing message instead of
+// reposting when a pack's price/description changes.
+ensureColumn('packs', 'discord_announced_at', 'TEXT');
+ensureColumn('packs', 'discord_message_id', 'TEXT');
+
+// member_verified_at is set once server-side guild-membership + role-grant
+// succeeds (distinct from linked_at, which only means the OAuth identity
+// match happened) — see discord-bot/discordRest.js isGuildMember() and
+// server/routes/discordLink.js. discount_code records the one-time 15%-off
+// code issued for this link so re-verifying never issues a second one.
+ensureColumn('discord_links', 'member_verified_at', 'TEXT');
+ensureColumn('discord_links', 'discount_code', 'TEXT');
+
+// Ticket categories (one of the fixed set the "Get Support" flow now makes
+// the opener choose — see discord-bot/ticketActions.js), staff notes (JSON
+// array of {authorTag, text, at}), and reopen tracking.
+ensureColumn('support_tickets', 'category', "TEXT NOT NULL DEFAULT 'general'");
+ensureColumn('support_tickets', 'notes', "TEXT NOT NULL DEFAULT '[]'");
+ensureColumn('support_tickets', 'reopened_at', 'TEXT');
+
+// Free-text the customer can leave at checkout (desired domain name, custom
+// feature requests, anything else) — surfaced to staff in the auto-opened
+// Discord ticket for service orders (see discord-bot/serviceOrderTicket.js).
+// service_ticket_channel_id records that ticket's channel once created, so a
+// retried/duplicate fulfillment run never opens a second one for the same order.
+ensureColumn('orders', 'customer_notes', 'TEXT');
+ensureColumn('orders', 'service_ticket_channel_id', 'TEXT');
+
+// Per-guild automod infractions — one row per rule violation, independent of
+// mod_actions (which only logs formal warn/timeout/kick/ban) so escalating
+// punishment thresholds can be computed from a clean count and the bot
+// dashboard can show/filter automod activity on its own.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS automod_infractions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    discord_id TEXT NOT NULL,
+    discord_tag TEXT NOT NULL,
+    rule TEXT NOT NULL,
+    action_taken TEXT NOT NULL,
+    message_excerpt TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_automod_infractions_guild_user ON automod_infractions(guild_id, discord_id);
+  CREATE INDEX IF NOT EXISTS idx_automod_infractions_created_at ON automod_infractions(created_at);
+
+  -- Every action taken from (or by) the dedicated bot admin dashboard, plus
+  -- automod/announcement actions the bot takes on its own — kept separate
+  -- from the website's audit_log (whose actor is always a ScripForge user
+  -- account) since a bot action's "actor" is a Discord identity, a site
+  -- admin working from the bot dashboard, or the system itself.
+  CREATE TABLE IF NOT EXISTS bot_audit_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT,
+    actor_type TEXT NOT NULL DEFAULT 'system' CHECK (actor_type IN ('system', 'discord_user', 'site_admin')),
+    actor_id TEXT,
+    actor_label TEXT NOT NULL,
+    action TEXT NOT NULL,
+    target TEXT,
+    details TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_bot_audit_log_created_at ON bot_audit_log(created_at);
+  CREATE INDEX IF NOT EXISTS idx_bot_audit_log_guild ON bot_audit_log(guild_id);
+`);
 
 // First-boot only: if the catalog tables are empty, load the original
 // hand-authored packs/scripts (server/seedCatalog.js) so existing installs

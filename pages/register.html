@@ -13,7 +13,7 @@
 <body data-root-prefix="../">
     <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="../index.html" class="nav-logo">
+            <a href="/" class="nav-logo">
                 <svg class="logo-icon" viewBox="0 0 40 40">
                     <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
                     <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
@@ -23,14 +23,13 @@
                 ScripForge
             </a>
             <div class="nav-menu" id="navMenu">
-                <a href="../index.html" class="nav-link">Home</a>
-                <a href="games.html" class="nav-link">Games</a>
-                <a href="catalog.html" class="nav-link">Catalog</a>
-                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="services" class="nav-link">Services</a>
+                <a href="https://discord.gg/Hr69adj2My" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
             </div>
             <div class="nav-actions">
                 <span id="authControl" class="auth-control"></span>
-                <a href="checkout.html" class="cart-btn" aria-label="View basket">
+                <a href="checkout" class="cart-btn" aria-label="View basket">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -49,7 +48,7 @@
 
     <main class="page-shell">
         <div class="container breadcrumbs" aria-label="Breadcrumb">
-            <a href="../index.html">Home</a> / <span>Create Account</span>
+            <a href="/">Home</a> / <span>Create Account</span>
         </div>
         <div class="page-header">
             <p class="eyebrow">Account</p>
@@ -64,6 +63,11 @@
                         <label for="username">Username</label>
                         <input id="username" name="username" type="text" autocomplete="username" minlength="3" maxlength="24" required>
                         <small>3-24 characters: letters, numbers, underscores, or hyphens.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">Nickname</label>
+                        <input id="nickname" name="nickname" type="text" autocomplete="nickname" maxlength="8" required>
+                        <small>Max 8 characters — shown across the site instead of your username.</small>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -82,7 +86,7 @@
                     <p id="formError" class="form-error" role="alert" hidden></p>
                     <button class="btn btn-primary" type="submit">Create Account</button>
                 </form>
-                <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
+                <p class="auth-switch">Already have an account? <a href="login">Sign in</a></p>
             </div>
         </div>
     </main>

@@ -14,6 +14,7 @@ const { loginLimiter, registerLimiter, passwordResetLimiter } = require('../midd
 const router = express.Router();
 const BCRYPT_ROUNDS = 12;
 const USERNAME_PATTERN = /^[a-zA-Z0-9_-]{3,24}$/;
+const RECOVERY_CODE_PATTERN = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/;
 
 function regenerateSession(req) {
   return new Promise((resolve, reject) => {
@@ -52,6 +53,10 @@ router.post(
       .trim()
       .matches(USERNAME_PATTERN)
       .withMessage('Username must be 3-24 characters: letters, numbers, underscores, or hyphens only.'),
+    body('nickname')
+      .trim()
+      .matches(usersModel.NICKNAME_PATTERN)
+      .withMessage('Nickname is required: 1-8 characters (letters, numbers, spaces, - or _).'),
     body('password').isLength({ min: 8, max: 128 }).withMessage('Password must be at least 8 characters.')
   ],
   async (req, res, next) => {
@@ -66,6 +71,7 @@ router.post(
       }
 
       const username = req.body.username.trim();
+      const nickname = req.body.nickname.trim();
       const password = req.body.password;
       const emailInput = (req.body.email || '').trim();
 
@@ -78,7 +84,7 @@ router.post(
       }
 
       const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
-      const user = usersModel.createUser({ username, passwordHash, role: 'customer', email: emailInput || null });
+      const user = usersModel.createUser({ username, passwordHash, role: 'customer', email: emailInput || null, nickname });
 
       // Regenerate the session id on privilege change (anonymous -> authenticated)
       // to prevent session fixation attacks.
@@ -178,7 +184,25 @@ router.post(
       const block = usersModel.getAccountBlock(user);
       if (block) return res.status(403).json({ error: block.message, accountBlocked: block.type });
 
-      if (!totp.verifyTotp(req.body.code, user.totp_secret)) {
+      const submitted = String(req.body.code || '').trim();
+      let verified = totp.verifyTotp(submitted, user.totp_secret);
+
+      // Fall back to a recovery code if the input looks like one (XXXX-XXXX)
+      // rather than a 6-digit TOTP code — each code is single-use and is
+      // removed the moment it's successfully consumed.
+      if (!verified && RECOVERY_CODE_PATTERN.test(submitted.toUpperCase())) {
+        const hashes = usersModel.getRecoveryCodeHashes(user);
+        for (const hash of hashes) {
+          // eslint-disable-next-line no-await-in-loop
+          if (await bcrypt.compare(submitted.toUpperCase(), hash)) {
+            usersModel.removeRecoveryCodeHash(user.id, hash);
+            verified = true;
+            break;
+          }
+        }
+      }
+
+      if (!verified) {
         usersModel.registerFailedLogin(user);
         return res.status(401).json({ error: 'That code is incorrect or expired.' });
       }
@@ -213,7 +237,7 @@ router.post(
 
       const rawToken = usersModel.createPasswordResetToken(user.id);
       const origin = `${req.protocol}://${req.get('host')}`;
-      const resetUrl = `${origin}/pages/reset-password.html?token=${rawToken}`;
+      const resetUrl = `${origin}/pages/reset-password?token=${rawToken}`;
       await email.passwordResetEmail({ to: user.email, username: user.username, resetUrl });
 
       res.json(genericResponse);
@@ -260,10 +284,49 @@ router.post('/logout', verifyCsrfToken, (req, res, next) => {
 });
 
 router.get('/me', (req, res) => {
-  if (!req.session.userId) return res.json({ user: null });
+  if (!req.session.userId) return res.json({ user: null, impersonating: null });
   const user = usersModel.findPublicById(req.session.userId);
-  if (!user) return res.json({ user: null });
-  res.json({ user: usersModel.toPublicUser(user) });
+  if (!user) return res.json({ user: null, impersonating: null });
+
+  const impersonating = req.session.impersonatorId
+    ? { asUsername: user.username, adminUsername: req.session.impersonatorUsername }
+    : null;
+
+  res.json({ user: usersModel.toPublicUser(user), impersonating });
+});
+
+// Lets an admin who's currently "viewing as" another account (see
+// POST /api/admin/users/:id/impersonate) switch straight back to their own
+// session without logging out — req.session.userId/role point at the
+// impersonated account while this is active, so this can't be gated by
+// requireAdmin (that would re-check the *impersonated* account's role and
+// reject it); instead it only trusts the separately-tracked impersonatorId.
+router.post('/stop-impersonating', verifyCsrfToken, (req, res) => {
+  if (!req.session.impersonatorId) {
+    return res.status(400).json({ error: "You're not currently viewing the site as another account." });
+  }
+
+  const admin = usersModel.findById(req.session.impersonatorId);
+  if (!admin || admin.role !== 'admin') {
+    return req.session.destroy(() => {
+      res.clearCookie('sf.sid');
+      res.status(401).json({ error: 'Your admin session is no longer valid. Please sign in again.' });
+    });
+  }
+
+  const impersonatedUser = usersModel.findById(req.session.userId);
+  auditLog.record({
+    actor: admin,
+    action: 'user.impersonate.stop',
+    target: impersonatedUser ? impersonatedUser.username : null
+  });
+
+  req.session.userId = admin.id;
+  req.session.role = admin.role;
+  delete req.session.impersonatorId;
+  delete req.session.impersonatorUsername;
+
+  res.json({ user: usersModel.toPublicUser(admin) });
 });
 
 module.exports = router;

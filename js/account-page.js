@@ -275,6 +275,147 @@
     await refresh();
   }
 
+  function setupNicknameForm(user) {
+    const toggleBtn = document.getElementById('toggleNicknameForm');
+    const form = document.getElementById('nicknameForm');
+    const errorBox = document.getElementById('nicknameError');
+    const statusText = document.getElementById('nicknameStatus');
+    const input = document.getElementById('nicknameInput');
+
+    function renderStatus(nickname) {
+      statusText.textContent = nickname ? `Currently "${nickname}".` : 'Not set yet — pick one to show across the site.';
+      input.value = nickname || '';
+    }
+    renderStatus(user.nickname);
+    if (!user.nickname) form.hidden = false; // mandatory — prompt immediately if never set
+
+    toggleBtn.addEventListener('click', () => {
+      form.hidden = !form.hidden;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorBox.hidden = true;
+      try {
+        const data = await window.ScripForgeAuth.apiFetch('/api/account/nickname', {
+          method: 'POST',
+          body: { nickname: input.value.trim() }
+        });
+        renderStatus(data.user.nickname);
+        form.hidden = true;
+        toast('Nickname saved.', 'success');
+        document.getElementById('accountUsername').textContent = `Hi, ${data.user.nickname}`;
+        if (window.ScripForgeAuth.loadCurrentUser) {
+          await window.ScripForgeAuth.loadCurrentUser();
+          const navRefresh = document.getElementById('authControl');
+          if (navRefresh) window.location.reload();
+        }
+      } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.hidden = false;
+      }
+    });
+  }
+
+  function setupTotp(user) {
+    const { apiFetch } = window.ScripForgeAuth;
+    const statusText = document.getElementById('totpStatus');
+    const toggleBtn = document.getElementById('totpToggleBtn');
+    const setupPanel = document.getElementById('totpSetupPanel');
+    const recoveryPanel = document.getElementById('totpRecoveryPanel');
+    const recoveryList = document.getElementById('totpRecoveryCodesList');
+    const disableForm = document.getElementById('totpDisableForm');
+    const regenerateRow = document.getElementById('totpRegenerateRow');
+    const regenerateRemaining = document.getElementById('totpRecoveryRemaining');
+
+    let enabled = user.totpEnabled;
+
+    function renderStatus() {
+      statusText.textContent = enabled ? 'Enabled — required at sign-in.' : 'Not enabled. Add an extra layer of security to your account.';
+      toggleBtn.textContent = enabled ? 'Disable 2FA' : 'Enable 2FA';
+      regenerateRow.hidden = !enabled;
+      if (enabled) regenerateRemaining.textContent = `${user.recoveryCodesRemaining ?? 0} unused recovery code(s).`;
+    }
+    renderStatus();
+
+    function showRecoveryCodes(codes) {
+      recoveryList.innerHTML = codes.map((c) => `<li><code>${window.ScripForgeAuth.escapeHtml(c)}</code></li>`).join('');
+      recoveryPanel.hidden = false;
+      setupPanel.hidden = true;
+    }
+
+    toggleBtn.addEventListener('click', async () => {
+      if (enabled) {
+        disableForm.hidden = !disableForm.hidden;
+        setupPanel.hidden = true;
+        return;
+      }
+      disableForm.hidden = true;
+      try {
+        const data = await apiFetch('/api/account/2fa/setup');
+        document.getElementById('totpQrImage').src = data.qrCodeDataUrl;
+        document.getElementById('totpSecretText').textContent = data.secret;
+        setupPanel.hidden = false;
+        recoveryPanel.hidden = true;
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    });
+
+    document.getElementById('totpConfirmEnableBtn').addEventListener('click', async () => {
+      const errorBox = document.getElementById('totpSetupError');
+      errorBox.hidden = true;
+      const code = document.getElementById('totpEnableCode').value.trim();
+      try {
+        const data = await apiFetch('/api/account/2fa/enable', { method: 'POST', body: { code } });
+        enabled = true;
+        user.recoveryCodesRemaining = data.recoveryCodes.length;
+        renderStatus();
+        showRecoveryCodes(data.recoveryCodes);
+        toast('2FA enabled.', 'success');
+      } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.hidden = false;
+      }
+    });
+
+    document.getElementById('totpRecoveryDoneBtn').addEventListener('click', () => {
+      recoveryPanel.hidden = true;
+    });
+
+    disableForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const errorBox = document.getElementById('totpDisableError');
+      errorBox.hidden = true;
+      try {
+        await apiFetch('/api/account/2fa/disable', { method: 'POST', body: { password: document.getElementById('totpDisablePassword').value } });
+        enabled = false;
+        disableForm.reset();
+        disableForm.hidden = true;
+        renderStatus();
+        toast('2FA disabled.', 'success');
+      } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.hidden = false;
+      }
+    });
+
+    document.getElementById('totpRegenerateBtn').addEventListener('click', async () => {
+      const password = window.prompt('Confirm your password to regenerate recovery codes:');
+      if (!password) return;
+      try {
+        const data = await apiFetch('/api/account/2fa/recovery-codes/regenerate', { method: 'POST', body: { password } });
+        user.recoveryCodesRemaining = data.recoveryCodes.length;
+        showRecoveryCodes(data.recoveryCodes);
+        recoveryPanel.hidden = false;
+        renderStatus();
+        toast('New recovery codes generated — old ones no longer work.', 'success');
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    });
+  }
+
   function setupPasswordForm() {
     const toggleBtn = document.getElementById('togglePasswordForm');
     const form = document.getElementById('passwordForm');
@@ -317,11 +458,22 @@
       }
 
       document.getElementById('accountContent').hidden = false;
-      document.getElementById('accountUsername').textContent = `Hi, ${user.username}`;
+      document.getElementById('accountUsername').textContent = `Hi, ${user.nickname || user.username}`;
 
+      setupNicknameForm(user);
       setupEmailForm(user);
       setupPasswordForm();
+      setupTotp(user);
       setupDiscordLink();
+
+      document.getElementById('accountLogoutBtn').addEventListener('click', async () => {
+        try {
+          await window.ScripForgeAuth.logout();
+          window.location.href = 'login';
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      });
 
       const { orders } = await window.ScripForgeAuth.apiFetch('/api/account/orders');
       renderOrders(orders);

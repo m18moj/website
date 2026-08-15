@@ -1,15 +1,20 @@
 const crypto = require('crypto');
 const db = require('../db');
 
-const PUBLIC_COLUMNS = 'id, username, email, role, created_at, totp_enabled, last_login_at';
+const PUBLIC_COLUMNS = 'id, username, nickname, email, role, created_at, totp_enabled, totp_recovery_codes, last_login_at';
 const ADMIN_COLUMNS = `
-  id, username, email, role, created_at, totp_enabled, last_login_at, last_login_ip,
+  id, username, nickname, email, role, created_at, totp_enabled, totp_recovery_codes, last_login_at, last_login_ip,
   failed_login_attempts, locked_until, disabled, ban_type, ban_reason, ban_expires_at,
-  banned_at, banned_by
+  banned_at, banned_by, is_test, expires_at, created_by
 `;
 
 const statements = {
-  insert: db.prepare(`INSERT INTO users (username, password_hash, role, email) VALUES (@username, @passwordHash, @role, @email)`),
+  insert: db.prepare(`INSERT INTO users (username, password_hash, role, email, nickname) VALUES (@username, @passwordHash, @role, @email, @nickname)`),
+  insertAdminCreated: db.prepare(`
+    INSERT INTO users (username, password_hash, role, is_test, expires_at, created_by)
+    VALUES (@username, @passwordHash, @role, @isTest, @expiresAt, @createdBy)
+  `),
+  setTestFlag: db.prepare(`UPDATE users SET is_test = ? WHERE id = ?`),
   findByUsername: db.prepare(`SELECT * FROM users WHERE username = ? COLLATE NOCASE`),
   findByEmail: db.prepare(`SELECT * FROM users WHERE email = ? COLLATE NOCASE`),
   findById: db.prepare(`SELECT * FROM users WHERE id = ?`),
@@ -17,7 +22,7 @@ const statements = {
   findAdminById: db.prepare(`SELECT ${ADMIN_COLUMNS} FROM users WHERE id = ?`),
   listAll: db.prepare(`
     SELECT ${ADMIN_COLUMNS},
-      (SELECT COUNT(*) FROM orders WHERE orders.user_id = users.id AND orders.status = 'paid') AS paid_order_count,
+      (SELECT COUNT(*) FROM orders WHERE orders.user_id = users.id AND orders.status = 'paid' AND orders.is_test = 0) AS paid_order_count,
       (SELECT COUNT(*) FROM orders WHERE orders.user_id = users.id) AS total_order_count
     FROM users ORDER BY created_at DESC
   `),
@@ -39,7 +44,9 @@ const statements = {
   setEmail: db.prepare(`UPDATE users SET email = ? WHERE id = ?`),
   setTotpSecret: db.prepare(`UPDATE users SET totp_secret = ?, totp_enabled = 0 WHERE id = ?`),
   enableTotp: db.prepare(`UPDATE users SET totp_enabled = 1 WHERE id = ?`),
-  disableTotp: db.prepare(`UPDATE users SET totp_secret = NULL, totp_enabled = 0 WHERE id = ?`),
+  disableTotp: db.prepare(`UPDATE users SET totp_secret = NULL, totp_enabled = 0, totp_recovery_codes = NULL WHERE id = ?`),
+  setRecoveryCodes: db.prepare(`UPDATE users SET totp_recovery_codes = ? WHERE id = ?`),
+  setNickname: db.prepare(`UPDATE users SET nickname = ? WHERE id = ?`),
   setLastLogin: db.prepare(`UPDATE users SET last_login_at = datetime('now'), last_login_ip = ? WHERE id = ?`),
 
   setDisabled: db.prepare(`UPDATE users SET disabled = ? WHERE id = ?`),
@@ -77,9 +84,50 @@ const statements = {
   `)
 };
 
-function createUser({ username, passwordHash, role = 'customer', email = null }) {
-  const result = statements.insert.run({ username: username.trim(), passwordHash, role, email: email || null });
+// Nickname is mandatory for every account (max 8 characters — see
+// NICKNAME_PATTERN and server/routes/auth.js registration validation). It's
+// what's shown across the site in place of the username, which can be much
+// longer and would otherwise break the navbar.
+const NICKNAME_PATTERN = /^[a-zA-Z0-9 _-]{1,8}$/;
+
+function createUser({ username, passwordHash, role = 'customer', email = null, nickname }) {
+  const result = statements.insert.run({
+    username: username.trim(),
+    passwordHash,
+    role,
+    email: email || null,
+    nickname: nickname.trim()
+  });
   return statements.findPublicById.get(result.lastInsertRowid);
+}
+
+// The one HTTP-reachable account-creation path other than self-registration
+// (server/routes/admin.js POST /users) — always creates a 'customer', never
+// an admin, for the same reason promoteToAdmin() above is CLI-only: granting
+// admin access should never be a single API call away. isTest/expiresAt let
+// the created account double as disposable QA/demo data (see is_test on both
+// users and orders) or a genuinely temporary login that stops working on its
+// own once expiresAt passes (enforced in getAccountBlock, not by deleting
+// the row — an admin can still see and extend it after expiry).
+function createAdminUser({ username, passwordHash, isTest = false, expiresAt = null, createdBy = null }) {
+  const result = statements.insertAdminCreated.run({
+    username: username.trim(),
+    passwordHash,
+    role: 'customer',
+    isTest: isTest ? 1 : 0,
+    expiresAt: expiresAt || null,
+    createdBy: createdBy || null
+  });
+  // Nickname is mandatory account-wide; this path (admin dashboard "New User")
+  // has no nickname field of its own, so derive one from the username rather
+  // than leaving it unset — the account owner can change it later.
+  statements.setNickname.run(username.trim().slice(0, 8), result.lastInsertRowid);
+  return statements.findAdminById.get(result.lastInsertRowid);
+}
+
+function setTestFlag(userId, isTest) {
+  statements.setTestFlag.run(isTest ? 1 : 0, userId);
+  return statements.findAdminById.get(userId);
 }
 
 function findByUsername(username) {
@@ -206,6 +254,37 @@ function recordLogin(userId, ip) {
   statements.setLastLogin.run(ip || null, userId);
 }
 
+function setNickname(userId, nickname) {
+  statements.setNickname.run(nickname.trim(), userId);
+  return statements.findPublicById.get(userId);
+}
+
+// Stores the bcrypt hashes of a freshly generated set of recovery codes
+// (overwrites any previous set — regenerating invalidates the old ones).
+// Hashing/generation of the raw codes themselves happens in the route layer
+// (server/routes/account.js), which already has bcrypt in scope.
+function setRecoveryCodes(userId, hashedCodes) {
+  statements.setRecoveryCodes.run(JSON.stringify(hashedCodes), userId);
+}
+
+function getRecoveryCodeHashes(user) {
+  if (!user || !user.totp_recovery_codes) return [];
+  try {
+    return JSON.parse(user.totp_recovery_codes);
+  } catch (err) {
+    return [];
+  }
+}
+
+// Removes exactly one hash from the stored set (the one that matched) —
+// called after the route layer has already bcrypt-compared the submitted
+// code against each stored hash, so a recovery code can only ever be used once.
+function removeRecoveryCodeHash(userId, hashToRemove) {
+  const user = statements.findById.get(userId);
+  const remaining = getRecoveryCodeHashes(user).filter((h) => h !== hashToRemove);
+  statements.setRecoveryCodes.run(JSON.stringify(remaining), userId);
+}
+
 // A single-click, no-paper-trail toggle — distinct from banUser() below,
 // which is the more formal action with a reason, a duration, and an actor
 // recorded. Callers must independently stop an admin from disabling
@@ -241,6 +320,9 @@ function unbanUser(userId) {
 function getAccountBlock(user) {
   if (user.disabled) {
     return { type: 'disabled', message: 'This account has been disabled by an administrator.' };
+  }
+  if (user.expires_at && new Date(user.expires_at).getTime() <= Date.now()) {
+    return { type: 'expired', message: 'This temporary account has expired.' };
   }
   if (user.ban_type) {
     if (!user.ban_expires_at) {
@@ -284,16 +366,19 @@ function toPublicUser(user) {
   return {
     id: user.id,
     username: user.username,
+    nickname: user.nickname || null,
     email: user.email || null,
     role: user.role,
     createdAt: user.created_at,
     totpEnabled: Boolean(user.totp_enabled),
+    recoveryCodesRemaining: getRecoveryCodeHashes(user).length,
     lastLoginAt: user.last_login_at || null
   };
 }
 
 module.exports = {
   createUser,
+  createAdminUser,
   findByUsername,
   findByEmail,
   findById,
@@ -308,11 +393,16 @@ module.exports = {
   unlockAccount,
   promoteToAdmin,
   setRole,
+  setTestFlag,
   deleteUser,
   setPassword,
   setTotpSecret,
   enableTotp,
   disableTotp,
+  setRecoveryCodes,
+  getRecoveryCodeHashes,
+  removeRecoveryCodeHash,
+  setNickname,
   recordLogin,
   setDisabled,
   banUser,
@@ -325,6 +415,7 @@ module.exports = {
   consumePasswordResetToken,
   toPublicUser,
   BAN_TYPES,
+  NICKNAME_PATTERN,
   MAX_FAILED_ATTEMPTS,
   LOCK_DURATION_MS
 };

@@ -28,6 +28,20 @@ function getStripe() {
 // exactly to the total, in whatever currency actually gets charged. The
 // client's cart contents (which packs/scripts) and currency choice are
 // both just hints; the amounts themselves always come from here.
+// Free-text order notes (desired domain name, feature requests) are
+// customer-supplied and end up posted verbatim into a Discord channel (see
+// discord-bot/serviceOrderTicket.js) — capped well short of Discord's 4000
+// character embed-description limit and never trusted as anything other
+// than plain text.
+const MAX_ORDER_NOTES_LENGTH = 1500;
+
+function sanitizeOrderNotes(raw) {
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, MAX_ORDER_NOTES_LENGTH);
+}
+
 function priceCartInCurrency(rawCart, requestedCurrency) {
   const priced = priceCart(rawCart);
   const selectedCurrency = currency.normalize(requestedCurrency);
@@ -68,9 +82,9 @@ function applyDiscountToPriced(priced, discountCents) {
 // discount automatically. The two never stack — whichever applies first
 // wins, and a promo code always takes priority since the customer typed it
 // on purpose.
-function applyBestDiscount(priced, promoCodeInput) {
+function applyBestDiscount(priced, promoCodeInput, userId) {
   if (promoCodeInput) {
-    const { valid, promo, reason } = promoCodesModel.validate(promoCodeInput);
+    const { valid, promo, reason } = promoCodesModel.validate(promoCodeInput, userId);
     if (!valid) return { priced, error: reason };
     const discountCents = promoCodesModel.computeDiscountCents(promo, priced.totalCents);
     return { priced: applyDiscountToPriced(priced, discountCents), appliedPromoCode: promo.code, discountCents };
@@ -94,7 +108,7 @@ router.post('/create-session', requireAuth, verifyCsrfToken, async (req, res) =>
       return res.status(400).json({ error: 'Your basket is empty or contains items that no longer exist.' });
     }
 
-    const discountResult = applyBestDiscount(priced, req.body.promoCode);
+    const discountResult = applyBestDiscount(priced, req.body.promoCode, req.session.userId);
     if (discountResult.error) return res.status(400).json({ error: discountResult.error });
     priced = discountResult.priced;
 
@@ -123,8 +137,8 @@ router.post('/create-session', requireAuth, verifyCsrfToken, async (req, res) =>
       // own hosted Checkout page collects the buyer's email for the receipt.
       client_reference_id: String(user.id),
       line_items,
-      success_url: `${origin}/pages/thank-you.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/pages/checkout.html`
+      success_url: `${origin}/pages/thank-you?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/pages/checkout`
     });
 
     const order = ordersModel.createOrder({
@@ -133,7 +147,8 @@ router.post('/create-session', requireAuth, verifyCsrfToken, async (req, res) =>
       paymentProvider: 'stripe',
       totalCents: priced.totalCents,
       currency: priced.currency.toLowerCase(),
-      packs: priced.packs
+      packs: priced.packs,
+      customerNotes: sanitizeOrderNotes(req.body.notes)
     });
 
     if (discountResult.appliedPromoCode) {
@@ -163,7 +178,7 @@ router.post('/preview-discount', requireAuth, verifyCsrfToken, (req, res) => {
   }
 
   const before = priced.totalCents;
-  const discountResult = applyBestDiscount(priced, req.body.promoCode);
+  const discountResult = applyBestDiscount(priced, req.body.promoCode, req.session.userId);
   if (discountResult.error) return res.status(400).json({ error: discountResult.error });
 
   res.json({
@@ -210,7 +225,7 @@ router.post('/create-crypto-charge', requireAuth, verifyCsrfToken, async (req, r
       return res.status(400).json({ error: 'Your basket is empty or contains items that no longer exist.' });
     }
 
-    const discountResult = applyBestDiscount(priced, req.body.promoCode);
+    const discountResult = applyBestDiscount(priced, req.body.promoCode, req.session.userId);
     if (discountResult.error) return res.status(400).json({ error: discountResult.error });
     priced = discountResult.priced;
 
@@ -226,7 +241,8 @@ router.post('/create-crypto-charge', requireAuth, verifyCsrfToken, async (req, r
       paymentProvider: 'crypto',
       totalCents: priced.totalCents,
       currency: priced.currency.toLowerCase(),
-      packs: priced.packs
+      packs: priced.packs,
+      customerNotes: sanitizeOrderNotes(req.body.notes)
     });
 
     if (discountResult.appliedPromoCode) {
@@ -240,8 +256,8 @@ router.post('/create-crypto-charge', requireAuth, verifyCsrfToken, async (req, r
       description: `ScripForge order — ${packNames}`,
       amount: priced.totalCents / 100,
       currency: priced.currency.toLowerCase(),
-      successUrl: `${origin}/pages/thank-you.html?crypto_ref=${order.id}`,
-      cancelUrl: `${origin}/pages/checkout.html`,
+      successUrl: `${origin}/pages/thank-you?crypto_ref=${order.id}`,
+      cancelUrl: `${origin}/pages/checkout`,
       ipnUrl: `${origin}/api/webhooks/nowpayments`
     });
 

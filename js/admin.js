@@ -129,7 +129,7 @@
         </div>
         <div class="form-group">
           <label>Detail page URL</label>
-          <input class="pf-detail-url" value="${escapeHtml(p.detailUrl || '')}" maxlength="200" placeholder="games/game-example.html">
+          <input class="pf-detail-url" value="${escapeHtml(p.detailUrl || '')}" maxlength="200" placeholder="games/game-example">
         </div>
       </div>
       <div class="form-group">
@@ -494,6 +494,68 @@
     });
   }
 
+  // --- Create user (test / temporary accounts) -------------------------
+
+  function setupAddUserForm() {
+    const showBtn = document.getElementById('showAddUserForm');
+    const form = document.getElementById('addUserForm');
+    const cancelBtn = document.getElementById('cancelAddUserForm');
+    const errorBox = document.getElementById('addUserError');
+    const resultBox = document.getElementById('newUserResult');
+    const { escapeHtml } = window.ScripForgeAuth;
+
+    showBtn.addEventListener('click', () => {
+      resultBox.hidden = true;
+      form.hidden = false;
+      showBtn.hidden = true;
+    });
+    cancelBtn.addEventListener('click', () => {
+      form.hidden = true;
+      showBtn.hidden = false;
+      form.reset();
+      errorBox.hidden = true;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorBox.hidden = true;
+      try {
+        const { user, generatedUsername, generatedPassword } = await window.ScripForgeAuth.apiFetch('/api/admin/users', {
+          method: 'POST',
+          body: {
+            username: document.getElementById('newUserUsername').value.trim() || undefined,
+            password: document.getElementById('newUserPassword').value || undefined,
+            isTest: document.getElementById('newUserIsTest').checked,
+            expiresIn: document.getElementById('newUserExpiresIn').value || undefined
+          }
+        });
+
+        form.reset();
+        form.hidden = true;
+        showBtn.hidden = false;
+
+        // The generated password only ever exists in this one response — it's
+        // never stored anywhere but its bcrypt hash, so this is the admin's
+        // only chance to see and copy it. Shown inline (not a toast) since
+        // toasts auto-dismiss in a few seconds, too fast to copy from.
+        resultBox.innerHTML = `
+          <p><strong>Account created:</strong> ${escapeHtml(user.username)}${user.expires_at ? ` (temporary — expires ${new Date(user.expires_at).toLocaleString()})` : ''}${user.is_test ? ' <span class="status-badge status-test">Test</span>' : ''}</p>
+          ${generatedUsername ? `<p>Generated username: <code>${escapeHtml(generatedUsername)}</code></p>` : ''}
+          ${generatedPassword ? `<p>Generated password: <code>${escapeHtml(generatedPassword)}</code> — copy it now, it won't be shown again.</p>` : ''}
+          <button type="button" class="btn-small" id="dismissNewUserResult">Done</button>
+        `;
+        resultBox.hidden = false;
+        document.getElementById('dismissNewUserResult').addEventListener('click', () => { resultBox.hidden = true; });
+
+        toast('User account created.', 'success');
+        await Promise.all([loadUsers(), loadAuditLog()]);
+      } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.hidden = false;
+      }
+    });
+  }
+
   // --- Bundles ---------------------------------------------------------
 
   function bundleRowHtml(bundle) {
@@ -849,10 +911,25 @@
 
   function userStatusBadge(user) {
     if (user.disabled) return '<span class="status-badge status-failed">Disabled</span>';
+    if (user.expires_at && new Date(user.expires_at).getTime() <= Date.now()) {
+      return '<span class="status-badge status-failed">Expired</span>';
+    }
     if (user.ban_type) return `<span class="status-badge status-failed">Banned${user.ban_expires_at ? '' : ' (permanent)'}</span>`;
     const locked = user.locked_until && new Date(user.locked_until).getTime() > Date.now();
     if (locked) return '<span class="status-badge status-pending">Locked</span>';
     return '<span class="status-badge status-paid">Active</span>';
+  }
+
+  // Separate from userStatusBadge (which reflects sign-in eligibility) since
+  // an account can be both perfectly active AND flagged test/temporary at
+  // the same time — these are informational tags, not a status.
+  function userTagBadges(user) {
+    const tags = [];
+    if (user.is_test) tags.push('<span class="status-badge status-test" title="Excluded from revenue/buyer counts">Test</span>');
+    if (user.expires_at && new Date(user.expires_at).getTime() > Date.now()) {
+      tags.push(`<span class="status-badge status-temp" title="Expires ${formatDate(user.expires_at)}">Temp</span>`);
+    }
+    return tags.join(' ');
   }
 
   function loginHistoryRowsHtml(history) {
@@ -900,9 +977,10 @@
       <ul class="mod-history-list">
         ${orders.map((order) => `
           <li>
-            <span class="mod-history-action">SF-${order.id} · <span class="status-badge status-${escapeHtml(order.status)}">${escapeHtml(order.status)}</span></span>
+            <span class="mod-history-action">SF-${order.id} · <span class="status-badge status-${escapeHtml(order.status)}">${escapeHtml(order.status)}</span>${order.isTest ? ' <span class="status-badge status-test">Test</span>' : ''}</span>
             <span class="mod-history-meta">${formatDate(order.createdAt)} · ${order.currencySymbol}${order.totalAmount.toFixed(2)} ${order.currency} · ${paymentLabel(order.paymentProvider)}</span>
             <span class="mod-history-details">${order.items.map((i) => escapeHtml(`${i.packName} — ${i.scriptTitle}`)).join(', ')}</span>
+            ${order.customerNotes ? `<span class="mod-history-details">Notes: ${escapeHtml(order.customerNotes)}</span>` : ''}
           </li>
         `).join('')}
       </ul>
@@ -1021,6 +1099,7 @@
                 <td>
                   ${escapeHtml(user.username)}
                   ${user.paid_order_count > 0 ? ' <span class="status-badge status-paid" title="Has at least one paid order">🛒 Buyer</span>' : ''}
+                  ${userTagBadges(user)}
                 </td>
                 <td>${user.role === 'admin' ? '<span class="admin-badge">Admin</span>' : 'Customer'}</td>
                 <td>${userStatusBadge(user)}</td>
@@ -1032,9 +1111,13 @@
                   ${isSelf
                     ? '<span class="empty-state">(you)</span>'
                     : `
-                      <button type="button" class="btn-small" data-toggle-role="${user.id}" data-current-role="${user.role}">
-                        ${user.role === 'admin' ? 'Make customer' : 'Make admin'}
+                      ${user.role === 'admin'
+                        ? `<button type="button" class="btn-small" data-toggle-role="${user.id}" data-current-role="${user.role}" title="Admin access can only be granted via the create-admin CLI on the server itself — this only removes it.">Remove admin</button>`
+                        : ''}
+                      <button type="button" class="btn-small" data-toggle-test="${user.id}" data-is-test="${user.is_test ? 'true' : 'false'}">
+                        ${user.is_test ? 'Unmark test' : 'Mark test'}
                       </button>
+                      ${user.role !== 'admin' ? `<button type="button" class="btn-small" data-impersonate-user="${user.id}" title="Sign in as this account to see exactly what it can access">View as</button>` : ''}
                       <button type="button" class="btn-small" data-unlock-user="${user.id}">Unlock</button>
                       <button type="button" class="btn-small btn-delete" data-delete-user="${user.id}">Delete</button>
                     `}
@@ -1062,15 +1145,19 @@
       });
     });
 
+    // Demote-only — granting admin access from the dashboard was removed
+    // entirely (server-side, not just here) so it can never be a single
+    // click away from a compromised admin session. New admins are created
+    // exclusively via `npm run create-admin` on the machine itself.
     container.querySelectorAll('[data-toggle-role]').forEach((button) => {
       button.addEventListener('click', async () => {
-        const nextRole = button.dataset.currentRole === 'admin' ? 'customer' : 'admin';
+        if (!confirm('Remove admin access from this account? They will become a regular customer.')) return;
         try {
           await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.toggleRole}/role`, {
             method: 'PATCH',
-            body: { role: nextRole }
+            body: { role: 'customer' }
           });
-          toast(`Role updated to ${nextRole}.`, 'success');
+          toast('Admin access removed.', 'success');
           await Promise.all([loadUsers(), loadDashboard(), loadAuditLog()]);
         } catch (err) {
           toast(err.message, 'error');
@@ -1084,6 +1171,34 @@
           await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.unlockUser}/unlock`, { method: 'POST' });
           toast('Account unlocked.', 'success');
           await Promise.all([loadUsers(), loadAuditLog()]);
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      });
+    });
+
+    container.querySelectorAll('[data-toggle-test]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const isTest = button.dataset.isTest === 'true';
+        try {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.toggleTest}/test`, {
+            method: 'PATCH',
+            body: { isTest: !isTest }
+          });
+          toast(isTest ? 'No longer marked as a test account.' : 'Marked as a test account.', 'success');
+          await Promise.all([loadUsers(), loadAuditLog()]);
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      });
+    });
+
+    container.querySelectorAll('[data-impersonate-user]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        if (!window.confirm('View the site as this account? You will be signed in as them until you exit "view as" mode from the nav bar.')) return;
+        try {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.impersonateUser}/impersonate`, { method: 'POST' });
+          window.location.href = '/';
         } catch (err) {
           toast(err.message, 'error');
         }
@@ -1237,7 +1352,7 @@
     container.innerHTML = `
       <table class="orders-table">
         <thead>
-          <tr><th></th><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr>
+          <tr><th></th><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Test</th><th>Date</th></tr>
         </thead>
         <tbody>
           ${orders.map((order) => `
@@ -1253,16 +1368,23 @@
                   ${statuses.map((status) => `<option value="${status}" ${status === order.status ? 'selected' : ''}>${status}</option>`).join('')}
                 </select>
               </td>
+              <td>
+                ${order.isTest ? '<span class="status-badge status-test">Test</span>' : ''}
+                <button type="button" class="btn-tiny" data-toggle-order-test="${order.id}" data-is-test="${order.isTest ? 'true' : 'false'}" title="Exclude/include this order from the dashboard's revenue totals">
+                  ${order.isTest ? 'Unmark' : 'Mark test'}
+                </button>
+              </td>
               <td>${formatDate(order.createdAt)}</td>
             </tr>
             <tr class="order-detail-row" id="order-detail-${order.id}" hidden>
-              <td colspan="8">
+              <td colspan="9">
                 ${order.items.map((item) => `
                   <div class="catalog-pack-script">
                     <span>${escapeHtml(item.packName)} — ${escapeHtml(item.scriptTitle)}</span>
                     <span>${order.currencySymbol}${item.priceAmount.toFixed(2)}</span>
                   </div>
                 `).join('')}
+                ${order.customerNotes ? `<div class="catalog-pack-script"><span>Customer notes</span><span>${escapeHtml(order.customerNotes)}</span></div>` : ''}
               </td>
             </tr>
           `).join('')}
@@ -1287,6 +1409,22 @@
           });
           toast('Order status updated.', 'success');
           await Promise.all([loadDashboard(), loadAuditLog()]);
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      });
+    });
+
+    container.querySelectorAll('[data-toggle-order-test]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const isTest = button.dataset.isTest === 'true';
+        try {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/orders/${button.dataset.toggleOrderTest}/test`, {
+            method: 'PATCH',
+            body: { isTest: !isTest }
+          });
+          toast(isTest ? 'No longer marked as a test purchase.' : 'Marked as a test purchase.', 'success');
+          await Promise.all([loadOrders(), loadDashboard(), loadAuditLog()]);
         } catch (err) {
           toast(err.message, 'error');
         }
@@ -1424,14 +1562,41 @@
   }
 
   async function init() {
-    const { refreshCsrfToken, loadCurrentUser, logout } = window.ScripForgeAuth;
+    const { refreshCsrfToken, loadCurrentUser, logout, getImpersonating, stopImpersonating, escapeHtml } = window.ScripForgeAuth;
 
     await refreshCsrfToken();
     const user = await loadCurrentUser().catch(() => null);
 
     if (!user || user.role !== 'admin') {
-      document.getElementById('adminGate').hidden = false;
+      const gate = document.getElementById('adminGate');
+      const impersonating = getImpersonating();
+      // An admin who's currently "viewing as" a customer (see the
+      // Impersonate button in Users) has a non-admin role for the duration —
+      // landing here would otherwise be a dead end, so offer a way back to
+      // their own identity instead of the normal sign-in prompt.
+      gate.innerHTML = impersonating
+        ? `
+          <p>You're currently viewing the site as <strong>${escapeHtml(impersonating.asUsername)}</strong>, so the admin dashboard is hidden.</p>
+          <button type="button" class="btn btn-primary" id="gateExitImpersonateBtn">Exit and return to Admin</button>
+        `
+        : `
+          <p>Admin access required.</p>
+          <a href="../pages/login?redirect=../admin/admin" class="btn btn-primary">Sign in</a>
+        `;
+      gate.hidden = false;
       document.getElementById('adminLayout').hidden = true;
+
+      const exitBtn = document.getElementById('gateExitImpersonateBtn');
+      if (exitBtn) {
+        exitBtn.addEventListener('click', async () => {
+          try {
+            await stopImpersonating();
+            window.location.reload();
+          } catch (err) {
+            toast(err.message, 'error');
+          }
+        });
+      }
       return;
     }
 
@@ -1442,7 +1607,7 @@
 
     document.getElementById('adminLogoutBtn').addEventListener('click', async () => {
       await logout();
-      window.location.href = '../index.html';
+      window.location.href = '/';
     });
 
     setupTabs();
@@ -1451,6 +1616,7 @@
     setupAddPackForm();
     setupAddPromoForm();
     setupAddBundleForm();
+    setupAddUserForm();
     setupErrorLogControls();
     setupSearchFilters();
     renderTotpStatus(user.totpEnabled);

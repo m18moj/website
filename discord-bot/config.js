@@ -25,15 +25,35 @@ module.exports = {
   OAUTH_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET || null,
   OAUTH_REDIRECT_URI: process.env.DISCORD_OAUTH_REDIRECT_URI || null,
 
-  // Fixed names — /setup-server creates these if missing and every other
-  // command looks them up by name via guildConfig (see models/guildConfig.js)
-  // rather than hardcoding IDs, so the bot survives someone renaming/deleting
-  // and re-running setup.
+  // Fixed names for the two roles /setup-server creates if missing (roles
+  // aren't part of the server's pre-existing structure the way channels are,
+  // so find-or-create-by-name is still correct here). Every other command
+  // looks these up by ID via guildConfig (see models/guildConfig.js) once
+  // /setup-server has stored them.
   VERIFIED_ROLE_NAME: 'Verified Customer',
   STAFF_ROLE_NAME: 'Staff',
-  MOD_LOG_CHANNEL_NAME: 'mod-log',
-  TICKET_ARCHIVE_CHANNEL_NAME: 'ticket-archive',
-  SUPPORT_CHANNEL_NAME: 'support',
+
+  // Real channel IDs from this server's own channel list
+  // (discord-bot/server-tree.txt). /setup-server wires the bot up to use
+  // these EXISTING channels — it never creates new ones. Overridable via env
+  // in case a channel is later recreated/renamed; these are public channel
+  // identifiers, not secrets.
+  PRODUCT_ANNOUNCE_CHANNEL_ID: process.env.DISCORD_PRODUCT_CHANNEL_ID || '1537738559518285845', // --STORE-- products
+  CATALOGUE_CHANNEL_ID: process.env.DISCORD_CATALOGUE_CHANNEL_ID || '1537738562181791765', // --STORE-- pricing
+  ANNOUNCEMENTS_CHANNEL_ID: process.env.DISCORD_ANNOUNCEMENTS_CHANNEL_ID || '1537738542988664892', // --INFORMATION-- announcements
+  GENERAL_CHANNEL_ID: process.env.DISCORD_GENERAL_CHANNEL_ID || '1537738574894600202', // --COMMUNITY-- general
+  SUPPORT_CHANNEL_ID: process.env.DISCORD_SUPPORT_CHANNEL_ID || '1537738611150032896', // --SUPPORT-- open-ticket
+  VIP_CHANNEL_ID: process.env.DISCORD_VIP_CHANNEL_ID || '1537738570410893354', // --STORE-- vip-lounge (verified-only)
+  MOD_LOG_CHANNEL_ID: process.env.DISCORD_MOD_LOG_CHANNEL_ID || '1537738621291864084', // --STAFF-- mod-log
+  TICKET_LOG_CHANNEL_ID: process.env.DISCORD_TICKET_LOG_CHANNEL_ID || '1537738622856593489', // --STAFF-- sales-log
+  STAFF_CHAT_CHANNEL_ID: process.env.DISCORD_STAFF_CHAT_CHANNEL_ID || '1537738619404427284', // --STAFF-- staff-chat
+
+  // Category channel a new text channel is created under whenever a paid
+  // order includes a Discord bot, website, or SMM plan — see
+  // discord-bot/serviceOrderTicket.js. Unlike the channel ids above this
+  // isn't a channel that already existed on the server-tree.txt map; it was
+  // given directly for this feature, so it has no server-tree.txt comment.
+  CUSTOM_BUILDS_CATEGORY_ID: process.env.DISCORD_CUSTOM_BUILDS_CATEGORY_ID || '1538274290112405599',
 
   // Auto-moderation thresholds. All configurable via env so an admin can
   // tune them without a code change; sensible defaults otherwise.

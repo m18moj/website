@@ -1,0 +1,356 @@
+{
+  "apex": [
+    {
+      "id": "care-package-vote-deploy-timer",
+      "title": "Care Package Vote & Deploy Timer",
+      "category": "Systems",
+      "description": "Squad-wide vote to call in an optional care package rotation, with a shared cooldown and deploy countdown.",
+      "price": 2
+    },
+    {
+      "id": "grapple-zipline-traversal-kit",
+      "title": "Grapple & Zipline Traversal Kit",
+      "category": "Movement",
+      "description": "Directional grapple-hook swings and zipline mounting with a fall-damage cancel window on landing.",
+      "price": 3
+    },
+    {
+      "id": "legend-synergy-duo-bonuses",
+      "title": "Legend Synergy Duo Bonuses",
+      "category": "Systems",
+      "description": "Detects complementary two-legend ability combos and grants a short synergy buff window when both land.",
+      "price": 2
+    },
+    {
+      "id": "arena-round-draft-bans",
+      "title": "Arena Round Draft & Bans",
+      "category": "Systems",
+      "description": "Best-of-X arena round structure with a pre-round weapon and ability ban/pick draft phase.",
+      "price": 3
+    },
+    {
+      "id": "champion-squad-spotlight-camera",
+      "title": "Champion Squad Spotlight Camera",
+      "category": "HUD",
+      "description": "End-of-match cinematic camera that cycles through the winning squad’s final kills and positioning.",
+      "price": 2
+    }
+  ],
+  "call-of-duty": [
+    {
+      "id": "perk-a-cola-machine-mystery-box-economy",
+      "title": "Perk-a-Cola Machine & Mystery Box Economy",
+      "category": "Economy",
+      "description": "Between-round Mystery Box rolls and vending-machine perk purchases feeding a wave-survival economy.",
+      "price": 3
+    },
+    {
+      "id": "prestige-emblem-calling-card-vault",
+      "title": "Prestige Emblem & Calling Card Vault",
+      "category": "Progression",
+      "description": "Unlockable emblems and calling cards tied to prestige milestones, with a loadout-display vault.",
+      "price": 2
+    },
+    {
+      "id": "care-package-marker-steal-mechanic",
+      "title": "Care Package Marker & Steal Mechanic",
+      "category": "Streaks",
+      "description": "Enemy-stealable care package markers with a contest window and a team-recolor on successful capture.",
+      "price": 3
+    },
+    {
+      "id": "gulag-1v1-duel-queue",
+      "title": "Gulag 1v1 Duel Queue",
+      "category": "Systems",
+      "description": "Post-death 1v1 duel queue with a pistol-round bracket that grants a second-chance respawn on a win.",
+      "price": 3
+    }
+  ],
+  "fortnite": [
+    {
+      "id": "zero-point-rift-portal-network",
+      "title": "Zero Point Rift Portal Network",
+      "category": "World",
+      "description": "Placed rift-portal pairs with linked teleport pathing and a per-portal cooldown to limit reuse.",
+      "price": 3
+    },
+    {
+      "id": "team-rumble-respawn-wave-system",
+      "title": "Team Rumble Respawn Wave System",
+      "category": "Systems",
+      "description": "Wave-based respawns for team-rumble modes with an elimination-count victory threshold and spawn rotation.",
+      "price": 2
+    },
+    {
+      "id": "no-build-mode-toggle-overshield",
+      "title": "No-Build Mode Toggle & Overshield",
+      "category": "Systems",
+      "description": "A build-disable mode toggle paired with an overshield-only health model for arena-style playlists.",
+      "price": 2
+    },
+    {
+      "id": "vault-keycard-boss-loot-room",
+      "title": "Vault Keycard & Boss Loot Room",
+      "category": "Loot",
+      "description": "Keycard-gated vault rooms guarded by a mini-boss, ending in a high-tier loot-room reveal sequence.",
+      "price": 3
+    },
+    {
+      "id": "prop-disguise-movement-system",
+      "title": "Prop-Disguise Movement System",
+      "category": "Movement",
+      "description": "Prop-mesh disguise mode with restricted movement speed and a break-disguise-on-damage rule.",
+      "price": 2
+    },
+    {
+      "id": "squad-fill-auto-balance-matchmaking",
+      "title": "Squad Fill & Auto-Balance Matchmaking",
+      "category": "Squad",
+      "description": "Fills incomplete squads before match start and auto-balances skill rating evenly across the lobby.",
+      "price": 3
+    },
+    {
+      "id": "weekly-bounty-board-elimination-contracts",
+      "title": "Weekly Bounty Board & Elimination Contracts",
+      "category": "Progression",
+      "description": "Rotating bounty-board contracts for eliminating tagged players, with a bonus-XP payout on completion.",
+      "price": 2
+    }
+  ],
+  "gta-v": [
+    {
+      "id": "drug-trafficking-supply-chain",
+      "title": "Drug Trafficking Supply Chain",
+      "category": "Economy",
+      "description": "A source-to-sell supply loop with product quality, route risk scoring, and police-interdiction odds.",
+      "price": 4
+    },
+    {
+      "id": "radio-station-in-car-playlist-manager",
+      "title": "Radio Station & In-Car Playlist Manager",
+      "category": "Systems",
+      "description": "Custom radio-station track lists with in-vehicle playback and a station-switch UI overlay.",
+      "price": 2
+    },
+    {
+      "id": "bounty-hunter-contract-board",
+      "title": "Bounty Hunter Contract Board",
+      "category": "Missions",
+      "description": "A contract board listing wanted NPC targets with capture-or-kill objectives and scaling payouts.",
+      "price": 3
+    }
+  ],
+  "minecraft": [
+    {
+      "id": "dungeon-room-generator-loot-vault",
+      "title": "Dungeon Room Generator & Loot Vault",
+      "category": "World",
+      "description": "Procedurally stitches dungeon rooms from a room pool, ending in a locked vault gated by a boss key.",
+      "price": 4
+    },
+    {
+      "id": "guild-party-xp-sharing",
+      "title": "Guild & Party XP Sharing",
+      "category": "Systems",
+      "description": "Party formation with shared XP pooling and a guild tag prefix shown in chat and the scoreboard.",
+      "price": 3
+    },
+    {
+      "id": "custom-potion-brewing-stand",
+      "title": "Custom Potion Brewing Stand",
+      "category": "Crafting",
+      "description": "Extended brewing-stand recipes that produce custom potion effects beyond the vanilla ingredient table.",
+      "price": 2
+    },
+    {
+      "id": "mob-spawner-tuning-cap-control",
+      "title": "Mob Spawner Tuning & Cap Control",
+      "category": "Systems",
+      "description": "Per-region mob-spawner rate tuning with a live spawn-cap dashboard to head off lag spikes.",
+      "price": 3
+    },
+    {
+      "id": "player-housing-plot-furniture-placement",
+      "title": "Player Housing Plot & Furniture Placement",
+      "category": "Gameplay",
+      "description": "Claimed housing plots with rotate-and-place furniture blocks and a plot-visit permission toggle.",
+      "price": 3
+    },
+    {
+      "id": "elytra-firework-trick-combo-tracker",
+      "title": "Elytra Firework Trick Combo Tracker",
+      "category": "Systems",
+      "description": "Tracks Elytra flight tricks — barrel rolls, firework-boost chains — for a style-score leaderboard.",
+      "price": 2
+    }
+  ],
+  "pubg": [
+    {
+      "id": "emergency-pickup-helicopter-extraction",
+      "title": "Emergency Pickup Helicopter Extraction",
+      "category": "Events",
+      "description": "A late-match helicopter extraction zone with a limited-seat evac window and bonus survival score.",
+      "price": 3
+    },
+    {
+      "id": "bluezone-damage-insurance-item",
+      "title": "Bluezone Damage Insurance Item",
+      "category": "Systems",
+      "description": "A consumable that halves the next zone-tick damage instance it absorbs, gated by a use cooldown.",
+      "price": 2
+    },
+    {
+      "id": "weapon-skin-crate-unlock-system",
+      "title": "Weapon Skin & Crate Unlock System",
+      "category": "Progression",
+      "description": "A crate-opening animation flow that yields cosmetic weapon skins from a weighted rarity table.",
+      "price": 2
+    },
+    {
+      "id": "team-formation-custom-room-lobby",
+      "title": "Team Formation & Custom Room Lobby",
+      "category": "Systems",
+      "description": "Custom-room lobby creation with team-size presets, password gating, and a ready-check flow.",
+      "price": 3
+    },
+    {
+      "id": "throwable-trajectory-preview-arc",
+      "title": "Throwable Trajectory Preview Arc",
+      "category": "Weapons",
+      "description": "A predictive arc preview line for grenades and Molotovs before release, scaled by throw power.",
+      "price": 2
+    },
+    {
+      "id": "wall-breach-charge-sonic-zone",
+      "title": "Wall Breach Charge & Sonic Zone",
+      "category": "World",
+      "description": "Destructible-wall breach charges paired with a sonic-bombardment variant of the standard blue zone.",
+      "price": 3
+    },
+    {
+      "id": "loot-truck-roaming-convoy",
+      "title": "Loot Truck & Roaming Convoy",
+      "category": "Loot",
+      "description": "A roaming high-tier loot truck that spawns an escort AI and drops its cargo when destroyed.",
+      "price": 3
+    },
+    {
+      "id": "ranked-season-reset-placement-matches",
+      "title": "Ranked Season Reset & Placement Matches",
+      "category": "Progression",
+      "description": "Season-boundary rank soft-reset with placement-match MMR calibration before ranked tiers resume.",
+      "price": 2
+    }
+  ],
+  "roblox": [
+    {
+      "id": "group-rank-sync-perms",
+      "title": "Group Rank Sync & Perms",
+      "category": "Systems",
+      "description": "Syncs a player’s Roblox group rank to in-game permission tiers, with a cached refresh to dodge rate limits.",
+      "price": 3
+    },
+    {
+      "id": "ui-tween-menu-framework",
+      "title": "UI Tween Menu Framework",
+      "category": "Systems",
+      "description": "A reusable TweenService-driven menu open/close framework with stacked panel transitions.",
+      "price": 2
+    },
+    {
+      "id": "server-side-hitbox-melee-combat",
+      "title": "Server-Side Hitbox Melee Combat",
+      "category": "Combat",
+      "description": "Server-authoritative melee hitbox detection with hit debounce and a lag-compensated raycast swing.",
+      "price": 4
+    },
+    {
+      "id": "daily-reward-streak-calendar",
+      "title": "Daily Reward Streak Calendar",
+      "category": "Systems",
+      "description": "A DataStore-backed daily login streak with escalating rewards and a streak-break grace period.",
+      "price": 2
+    }
+  ],
+  "skyrim": [
+    {
+      "id": "shrine-blessing-standing-stone-tracker",
+      "title": "Shrine Blessing & Standing Stone Tracker",
+      "category": "Systems",
+      "description": "Tracks visited shrines and the currently active standing-stone blessing, reapplying it safely on load.",
+      "price": 2
+    },
+    {
+      "id": "werewolf-vampire-lord-transformation",
+      "title": "Werewolf & Vampire Lord Transformation",
+      "category": "Systems",
+      "description": "Timed beast-form transformations with a separate power bar, a feed/hunt mechanic, and form-specific perks.",
+      "price": 4
+    },
+    {
+      "id": "college-of-winterhold-spell-research",
+      "title": "College of Winterhold Spell Research",
+      "category": "Progression",
+      "description": "Research-bench spell-tome crafting gated by school skill level and gathered arcane ingredients.",
+      "price": 3
+    },
+    {
+      "id": "companion-housecarl-assignment",
+      "title": "Companion Housecarl Assignment",
+      "category": "Systems",
+      "description": "Assigns a housecarl to each owned hold, with home-guard behavior and a steward-report dialogue hook.",
+      "price": 2
+    },
+    {
+      "id": "alchemy-ingredient-effect-discovery-log",
+      "title": "Alchemy Ingredient Effect Discovery Log",
+      "category": "Crafting",
+      "description": "A persistent journal that tracks discovered ingredient effects as the player experiments through use.",
+      "price": 2
+    },
+    {
+      "id": "civil-war-questline-hold-control",
+      "title": "Civil War Questline Hold Control",
+      "category": "Quests",
+      "description": "A Stormcloak/Imperial hold-capture questline branch that tracks a hold-by-hold ownership map state.",
+      "price": 4
+    }
+  ],
+  "valorant": [
+    {
+      "id": "deathmatch-respawn-loadout-rotation",
+      "title": "Deathmatch Respawn & Loadout Rotation",
+      "category": "Systems",
+      "description": "Free-for-all deathmatch respawn logic with a periodic random-loadout rotation on every life.",
+      "price": 2
+    },
+    {
+      "id": "replication-mode-ability-cooldown-reset",
+      "title": "Replication Mode Ability Cooldown Reset",
+      "category": "Abilities",
+      "description": "A single-agent replication variant that fast-resets ability cooldowns and removes ultimate cost.",
+      "price": 2
+    },
+    {
+      "id": "party-queue-rank-restriction",
+      "title": "Party Queue & Rank Restriction",
+      "category": "Systems",
+      "description": "Party-size-based rank-range matchmaking restriction to prevent high/low-skill queue abuse.",
+      "price": 2
+    },
+    {
+      "id": "ability-combo-detector-highlight",
+      "title": "Ability Combo Detector & Highlight",
+      "category": "Combat",
+      "description": "Detects chained multi-agent ability combos — setup plus follow-up kill — and flags them for a highlight reel.",
+      "price": 3
+    },
+    {
+      "id": "tournament-bracket-match-scheduling",
+      "title": "Tournament Bracket & Match Scheduling",
+      "category": "Systems",
+      "description": "Single- and double-elimination bracket generation with match scheduling slots for community tournaments.",
+      "price": 3
+    }
+  ]
+}

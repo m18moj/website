@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScripForge | Bot Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/bot-admin.css">
+</head>
+<body data-root-prefix="../">
+    <div class="admin-container bot-admin-container">
+        <nav class="admin-nav bot-admin-nav">
+            <div class="admin-logo">
+                <a href="../admin/admin">← Store Admin</a>
+                <span class="bot-admin-title">🤖 Bot Dashboard</span>
+            </div>
+            <div class="admin-user-info">
+                <span id="botGatewayPill" class="bot-status-pill">checking…</span>
+                <span id="adminEmail"></span>
+                <button id="adminLogoutBtn" type="button">Logout</button>
+            </div>
+        </nav>
+
+        <div id="adminGate" class="admin-gate" hidden></div>
+
+        <div class="admin-layout" id="adminLayout" hidden>
+            <aside class="admin-sidebar">
+                <nav class="admin-menu">
+                    <a href="#" class="menu-item active" data-admin-tab="overview">📊 Overview</a>
+                    <a href="#" class="menu-item" data-admin-tab="moderation">🛡️ Moderation</a>
+                    <a href="#" class="menu-item" data-admin-tab="automod">🧹 Automod</a>
+                    <a href="#" class="menu-item" data-admin-tab="tickets">🎫 Tickets</a>
+                    <a href="#" class="menu-item" data-admin-tab="server">🏰 Server</a>
+                    <a href="#" class="menu-item" data-admin-tab="config">⚙️ Configuration</a>
+                    <a href="#" class="menu-item" data-admin-tab="store">🛒 Store Integration</a>
+                    <a href="#" class="menu-item" data-admin-tab="analytics">📈 Analytics</a>
+                    <a href="#" class="menu-item" data-admin-tab="logs">📜 Audit Log</a>
+                    <a href="#" class="menu-item" data-admin-tab="features">✅ Feature List</a>
+                </nav>
+            </aside>
+
+            <main class="admin-content">
+                <!-- Overview -->
+                <div class="admin-tab active" id="overview">
+                    <div class="section-header"><h1>Bot Overview</h1></div>
+
+                    <div class="stats-grid" id="overviewConfigGrid"></div>
+
+                    <div class="dashboard-section">
+                        <h2>Gateway status</h2>
+                        <div id="gatewayStatusContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Raid protection</h2>
+                        <div id="raidStatusContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Moderation -->
+                <div class="admin-tab" id="moderation">
+                    <div class="section-header">
+                        <h1>Moderation</h1>
+                        <div class="section-header-actions">
+                            <button type="button" class="btn btn-primary" id="showModActionForm">+ Manual action</button>
+                        </div>
+                    </div>
+
+                    <form id="modActionForm" class="admin-inline-form" hidden novalidate>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modDiscordId">Discord user ID</label>
+                                <input id="modDiscordId" type="text" required placeholder="e.g. 123456789012345678">
+                            </div>
+                            <div class="form-group">
+                                <label for="modActionType">Action</label>
+                                <select id="modActionType">
+                                    <option value="timeout">Timeout</option>
+                                    <option value="kick">Kick</option>
+                                    <option value="ban">Ban</option>
+                                    <option value="unban">Unban</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="modDurationGroup">
+                                <label for="modDuration">Duration (minutes)</label>
+                                <input id="modDuration" type="number" min="1" max="40320" value="10">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="modReason">Reason</label>
+                            <input id="modReason" type="text" maxlength="500">
+                        </div>
+                        <p id="modActionError" class="form-error" role="alert" hidden></p>
+                        <button class="btn btn-primary" type="submit">Apply action</button>
+                    </form>
+
+                    <div class="dashboard-section">
+                        <h2>Recent moderation actions</h2>
+                        <div id="modActionsContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Automod -->
+                <div class="admin-tab" id="automod">
+                    <div class="section-header"><h1>Automod</h1></div>
+
+                    <div class="dashboard-section">
+                        <h2>Configuration</h2>
+                        <form id="automodConfigForm" class="admin-inline-form" novalidate>
+                            <label class="checkbox-row"><input type="checkbox" id="amEnabled"> Automod enabled</label>
+                            <label class="checkbox-row"><input type="checkbox" id="amBlockInvites"> Block Discord invite links</label>
+                            <label class="checkbox-row"><input type="checkbox" id="amBlockAllLinks"> Block all links</label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="amMaxMentions">Max mentions per message</label>
+                                    <input id="amMaxMentions" type="number" min="1" max="50">
+                                </div>
+                                <div class="form-group">
+                                    <label for="amSpamCount">Spam: messages before flag</label>
+                                    <input id="amSpamCount" type="number" min="1" max="50">
+                                </div>
+                                <div class="form-group">
+                                    <label for="amSpamWindow">Spam window (ms)</label>
+                                    <input id="amSpamWindow" type="number" min="1000" max="120000">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="amBannedWords">Filtered words (comma-separated)</label>
+                                <textarea id="amBannedWords" rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="amExemptRoles">Exempt role IDs (comma-separated)</label>
+                                <input id="amExemptRoles" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="amExemptChannels">Exempt channel IDs (comma-separated)</label>
+                                <input id="amExemptChannels" type="text">
+                            </div>
+                            <p class="empty-state">Escalating punishment: 1st infraction = delete, 3rd = 10min timeout, 5th = 1hr timeout, 8th = kick (24h rolling window). Staff with Manage Messages are always exempt.</p>
+                            <button class="btn btn-primary" type="submit">Save automod config</button>
+                        </form>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h2>Recent infractions</h2>
+                        <div id="automodInfractionsContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Tickets -->
+                <div class="admin-tab" id="tickets">
+                    <div class="section-header">
+                        <h1>Tickets</h1>
+                        <div class="section-header-actions">
+                            <select id="ticketStatusFilter">
+                                <option value="">All statuses</option>
+                                <option value="open">Open</option>
+                                <option value="claimed">Claimed</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                            <select id="ticketCategoryFilter">
+                                <option value="">All categories</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid" id="ticketStatsGrid"></div>
+
+                    <div class="dashboard-section">
+                        <div id="ticketsContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Server -->
+                <div class="admin-tab" id="server">
+                    <div class="section-header"><h1>Server Management</h1></div>
+                    <div class="dashboard-section">
+                        <h2>Guild info</h2>
+                        <div id="serverInfoContainer">Loading…</div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h2>Roles</h2>
+                        <div id="rolesContainer" class="custom-scroll">Loading…</div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h2>Channels</h2>
+                        <div id="channelsContainer" class="custom-scroll">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Configuration -->
+                <div class="admin-tab" id="config">
+                    <div class="section-header"><h1>Configuration</h1></div>
+                    <form id="botConfigForm" class="admin-inline-form" novalidate>
+                        <div class="form-row">
+                            <div class="form-group"><label for="cfgStaffRoleId">Staff role ID</label><input id="cfgStaffRoleId" type="text"></div>
+                            <div class="form-group"><label for="cfgVerifiedRoleId">Verified role ID</label><input id="cfgVerifiedRoleId" type="text"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="cfgModLogChannelId">Mod-log channel ID</label><input id="cfgModLogChannelId" type="text"></div>
+                            <div class="form-group"><label for="cfgTicketArchiveChannelId">Ticket archive channel ID</label><input id="cfgTicketArchiveChannelId" type="text"></div>
+                            <div class="form-group"><label for="cfgSupportChannelId">Support channel ID</label><input id="cfgSupportChannelId" type="text"></div>
+                        </div>
+                        <h3>Raid protection</h3>
+                        <div class="form-row">
+                            <label class="checkbox-row"><input type="checkbox" id="cfgRaidEnabled"> Enabled</label>
+                            <div class="form-group"><label for="cfgRaidWindow">Window (ms)</label><input id="cfgRaidWindow" type="number" min="1000" max="120000"></div>
+                            <div class="form-group"><label for="cfgRaidThreshold">Join threshold</label><input id="cfgRaidThreshold" type="number" min="2" max="100"></div>
+                        </div>
+                        <p class="empty-state">Product announcement channel and full-catalogue channel are set via <code>DISCORD_PRODUCT_CHANNEL_ID</code> / <code>DISCORD_CATALOGUE_CHANNEL_ID</code> in <code>discord-bot/.env</code> (defaults already point at this server's #products and #pricing channels).</p>
+                        <button class="btn btn-primary" type="submit">Save configuration</button>
+                    </form>
+                </div>
+
+                <!-- Store Integration -->
+                <div class="admin-tab" id="store">
+                    <div class="section-header"><h1>Store Integration</h1></div>
+                    <div class="stats-grid" id="storeStatsGrid"></div>
+                    <div class="dashboard-section">
+                        <h2>Manual sync</h2>
+                        <div class="admin-inline-form">
+                            <button type="button" class="btn btn-secondary" id="syncCatalogueBtn">Sync full catalogue now</button>
+                            <button type="button" class="btn btn-secondary" id="syncBestSellersBtn">Refresh best sellers now</button>
+                        </div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h2>Best sellers</h2>
+                        <div id="storeBestSellersContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div class="admin-tab" id="analytics">
+                    <div class="section-header"><h1>Analytics</h1></div>
+                    <div class="stats-grid" id="analyticsStatsGrid"></div>
+                    <div class="dashboard-section">
+                        <h2>Moderation actions (last 200)</h2>
+                        <div id="analyticsModBreakdown">Loading…</div>
+                    </div>
+                    <div class="dashboard-section">
+                        <h2>Ticket breakdown by category</h2>
+                        <div id="analyticsTicketBreakdown">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Audit Log -->
+                <div class="admin-tab" id="logs">
+                    <div class="section-header"><h1>Bot Audit Log</h1></div>
+                    <div class="dashboard-section">
+                        <div id="botAuditLogContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Feature list -->
+                <div class="admin-tab" id="features">
+                    <div class="section-header"><h1>What this bot can actually do</h1></div>
+                    <div class="dashboard-section">
+                        <p class="empty-state">A transparent list of every real, working feature — nothing here is simulated. See <code>FEATURES.md</code> in the repo for the full, versioned reference.</p>
+                        <div id="featureListContainer"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/site.js"></script>
+    <script src="../js/theme.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/bot-admin.js"></script>
+</body>
+</html>

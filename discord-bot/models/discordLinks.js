@@ -9,7 +9,9 @@ const statements = {
   findByDiscordId: db.prepare('SELECT * FROM discord_links WHERE discord_id = ?'),
   findByUserId: db.prepare('SELECT * FROM discord_links WHERE user_id = ?'),
   remove: db.prepare('DELETE FROM discord_links WHERE discord_id = ?'),
-  removeByUserId: db.prepare('DELETE FROM discord_links WHERE user_id = ?')
+  removeByUserId: db.prepare('DELETE FROM discord_links WHERE user_id = ?'),
+  setMemberVerified: db.prepare(`UPDATE discord_links SET member_verified_at = datetime('now') WHERE discord_id = ?`),
+  setDiscountCode: db.prepare(`UPDATE discord_links SET discount_code = ? WHERE discord_id = ?`)
 };
 
 // Idempotent by design — re-running /verify with the same (or a different)
@@ -41,4 +43,13 @@ function unlinkByUserId(userId) {
   statements.removeByUserId.run(userId);
 }
 
-module.exports = { link, findByDiscordId, findByUserId, unlink, unlinkByUserId };
+function setMemberVerified(discordId) {
+  statements.setMemberVerified.run(discordId);
+  return statements.findByDiscordId.get(discordId);
+}
+
+function setDiscountCode(discordId, code) {
+  statements.setDiscountCode.run(code, discordId);
+}
+
+module.exports = { link, findByDiscordId, findByUserId, unlink, unlinkByUserId, setMemberVerified, setDiscountCode };

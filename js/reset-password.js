@@ -28,7 +28,7 @@
           body: { token, newPassword }
         });
         if (window.ScripForgeToast) window.ScripForgeToast.show('Password updated — sign in with your new password.', 'success');
-        window.location.href = 'login.html';
+        window.location.href = 'login';
       } catch (err) {
         errorBox.textContent = err.message;
         errorBox.hidden = false;

@@ -60,7 +60,7 @@ async function main() {
   }
 
   const port = process.env.PORT || 3000;
-  console.log(`Sign in at http://localhost:${port}/pages/login.html with that username and password.`);
+  console.log(`Sign in at http://localhost:${port}/pages/login with that username and password.`);
   console.log('If the server is already running, restart it now — Node\'s SQLite driver can take a moment to notice changes made by another process while it\'s up, so signing in immediately after this may briefly fail.');
 }
 

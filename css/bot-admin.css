@@ -1,0 +1,130 @@
+/* Bot dashboard — same underlying design system as css/admin.css (stat
+   cards, tabs, tables, forms), with a Discord-blurple accent so it visually
+   reads as a distinct app rather than a tab bolted onto the store admin. */
+
+.bot-admin-nav {
+    border-bottom: 1px solid #5865f2;
+}
+
+.bot-admin-title {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--border-color, #2a2a3e);
+    font-weight: 700;
+    color: #5865f2;
+}
+
+.bot-status-pill {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.bot-status-pill.online {
+    background: rgba(59, 165, 92, 0.18);
+    color: #3ba55c;
+}
+
+.bot-status-pill.offline {
+    background: rgba(237, 66, 69, 0.18);
+    color: #ed4245;
+}
+
+.bot-admin-container .admin-menu .menu-item.active {
+    border-left-color: #5865f2;
+    background: rgba(88, 101, 242, 0.12);
+    color: #5865f2;
+}
+
+.admin-inline-form {
+    background: var(--bg-tertiary, #16213e);
+    border: 1px solid var(--border-color, #2a2a3e);
+    border-radius: var(--radius, 12px);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 720px;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 160px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.bot-config-card,
+.bot-list-row {
+    background: var(--bg-tertiary, #16213e);
+    border: 1px solid var(--border-color, #2a2a3e);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.bot-list-row-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.bot-list-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.6rem;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(88, 101, 242, 0.15);
+    color: #5865f2;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.feature-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.feature-list-group h3 {
+    margin-bottom: 0.5rem;
+    color: #5865f2;
+}
+
+.feature-list-group ul {
+    list-style: none;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #b0b0b0);
+}
+
+.feature-list-group li {
+    padding: 3px 0;
+}
+
+.feature-list-group li::before {
+    content: "✓ ";
+    color: #3ba55c;
+    font-weight: 700;
+}

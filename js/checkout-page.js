@@ -12,6 +12,11 @@
     return input ? input.value.trim() : '';
   }
 
+  function getOrderNotes() {
+    const input = document.getElementById('orderNotesInput');
+    return input ? input.value.trim() : '';
+  }
+
   function money(usdAmount) {
     return window.ScripForgeCurrency ? window.ScripForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
   }
@@ -32,7 +37,7 @@
       try {
         const me = await window.ScripForgeAuth.loadCurrentUser();
         if (!me) {
-          window.location.href = 'login.html?redirect=checkout.html';
+          window.location.href = 'login?redirect=checkout';
           return;
         }
 
@@ -45,7 +50,8 @@
             // rate table (see server/routes/checkout.js), so this can't be
             // used to change what gets billed, only which currency it's in.
             currency: window.ScripForgeCurrency ? window.ScripForgeCurrency.getCurrency() : 'GBP',
-            promoCode: getPromoCode() || undefined
+            promoCode: getPromoCode() || undefined,
+            notes: getOrderNotes() || undefined
           }
         });
 
@@ -78,7 +84,7 @@
     try {
       const me = await window.ScripForgeAuth.loadCurrentUser();
       if (!me) {
-        window.location.href = 'login.html?redirect=checkout.html';
+        window.location.href = 'login?redirect=checkout';
         return;
       }
 
@@ -125,7 +131,7 @@
 
       grid.innerHTML = picks.map((pack) => {
         const total = pack.scripts.reduce((sum, s) => sum + s.price, 0);
-        const link = pack.detailUrl ? `../${pack.detailUrl}` : `catalog.html`;
+        const link = pack.detailUrl ? `../${pack.detailUrl}` : `catalog`;
         return `
           <article class="catalog-card game-card">
             <div class="game-splash ${escapeHtml(pack.splash || 'custom')}" data-game="${escapeHtml(pack.dataGame || pack.gameTitle)}"></div>

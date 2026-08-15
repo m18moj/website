@@ -1,25 +1,10 @@
+// The site-wide navbar search box has been removed (decluttered navbar —
+// see css/styles.css) in favor of a single search location: the "Search"
+// filter box at the top of the Catalog page itself (#catalogSearch in
+// pages/catalog.html), which already live-filters the grid and reads a
+// `?q=` deep link on load (js/catalog-page.js). This file is kept as a
+// harmless no-op — several pages still load it via <script src> — rather
+// than removing those script tags from every page individually.
 (function () {
-  function render() {
-    const navActions = document.querySelector('.nav-actions');
-    if (!navActions || document.getElementById('navSearchForm')) return;
-
-    const form = document.createElement('form');
-    form.id = 'navSearchForm';
-    form.className = 'nav-search';
-    form.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.35-4.35"></path></svg>
-      <input type="search" id="navSearchInput" placeholder="Search packs…" aria-label="Search packs">
-    `;
-    navActions.insertBefore(form, navActions.firstChild);
-
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const query = document.getElementById('navSearchInput').value.trim();
-      const rootPrefix = document.body.dataset.rootPrefix || '';
-      const target = `${rootPrefix}pages/catalog.html${query ? `?q=${encodeURIComponent(query)}` : ''}`;
-      window.location.href = target;
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', render);
+  document.addEventListener('DOMContentLoaded', () => {});
 })();

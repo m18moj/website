@@ -1,7 +1,8 @@
 (function () {
   const GENRE_CHIPS = {
     sandbox: 'Sandbox', 'battle-royale': 'Battle Royale', rpg: 'RPG', shooter: 'Shooter',
-    creator: 'Creator', 'open-world': 'Open World', other: 'Other'
+    creator: 'Creator', 'open-world': 'Open World', bots: 'Discord Bots', web: 'Websites',
+    marketing: 'SMM', other: 'Other'
   };
   const NEW_BADGE_DAYS = 14;
 
@@ -123,7 +124,7 @@
           const packId = button.dataset.wishlistToggle;
           const me = await window.ScripForgeAuth.loadCurrentUser();
           if (!me) {
-            window.location.href = 'login.html?redirect=catalog.html';
+            window.location.href = 'login?redirect=catalog';
             return;
           }
           const isSaved = button.classList.contains('active');
@@ -155,5 +156,23 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', render);
+  // The site-wide navbar no longer shows sign-in/account controls (see
+  // css/styles.css .nav-actions #authControl) — on the Catalog page
+  // specifically, account access lives at the top of the page instead, next
+  // to the filters. This physically moves the *same* #authControl element
+  // js/auth.js already renders into (rather than duplicating it), so its
+  // existing render/event logic keeps working untouched. Runs synchronously
+  // on DOMContentLoaded, before auth.js's async render (which awaits a
+  // network round trip) has populated it, so there's no visible flash in
+  // the old location.
+  function relocateAccountControl() {
+    const control = document.getElementById('authControl');
+    const slot = document.getElementById('catalogAccountSlot');
+    if (control && slot) slot.appendChild(control);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    relocateAccountControl();
+    render();
+  });
 })();

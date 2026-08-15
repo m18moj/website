@@ -11,8 +11,10 @@ function serializeOrder(order) {
     totalAmount: order.total_cents / 100,
     discountAmount: (order.discount_cents || 0) / 100,
     promoCode: order.promo_code || null,
+    isTest: Boolean(order.is_test),
     createdAt: order.created_at,
     paidAt: order.paid_at,
+    customerNotes: order.customer_notes || null,
     items: (order.items || []).map((item) => ({
       packId: item.pack_id,
       packName: item.pack_name,

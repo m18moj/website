@@ -2,13 +2,13 @@
   function isSafeRedirect(target) {
     if (!target) return false;
     if (target.includes('://') || target.startsWith('//') || target.includes(':')) return false;
-    return /^[a-zA-Z0-9/_.-]+\.html$/.test(target);
+    return /^[a-zA-Z0-9/_-]+$/.test(target);
   }
 
   function getRedirectTarget() {
     const params = new URLSearchParams(window.location.search);
     const target = params.get('redirect');
-    return isSafeRedirect(target) ? target : 'games.html';
+    return isSafeRedirect(target) ? target : 'games';
   }
 
   async function refreshCaptcha() {
@@ -38,12 +38,13 @@
       errorBox.hidden = true;
 
       const username = document.getElementById('username').value.trim();
+      const nickname = document.getElementById('nickname').value.trim();
       const password = document.getElementById('password').value;
       const captchaAnswer = document.getElementById('captchaAnswer').value.trim();
       const email = document.getElementById('email').value.trim();
 
       try {
-        await window.ScripForgeAuth.register(username, password, captchaAnswer, email);
+        await window.ScripForgeAuth.register(username, nickname, password, captchaAnswer, email);
         window.location.href = getRedirectTarget();
       } catch (err) {
         errorBox.textContent = err.message;

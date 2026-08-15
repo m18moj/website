@@ -1,0 +1,152 @@
+{
+  "discord-bots": [
+    {
+      "id": "starter-bot",
+      "title": "Starter Bot",
+      "price": 25,
+      "category": "Plan"
+    },
+    {
+      "id": "growth-bot",
+      "title": "Growth Bot",
+      "price": 65,
+      "category": "Plan"
+    },
+    {
+      "id": "elite-bot",
+      "title": "Elite Bot",
+      "price": 130,
+      "category": "Plan"
+    },
+    {
+      "id": "multi-server-license",
+      "title": "Multi-Server License",
+      "price": 25,
+      "category": "Add-on"
+    },
+    {
+      "id": "custom-api-webhook-integration",
+      "title": "Custom API / Webhook Integration",
+      "price": 40,
+      "category": "Add-on"
+    },
+    {
+      "id": "rush-delivery-48-hours",
+      "title": "Rush Delivery (48 Hours)",
+      "price": 30,
+      "category": "Add-on"
+    },
+    {
+      "id": "3-months-of-edits-tweaks",
+      "title": "3 Months of Edits & Tweaks",
+      "price": 20,
+      "category": "Add-on"
+    }
+  ],
+  "websites": [
+    {
+      "id": "starter-site",
+      "title": "Starter Site",
+      "price": 150,
+      "category": "Plan"
+    },
+    {
+      "id": "business-site",
+      "title": "Business Site",
+      "price": 400,
+      "category": "Plan"
+    },
+    {
+      "id": "pro-e-commerce-site",
+      "title": "Pro / E-Commerce Site",
+      "price": 800,
+      "category": "Plan"
+    },
+    {
+      "id": "hosting-annual",
+      "title": "Hosting (Annual)",
+      "price": 60,
+      "category": "Hosting"
+    },
+    {
+      "id": "extra-page-pack-5-pages",
+      "title": "Extra Page Pack (+5 Pages)",
+      "price": 75,
+      "category": "Add-on"
+    },
+    {
+      "id": "logo-brand-kit",
+      "title": "Logo & Brand Kit",
+      "price": 90,
+      "category": "Add-on"
+    },
+    {
+      "id": "professional-copywriting",
+      "title": "Professional Copywriting",
+      "price": 60,
+      "category": "Add-on"
+    },
+    {
+      "id": "speed-seo-performance-pass",
+      "title": "Speed & SEO Performance Pass",
+      "price": 90,
+      "category": "Add-on"
+    },
+    {
+      "id": "3-months-of-post-launch-edits",
+      "title": "3 Months of Post-Launch Edits",
+      "price": 50,
+      "category": "Add-on"
+    }
+  ],
+  "smm-services": [
+    {
+      "id": "starter-growth",
+      "title": "Starter Growth",
+      "price": 70,
+      "category": "Plan"
+    },
+    {
+      "id": "growth-package",
+      "title": "Growth Package",
+      "price": 150,
+      "category": "Plan"
+    },
+    {
+      "id": "full-management",
+      "title": "Full Management",
+      "price": 280,
+      "category": "Plan"
+    },
+    {
+      "id": "extra-platform",
+      "title": "Extra Platform",
+      "price": 50,
+      "category": "Add-on"
+    },
+    {
+      "id": "paid-ad-campaign-setup",
+      "title": "Paid Ad Campaign Setup",
+      "price": 130,
+      "category": "Add-on"
+    },
+    {
+      "id": "brand-strategy-content-calendar",
+      "title": "Brand Strategy & Content Calendar",
+      "price": 75,
+      "category": "Add-on"
+    },
+    {
+      "id": "content-design-pack-20-graphics",
+      "title": "Content Design Pack (20 Graphics)",
+      "price": 60,
+      "category": "Add-on"
+    },
+    {
+      "id": "rush-content-turnaround",
+      "title": "Rush Content Turnaround",
+      "price": 30,
+      "category": "Add-on"
+    }
+  ]
+}

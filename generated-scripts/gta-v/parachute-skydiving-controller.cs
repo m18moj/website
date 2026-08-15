@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Parachute & Skydiving Controller
+ * ScripForge — Parachute & Skydiving Controller
  * Pack: GTA V Pack | Category: Movement
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Movement
+namespace ScripForge.Movement
 {
     /// <summary>
     /// Tracks the player's freefall state (falling without a parachute deployed),

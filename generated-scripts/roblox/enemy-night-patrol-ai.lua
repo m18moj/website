@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — NPC Patrol & Humanoid AI
+    ScripForge — NPC Patrol & Humanoid AI
     Pack: Roblox Pack | Category: AI
     Version: 1.0.0
 

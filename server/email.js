@@ -24,7 +24,7 @@ function getTransporter() {
 }
 
 async function sendEmail({ to, subject, text, html }) {
-  const from = process.env.EMAIL_FROM || 'ScriptForge <no-reply@scriptforge.local>';
+  const from = process.env.EMAIL_FROM || 'ScripForge <no-reply@scripforge.local>';
 
   const client = getTransporter();
   if (!client) {
@@ -44,9 +44,9 @@ async function sendEmail({ to, subject, text, html }) {
 function passwordResetEmail({ to, username, resetUrl }) {
   return sendEmail({
     to,
-    subject: 'Reset your ScriptForge password',
-    text: `Hi ${username},\n\nSomeone requested a password reset for your ScriptForge account. If this was you, reset your password here (this link expires in 30 minutes):\n\n${resetUrl}\n\nIf you didn't request this, you can safely ignore this email — your password hasn't been changed.`,
-    html: `<p>Hi ${username},</p><p>Someone requested a password reset for your ScriptForge account. If this was you, reset your password here (this link expires in 30 minutes):</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, you can safely ignore this email — your password hasn't been changed.</p>`
+    subject: 'Reset your ScripForge password',
+    text: `Hi ${username},\n\nSomeone requested a password reset for your ScripForge account. If this was you, reset your password here (this link expires in 30 minutes):\n\n${resetUrl}\n\nIf you didn't request this, you can safely ignore this email — your password hasn't been changed.`,
+    html: `<p>Hi ${username},</p><p>Someone requested a password reset for your ScripForge account. If this was you, reset your password here (this link expires in 30 minutes):</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>If you didn't request this, you can safely ignore this email — your password hasn't been changed.</p>`
   });
 }
 
@@ -54,7 +54,7 @@ function orderReceiptEmail({ to, username, order }) {
   const itemLines = order.items.map((i) => `  - ${i.packName} — ${i.scriptTitle}: ${order.currencySymbol}${i.priceAmount.toFixed(2)}`).join('\n');
   return sendEmail({
     to,
-    subject: `Your ScriptForge order SF-${order.id} is confirmed`,
+    subject: `Your ScripForge order SF-${order.id} is confirmed`,
     text: `Hi ${username},\n\nYour order is confirmed:\n\n${itemLines}\n\nTotal: ${order.currencySymbol}${order.totalAmount.toFixed(2)} ${order.currency}\n\nDownload your scripts any time from your account page.`,
     html: `<p>Hi ${username},</p><p>Your order is confirmed:</p><ul>${order.items.map((i) => `<li>${i.packName} — ${i.scriptTitle}: ${order.currencySymbol}${i.priceAmount.toFixed(2)}</li>`).join('')}</ul><p><strong>Total: ${order.currencySymbol}${order.totalAmount.toFixed(2)} ${order.currency}</strong></p><p>Download your scripts any time from your account page.</p>`
   });

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Team Composition Analyzer
+ * ScripForge — Team Composition Analyzer
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Systems
+namespace ScripForge.Valorant.Systems
 {
     public enum CharacterRole
     {

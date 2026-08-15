@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Build Edit & Piece Snap System
+ * ScripForge — Build Edit & Piece Snap System
  * Pack: Fortnite Pack | Category: Building
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Building
+namespace ScripForge.Fortnite.Building
 {
     public enum PieceType { Wall, Floor, Ramp, Cone }
 

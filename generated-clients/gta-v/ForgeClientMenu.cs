@@ -1,9 +1,9 @@
 /*
- * ScriptForge — ForgeClient (GTA V)
+ * ScripForge — ForgeClient (GTA V)
  * Component: Main Feature Menu
  * Version: 1.0.0
  *
- * In-game settings menu that lists every script in the ScriptForge GTA V pack and lets the
+ * In-game settings menu that lists every script in the ScripForge GTA V pack and lets the
  * player toggle each feature (and a few sub-settings) live, without editing any files.
  *
  * Written for single-player use via Script Hook V .NET — not for GTA Online.
@@ -26,10 +26,10 @@ using System.Windows.Forms;
 using GTA;
 using GTA.UI;
 
-namespace ScriptForge.Client
+namespace ScripForge.Client
 {
     /// <summary>
-    /// Master settings menu for the ScriptForge GTA V pack. Press F9 (configurable via
+    /// Master settings menu for the ScripForge GTA V pack. Press F9 (configurable via
     /// <see cref="ForgeClientConfig.MenuToggleKey"/>) to open/close. Arrow keys navigate,
     /// Enter drills into a submenu or fires a toggle, Backspace/Escape backs out.
     /// </summary>
@@ -225,7 +225,7 @@ namespace ScriptForge.Client
                 case Screen_.Weather: return "ForgeClient — Weather Control";
                 case Screen_.Parachute: return "ForgeClient — Parachute Assist";
                 case Screen_.WantedLevel: return "ForgeClient — Wanted Level Manager";
-                default: return "ForgeClient — ScriptForge GTA V Pack";
+                default: return "ForgeClient — ScripForge GTA V Pack";
             }
         }
 

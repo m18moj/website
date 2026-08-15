@@ -1,5 +1,5 @@
 (function () {
-    const DEVICE_ID_KEY = 'scriptforge_device_id';
+    const DEVICE_ID_KEY = 'scripforge_device_id';
 
     // The closest thing to a "device id" available to a plain web page without
     // installing anything: a random id generated once and kept in this
@@ -16,7 +16,7 @@
     }
 
     function toast(message, type) {
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show(message, type);
+        if (window.ScripForgeToast) window.ScripForgeToast.show(message, type);
     }
 
     // The one and only download action on this page: every script the
@@ -34,7 +34,7 @@
         const blob = await response.blob();
         const disposition = response.headers.get('Content-Disposition') || '';
         const match = disposition.match(/filename="?([^"]+)"?/);
-        const filename = match ? match[1] : 'ScriptForge-downloads.zip';
+        const filename = match ? match[1] : 'ScripForge-downloads.zip';
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -50,7 +50,7 @@
         const container = document.getElementById('downloadsContainer');
         const downloadAllRow = document.getElementById('downloadAllRow');
         const downloadAllHint = document.getElementById('downloadAllHint');
-        const { escapeHtml } = window.ScriptForgeAuth;
+        const { escapeHtml } = window.ScripForgeAuth;
 
         if (!items.length) {
             downloadAllRow.hidden = true;
@@ -83,8 +83,8 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
         try {
-            await window.ScriptForgeAuth.refreshCsrfToken();
-            const user = await window.ScriptForgeAuth.loadCurrentUser();
+            await window.ScripForgeAuth.refreshCsrfToken();
+            const user = await window.ScripForgeAuth.loadCurrentUser();
 
             if (!user) {
                 document.getElementById('downloadsGate').hidden = false;
@@ -92,7 +92,7 @@
             }
 
             document.getElementById('downloadsContent').hidden = false;
-            const { items } = await window.ScriptForgeAuth.apiFetch('/api/downloads');
+            const { items } = await window.ScripForgeAuth.apiFetch('/api/downloads');
             renderItems(items);
 
             const downloadAllBtn = document.getElementById('downloadAllBtn');

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Smoke & Wall Ability Collision
+ * ScripForge — Smoke & Wall Ability Collision
  * Pack: Valorant Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Combat
+namespace ScripForge.Valorant.Combat
 {
     /// <summary>
     /// Represents a single deployed line-of-sight-blocking volume (a smoke cloud

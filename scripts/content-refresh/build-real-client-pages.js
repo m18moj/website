@@ -42,7 +42,7 @@ const CLIENTS = [
       { file: 'README.md', desc: 'Full install and usage instructions, included with the download.' }
     ],
     install: [
-      'Install Script Hook V and Script Hook V .NET (SHVDN) into your GTA V folder — both are third-party community tools, not made by ScriptForge.',
+      'Install Script Hook V and Script Hook V .NET (SHVDN) into your GTA V folder — both are third-party community tools, not made by ScripForge.',
       'Copy ForgeClientMenu.cs and ForgeClientConfig.cs into your GTA V install’s Scripts folder.',
       'Copy every .cs file from your purchased GTA V pack into that same Scripts folder.',
       'Launch GTA V into single-player story mode — SHVDN compiles and loads everything automatically, no separate build step.',
@@ -69,9 +69,9 @@ const CLIENTS = [
       'Compile ForgeClientMCM.psc to ForgeClientMCM.pex using the Creation Kit’s Papyrus Compiler (a .psc alone will not run in-game — see the README for the exact command).',
       'Place the compiled .pex in Data\\Scripts\\, the .ini in Data\\MCM\\Config\\ForgeClientMCM\\, and attach the script to an always-running quest via the Creation Kit.',
       'Launch Skyrim through SKSE, not the vanilla launcher.',
-      'Open the pause menu (Esc) and select the Mod Configuration tab to find "ScriptForge Client".'
+      'Open the pause menu (Esc) and select the Mod Configuration tab to find "ScripForge Client".'
     ],
-    disclaimer: 'Requires compiling the included .psc source with the Creation Kit before it will run — this is normal for all Papyrus mods, not specific to ScriptForge. Full steps are in the README.'
+    disclaimer: 'Requires compiling the included .psc source with the Creation Kit before it will run — this is normal for all Papyrus mods, not specific to ScripForge. Full steps are in the README.'
   },
   {
     packId: 'minecraft',
@@ -90,8 +90,8 @@ const CLIENTS = [
     ],
     install: [
       'Install a JDK, version 11 or newer (built and tested against JDK 17).',
-      'From the generated-clients/minecraft/ folder, compile: javac -d out src/com/scriptforge/pluginmanager/*.java',
-      'Run it: java -cp out com.scriptforge.pluginmanager.PluginManagerApp',
+      'From the generated-clients/minecraft/ folder, compile: javac -d out src/com/scripforge/pluginmanager/*.java',
+      'Run it: java -cp out com.scripforge.pluginmanager.PluginManagerApp',
       'Click "Open Plugins Folder..." and point it at your server’s plugins/ directory.',
       'Compile the pack’s .java scripts into JARs yourself (e.g. with Maven/Gradle against the Spigot/Paper API) and drop them into that folder to manage them here.'
     ],
@@ -125,7 +125,7 @@ function buildPage(client) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${escapeHtml(client.clientName)}: a real, working client for the ${escapeHtml(client.displayName)} pack, built on ${escapeHtml(client.techLine)}.">
-    <title>${escapeHtml(client.displayName)} Client | ScriptForge</title>
+    <title>${escapeHtml(client.displayName)} Client | ScripForge</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/client.css">
@@ -142,7 +142,7 @@ function buildPage(client) {
                     <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                     <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                 </svg>
-                ScriptForge
+                ScripForge
             </a>
             <div class="nav-menu" id="navMenu">
                 <a href="../index.html" class="nav-link">Home</a>
@@ -240,7 +240,7 @@ ${installSteps}
                         <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                         <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                     </svg>
-                    ScriptForge
+                    ScripForge
                 </a>
                 <p>Premium, production-ready game systems for developers, indies, and studios.</p>
                 <div class="footer-socials">
@@ -271,7 +271,7 @@ ${installSteps}
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>&copy; <span id="footerYear"></span> ScripForge. All rights reserved.</p>
             <p>Built for developers, by developers.</p>
         </div>
     </footer>

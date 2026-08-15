@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Advancement & Quest Tracker
+ * ScripForge — Advancement & Quest Tracker
  * Pack: Minecraft Pack | Category: Quests
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.quests;
+package com.scripforge.minecraft.quests;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Agent Ability Charge System
+ * ScripForge — Agent Ability Charge System
  * Pack: Valorant Pack | Category: Abilities
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Abilities
+namespace ScripForge.Abilities
 {
     public enum AbilityAcquisitionType
     {

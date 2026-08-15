@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Agent Role & Kit Framework
+ * ScripForge — Agent Role & Kit Framework
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     public enum AgentRole { Duelist, Controller, Initiator, Sentinel }
 
@@ -37,7 +37,7 @@ namespace ScriptForge.Systems
     /// and the four abilities that make up its kit. Create instances via the asset menu and
     /// assign one to each agent's controller/prefab.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewAgentDefinition", menuName = "ScriptForge/Agent Definition")]
+    [CreateAssetMenu(fileName = "NewAgentDefinition", menuName = "ScripForge/Agent Definition")]
     public class AgentDefinition : ScriptableObject
     {
         [Header("Identity")]

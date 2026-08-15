@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Team Select & Spawn System
+    ScripForge — Team Select & Spawn System
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

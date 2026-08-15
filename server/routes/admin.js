@@ -19,6 +19,8 @@ const bundlesModel = require('../models/bundles');
 const licensesModel = require('../models/licenses');
 const errorLogModel = require('../models/errorLog');
 const { fulfillOrder } = require('../orderFulfillment');
+const discordLinks = require('../../discord-bot/models/discordLinks');
+const discordRest = require('../../discord-bot/discordRest');
 const db = require('../db');
 const packageJson = require('../../package.json');
 const { serializeOrder, serializeAdminOrder } = require('../serialize');
@@ -63,6 +65,8 @@ router.get('/users/:id', [param('id').isInt().toInt()], (req, res) => {
   const user = users.find((u) => u.id === req.params.id);
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
+  const discordLink = discordLinks.findByUserId(req.params.id);
+
   res.json({
     user,
     loginHistory: usersModel.loginHistoryForUser(req.params.id, 20),
@@ -72,8 +76,29 @@ router.get('/users/:id', [param('id').isInt().toInt()], (req, res) => {
     // Role changes, unlocks, bans, disables — everything an admin has ever
     // done to this specific account, most recent first. The audit log is
     // already the record of this; this just filters it to one person.
-    moderationHistory: auditLog.forTarget(user.username, 20)
+    moderationHistory: auditLog.forTarget(user.username, 20),
+    discordLink: discordLink ? { discordId: discordLink.discord_id, discordTag: discordLink.discord_tag, linkedAt: discordLink.linked_at } : null
   });
+});
+
+// Lets an admin sever a Discord link without needing the customer's
+// cooperation — useful if a link looks wrong/compromised, or a customer
+// asks staff to unlink them because they can no longer access Discord.
+router.post('/users/:id/discord-unlink', verifyCsrfToken, [param('id').isInt().toInt()], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ error: 'Invalid request.' });
+
+  const target = usersModel.findById(req.params.id);
+  if (!target) return res.status(404).json({ error: 'User not found.' });
+
+  const link = discordLinks.findByUserId(req.params.id);
+  if (!link) return res.status(404).json({ error: 'That account has no linked Discord account.' });
+
+  await discordRest.syncVerifiedRole(link.discord_id, { add: false });
+  discordLinks.unlink(link.discord_id);
+  auditLog.record({ actor: req.currentUser, action: 'discord.admin_unlink', target: target.username, details: { discordTag: link.discord_tag } });
+
+  res.json({ ok: true });
 });
 
 router.get('/analytics', (req, res) => {
@@ -100,7 +125,7 @@ router.get('/orders/export.csv', (req, res) => {
   ].map((field) => `"${String(field).replace(/"/g, '""')}"`).join(',')).join('\n');
 
   res.setHeader('Content-Type', 'text/csv');
-  res.setHeader('Content-Disposition', 'attachment; filename="scriptforge-orders.csv"');
+  res.setHeader('Content-Disposition', 'attachment; filename="scripforge-orders.csv"');
   res.send(header + rows);
 });
 
@@ -689,7 +714,7 @@ router.get('/2fa/setup', securityActionLimiter, (req, res) => {
 
   res.json({
     secret,
-    otpauthUri: totp.generateOtpAuthUri({ secret, label: req.currentUser.username, issuer: 'ScriptForge Admin' })
+    otpauthUri: totp.generateOtpAuthUri({ secret, label: req.currentUser.username, issuer: 'ScripForge Admin' })
   });
 });
 

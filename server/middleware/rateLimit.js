@@ -74,4 +74,38 @@ const zipDownloadLimiter = rateLimit({
   message: { error: 'Too many bundle downloads from this network. Please wait a few minutes and try again.' }
 });
 
-module.exports = { apiLimiter, loginLimiter, registerLimiter, securityActionLimiter, passwordResetLimiter, downloadLimiter, zipDownloadLimiter };
+// The chat widget calls the Claude API on the backend's dime per message —
+// tighter than the general apiLimiter since cost, not just abuse, is the
+// concern here.
+const chatLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'You have sent too many messages to the assistant. Please wait a few minutes and try again.' }
+});
+
+// Guards the Discord OAuth start/callback/unlink routes. Not a high-volume
+// surface for a legitimate user (link once, rarely re-link), so a tight cap
+// mainly protects against someone hammering the token-exchange call (each
+// hit is an outbound request to Discord's API, not free) or probing the
+// callback with junk state/code values.
+const discordLinkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many Discord linking attempts. Please wait a few minutes and try again.' }
+});
+
+module.exports = {
+  apiLimiter,
+  loginLimiter,
+  registerLimiter,
+  securityActionLimiter,
+  passwordResetLimiter,
+  downloadLimiter,
+  zipDownloadLimiter,
+  chatLimiter,
+  discordLinkLimiter
+};

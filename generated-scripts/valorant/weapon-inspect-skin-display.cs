@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weapon Inspect & Skin Display
+ * ScripForge — Weapon Inspect & Skin Display
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Systems
+namespace ScripForge.Valorant.Systems
 {
     [System.Serializable]
     public class WeaponSkinData

@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Player Trading System
+    ScripForge — Player Trading System
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

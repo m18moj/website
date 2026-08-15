@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Reboot Van & Teammate Revive
+ * ScripForge — Reboot Van & Teammate Revive
  * Pack: Fortnite Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Systems
+namespace ScripForge.Fortnite.Systems
 {
     /// <summary>
     /// Represents a squad's shared pool of reboot cards, one per eliminated teammate,

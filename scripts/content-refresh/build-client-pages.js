@@ -135,7 +135,7 @@ function buildPage(game, featured, totalCount) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Browse the ${escapeHtml(game.displayName)} pack in ForgeClient, a desktop-app-styled preview of the ${featured.length} best scripts in the pack.">
-    <title>${escapeHtml(game.displayName)} Client Preview | ScriptForge</title>
+    <title>${escapeHtml(game.displayName)} Client Preview | ScripForge</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/client.css">
@@ -152,7 +152,7 @@ function buildPage(game, featured, totalCount) {
                     <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                     <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                 </svg>
-                ScriptForge
+                ScripForge
             </a>
             <div class="nav-menu" id="navMenu">
                 <a href="../index.html" class="nav-link">Home</a>
@@ -249,7 +249,7 @@ ${scriptRows}
                         <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                         <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                     </svg>
-                    ScriptForge
+                    ScripForge
                 </a>
                 <p>Premium, production-ready game systems for developers, indies, and studios.</p>
                 <div class="footer-socials">
@@ -280,7 +280,7 @@ ${scriptRows}
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>&copy; <span id="footerYear"></span> ScripForge. All rights reserved.</p>
             <p>Built for developers, by developers.</p>
         </div>
     </footer>

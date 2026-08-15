@@ -17,8 +17,8 @@
     try {
       // See login.js for why refreshCsrfToken() must resolve first: it
       // establishes the one session this captcha answer gets stored against.
-      await window.ScriptForgeAuth.refreshCsrfToken();
-      const { question } = await window.ScriptForgeAuth.getCaptcha();
+      await window.ScripForgeAuth.refreshCsrfToken();
+      const { question } = await window.ScripForgeAuth.getCaptcha();
       label.textContent = question;
       input.value = '';
     } catch (err) {
@@ -43,7 +43,7 @@
       const email = document.getElementById('email').value.trim();
 
       try {
-        await window.ScriptForgeAuth.register(username, password, captchaAnswer, email);
+        await window.ScripForgeAuth.register(username, password, captchaAnswer, email);
         window.location.href = getRedirectTarget();
       } catch (err) {
         errorBox.textContent = err.message;

@@ -1,4 +1,4 @@
-; ScriptForge — Crime & Bounty Tracking
+; ScripForge — Crime & Bounty Tracking
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

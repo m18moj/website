@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Loot Pool & Rarity Weighting
+ * ScripForge — Loot Pool & Rarity Weighting
  * Pack: Fortnite Pack | Category: Loot
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Loot
+namespace ScripForge.Fortnite.Loot
 {
     public enum Rarity { Common, Uncommon, Rare, Epic, Legendary }
 

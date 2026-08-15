@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Death Box & Loot Roll System
+ * ScripForge — Death Box & Loot Roll System
  * Pack: Apex Legends Pack | Category: Loot
  * Version: 1.0.0
  *

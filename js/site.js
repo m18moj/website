@@ -1,12 +1,12 @@
 (function () {
-  const CART_KEY = 'scriptforge_cart';
+  const CART_KEY = 'scripforge_cart';
 
   // Every price stored in the cart is in USD (the catalog's base currency);
   // this is the one place that turns a USD number into whatever the
   // shopper currently has selected (js/currency.js), so every display in
   // this file stays in sync when they switch currencies mid-visit.
   function money(usdAmount) {
-    return window.ScriptForgeCurrency ? window.ScriptForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
+    return window.ScripForgeCurrency ? window.ScripForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
   }
 
   function getCart() {
@@ -254,7 +254,7 @@
       const selected = getSelectedPackItems();
 
       if (!selected.length) {
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show('Select at least one script before adding it to your basket.', 'error');
+        if (window.ScripForgeToast) window.ScripForgeToast.show('Select at least one script before adding it to your basket.', 'error');
         return;
       }
 
@@ -264,8 +264,8 @@
       void button.offsetWidth;
       button.classList.add('btn-pulse');
 
-      if (window.ScriptForgeToast) {
-        window.ScriptForgeToast.show(`${packName} added — ${nextPack.items.length} script${nextPack.items.length === 1 ? '' : 's'} in your basket.`, 'success');
+      if (window.ScripForgeToast) {
+        window.ScripForgeToast.show(`${packName} added — ${nextPack.items.length} script${nextPack.items.length === 1 ? '' : 's'} in your basket.`, 'success');
       }
     });
   }
@@ -338,7 +338,7 @@
     // Queried fresh on every run (not captured once) because the catalog
     // grid can be populated asynchronously after this binds — see
     // js/catalog-page.js, which fetches /api/catalog and calls
-    // window.ScriptForgeCatalogPage.applyFilters() once cards exist.
+    // window.ScripForgeCatalogPage.applyFilters() once cards exist.
     const update = () => {
       const cards = Array.from(document.querySelectorAll('.catalog-card'));
       const genre = document.getElementById('catalogGenre')?.value || 'all';
@@ -359,7 +359,7 @@
       input.addEventListener('change', update);
     });
 
-    window.ScriptForgeCatalogFilters = { applyFilters: update };
+    window.ScripForgeCatalogFilters = { applyFilters: update };
   }
 
   // Sticky mobile CTA bars forward their click to the real button elsewhere on
@@ -396,12 +396,12 @@
   // Re-render anything this file owns that shows a price whenever the
   // shopper switches currency (js/currency.js), instead of requiring a
   // page reload to see it reflected everywhere.
-  window.addEventListener('scriptforge:currencychange', () => {
+  window.addEventListener('scripforge:currencychange', () => {
     renderCheckoutPage();
     if (document.getElementById('packSelectionTotal')) updatePackTotalDisplay();
   });
 
-  window.ScriptForgeCart = {
+  window.ScripForgeCart = {
     getCart,
     saveCart,
     addPackToCart,

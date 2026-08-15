@@ -1,4 +1,4 @@
-; ScriptForge — Fast Travel & Map Discovery
+; ScripForge — Fast Travel & Map Discovery
 ; Pack: Skyrim Pack | Category: World
 ; Version: 1.0.0
 ;

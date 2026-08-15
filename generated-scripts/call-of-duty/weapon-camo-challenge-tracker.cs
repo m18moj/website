@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weapon Camo Challenge Tracker
+ * ScripForge — Weapon Camo Challenge Tracker
  * Pack: Call of Duty Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Progression
+namespace ScripForge.Progression
 {
     /// <summary>Types of trackable in-match events a camo challenge might require.</summary>
     public enum ChallengeEventType

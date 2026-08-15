@@ -1,5 +1,5 @@
 /*
- * ScriptForge — ForgeClient Plugin Manager (Minecraft)
+ * ScripForge — ForgeClient Plugin Manager (Minecraft)
  * Component: PluginManagerApp
  * Version: 1.0.0
  *
@@ -10,13 +10,13 @@
  * server's plugins folder. Does not connect to or modify a running server.
  */
 
-package com.scriptforge.pluginmanager;
+package com.scripforge.pluginmanager;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
- * Entry point for the ScriptForge ForgeClient Plugin Manager.
+ * Entry point for the ScripForge ForgeClient Plugin Manager.
  *
  * <p>This is a local desktop utility for server admins: it lists the plugin
  * JAR files sitting in a Bukkit/Spigot/Paper server's {@code plugins/}

@@ -21,6 +21,8 @@ const settingsRoutes = require('./routes/settings');
 const downloadsRoutes = require('./routes/downloads');
 const bundlesRoutes = require('./routes/bundles');
 const errorsRoutes = require('./routes/errors');
+const chatRoutes = require('./routes/chat');
+const discordLinkRoutes = require('./routes/discordLink');
 const settingsModel = require('./models/settings');
 const errorLogModel = require('./models/errorLog');
 
@@ -121,6 +123,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/downloads', downloadsRoutes);
 app.use('/api/bundles', bundlesRoutes);
 app.use('/api/errors', errorsRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/discord', discordLinkRoutes);
 
 // Explicit allowlist of static directories/files — deliberately NOT a single
 // express.static(ROOT), which would also serve server/, data/*.db, and .env.
@@ -153,7 +157,7 @@ app.use((err, req, res, next) => {
 });
 
 const server = app.listen(PORT, () => {
-  console.log(`ScriptForge running at http://localhost:${PORT}`);
+  console.log(`ScripForge running at http://localhost:${PORT}`);
 });
 
 // Stop with Ctrl+C (or a normal `nodemon` restart) rather than force-killing

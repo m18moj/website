@@ -1,4 +1,4 @@
-; ScriptForge — Smithing & Alchemy Crafting
+; ScripForge — Smithing & Alchemy Crafting
 ; Pack: Skyrim Pack | Category: Crafting
 ; Version: 1.0.0
 ;

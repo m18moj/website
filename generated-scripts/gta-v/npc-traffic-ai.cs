@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Pedestrian & Traffic AI
+ * ScripForge — Pedestrian & Traffic AI
  * Pack: GTA V Pack | Category: AI
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.AI
+namespace ScripForge.AI
 {
     /// <summary>
     /// Lightweight traffic/pedestrian behavior layer: keeps nearby vehicle AI driving

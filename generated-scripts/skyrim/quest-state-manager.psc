@@ -1,4 +1,4 @@
-; ScriptForge — Quest Stage & Journal System
+; ScripForge — Quest Stage & Journal System
 ; Pack: Skyrim Pack | Category: Quests
 ; Version: 1.0.0
 ;

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Agent Select & Lock-In
+ * ScripForge — Agent Select & Lock-In
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Systems
+namespace ScripForge.Valorant.Systems
 {
     [System.Serializable]
     public class CharacterDefinition

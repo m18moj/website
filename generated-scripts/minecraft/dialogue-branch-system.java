@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Villager Trade & Dialogue
+ * ScripForge — Villager Trade & Dialogue
  * Pack: Minecraft Pack | Category: Dialogue
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.dialogue;
+package com.scripforge.minecraft.dialogue;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

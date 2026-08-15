@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weather & Time-of-Day Controller
+ * ScripForge — Weather & Time-of-Day Controller
  * Pack: GTA V Pack | Category: World
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using GTA;
 using GTA.Native;
 
-namespace ScriptForge.World
+namespace ScripForge.World
 {
     /// <summary>
     /// Drives a custom weather schedule (instead of the game's default random cycling)

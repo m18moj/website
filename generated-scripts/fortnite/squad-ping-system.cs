@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Squad Marker & Loot Ping
+ * ScripForge — Squad Marker & Loot Ping
  * Pack: Fortnite Pack | Category: Squad
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Squad
+namespace ScripForge.Fortnite.Squad
 {
     public enum PingType { Generic, Enemy, Loot, RallyPoint, Danger }
 

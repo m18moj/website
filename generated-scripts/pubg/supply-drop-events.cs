@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Airdrop Flare & Loot Crate
+ * ScripForge — Airdrop Flare & Loot Crate
  * Pack: PUBG Pack | Category: Events
  * Version: 1.0.0
  *

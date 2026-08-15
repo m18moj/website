@@ -1,4 +1,4 @@
-# ScriptForge ForgeClient Plugin Manager (Minecraft)
+# ScripForge ForgeClient Plugin Manager (Minecraft)
 
 A small standalone desktop tool for managing the Bukkit/Spigot/Paper plugin
 JAR files in your Minecraft server's `plugins/` folder.
@@ -27,9 +27,9 @@ JAR file; it only reads metadata from it and renames the file on disk.
 
 ## Where do the JAR files come from?
 
-ScriptForge sells Minecraft plugin **source code** (`.java` files), not
+ScripForge sells Minecraft plugin **source code** (`.java` files), not
 pre-built JARs — see the `.java` files under `generated-scripts/minecraft/`
-in the main ScriptForge project (for example
+in the main ScripForge project (for example
 `land-claim-protection-system.java`, `custom-boss-mob-arena.java`, and
 `player-shop-trading-stall.java`). To actually run one of these scripts on
 your server, you (or whoever manages your server) compile it against the
@@ -58,11 +58,11 @@ From the `generated-clients/minecraft/` directory (the one containing this
 README and the `src/` folder), run:
 
 ```
-javac -d out src/com/scriptforge/pluginmanager/*.java
+javac -d out src/com/scripforge/pluginmanager/*.java
 ```
 
 This compiles all five source files and writes the resulting `.class`
-files into an `out/` directory, mirroring the `com/scriptforge/pluginmanager`
+files into an `out/` directory, mirroring the `com/scripforge/pluginmanager`
 package structure.
 
 ## How to run
@@ -71,10 +71,10 @@ After compiling, still from the `generated-clients/minecraft/` directory,
 run:
 
 ```
-java -cp out com.scriptforge.pluginmanager.PluginManagerApp
+java -cp out com.scripforge.pluginmanager.PluginManagerApp
 ```
 
-A window titled "ScriptForge ForgeClient Plugin Manager" should appear.
+A window titled "ScripForge ForgeClient Plugin Manager" should appear.
 Click **Open Plugins Folder...** and select your server's `plugins/`
 directory to get started.
 

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Stock Market & Investment System
+ * ScripForge — Stock Market & Investment System
  * Pack: GTA V Pack | Category: Economy
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Linq;
 using GTA;
 using GTA.Native;
 
-namespace ScriptForge.Economy
+namespace ScripForge.Economy
 {
     /// <summary>
     /// A standalone stock market simulation independent of the vanilla LCN/BAWSAQ system.

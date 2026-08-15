@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Bot Awareness & Cover AI
+ * ScripForge — Bot Awareness & Cover AI
  * Pack: PUBG Pack | Category: AI
  * Version: 1.0.0
  *

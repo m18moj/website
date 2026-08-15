@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Third-Person Camera Rig
+ * ScripForge — Third-Person Camera Rig
  * Pack: Minecraft Pack | Category: Camera
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.camera;
+package com.scripforge.minecraft.camera;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

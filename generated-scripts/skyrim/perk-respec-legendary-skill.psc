@@ -1,4 +1,4 @@
-; ScriptForge — Perk Respec & Legendary Skill
+; ScripForge — Perk Respec & Legendary Skill
 ; Pack: Skyrim Pack | Category: Progression
 ; Version: 1.0.0
 ;

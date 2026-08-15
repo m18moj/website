@@ -1,4 +1,4 @@
-; ScriptForge — Weather & Seasonal Effects
+; ScripForge — Weather & Seasonal Effects
 ; Pack: Skyrim Pack | Category: World
 ; Version: 1.0.0
 ;

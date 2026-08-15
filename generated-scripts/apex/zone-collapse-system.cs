@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ring Collapse & Damage Curve
+ * ScripForge — Ring Collapse & Damage Curve
  * Pack: Apex Legends Pack | Category: World
  * Version: 1.0.0
  *

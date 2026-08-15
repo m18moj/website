@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Death Replay & Kill Cam
+ * ScripForge — Death Replay & Kill Cam
  * Pack: Valorant Pack | Category: Feedback
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Feedback
+namespace ScripForge.Valorant.Feedback
 {
     /// <summary>
     /// A single sampled frame of an actor's transform state, captured at a fixed

@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Obby Checkpoint & Stage System
+    ScripForge — Obby Checkpoint & Stage System
     Pack: Roblox Pack | Category: Progression
     Version: 1.0.0
 

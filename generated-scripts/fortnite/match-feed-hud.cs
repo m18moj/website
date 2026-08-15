@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Eliminations & Storm HUD
+ * ScripForge — Eliminations & Storm HUD
  * Pack: Fortnite Pack | Category: HUD
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using UnrealEngine;
 using UnityEngine.UI;
 
-namespace ScriptForge.Fortnite.HUD
+namespace ScripForge.Fortnite.HUD
 {
     public class MatchFeedHud : MonoBehaviour
     {

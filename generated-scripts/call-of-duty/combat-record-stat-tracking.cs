@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Combat Record & Stat Tracking
+ * ScripForge — Combat Record & Stat Tracking
  * Pack: Call of Duty Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     [Serializable]
     public class WeaponStatLine

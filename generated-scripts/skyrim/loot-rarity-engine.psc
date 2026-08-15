@@ -1,4 +1,4 @@
-; ScriptForge — Loot Tables & Enchanted Drops
+; ScripForge — Loot Tables & Enchanted Drops
 ; Pack: Skyrim Pack | Category: Loot
 ; Version: 1.0.0
 ;

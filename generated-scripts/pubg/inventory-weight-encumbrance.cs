@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Inventory Weight & Encumbrance
+ * ScripForge — Inventory Weight & Encumbrance
  * Pack: PUBG Pack | Category: Inventory
  * Version: 1.0.0
  *

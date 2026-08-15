@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Structure Edit & Piece Confirm
+ * ScripForge — Structure Edit & Piece Confirm
  * Pack: Fortnite Pack | Category: Building
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Building
+namespace ScripForge.Fortnite.Building
 {
     /// <summary>
     /// Attach to a placed structure piece. Allows the player to enter "edit mode",

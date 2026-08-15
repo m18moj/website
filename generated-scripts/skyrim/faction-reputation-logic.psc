@@ -1,4 +1,4 @@
-; ScriptForge — Faction Standing & Bounty System
+; ScripForge — Faction Standing & Bounty System
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

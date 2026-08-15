@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Minimap & Callout Marker
+ * ScripForge — Minimap & Callout Marker
  * Pack: Valorant Pack | Category: HUD
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ScriptForge.Valorant.HUD
+namespace ScripForge.Valorant.HUD
 {
     /// <summary>
     /// Defines a named region of the map (e.g. "A Site", "Mid Courtyard") used

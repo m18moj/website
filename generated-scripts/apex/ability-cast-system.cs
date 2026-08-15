@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Legend Ability Framework
+ * ScripForge — Legend Ability Framework
  * Pack: Apex Legends Pack | Category: Abilities
  * Version: 1.0.0
  *

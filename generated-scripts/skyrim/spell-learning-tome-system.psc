@@ -1,4 +1,4 @@
-; ScriptForge — Spell Learning & Tome System
+; ScripForge — Spell Learning & Tome System
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

@@ -1,0 +1,16 @@
+node_modules
+.git
+.wrangler
+.claude
+.env
+.env.example
+data
+server
+scripts
+tools
+discord-bot
+generated-scripts
+generated-clients
+package.json
+package-lock.json
+wrangler.jsonc

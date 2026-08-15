@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Objective Marker & Compass HUD
+ * ScripForge — Objective Marker & Compass HUD
  * Pack: Call of Duty Pack | Category: HUD
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using UnrealEngine;
 using UnityEngine.UI;
 
-namespace ScriptForge.HUD
+namespace ScripForge.HUD
 {
     public enum ObjectiveMarkerStatus
     {

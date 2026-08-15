@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ability Hit Reg & Status Effects
+ * ScripForge — Ability Hit Reg & Status Effects
  * Pack: Valorant Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Combat
+namespace ScripForge.Combat
 {
     public enum StatusEffectType { Blind, Slow, Vulnerable, Suppress }
 

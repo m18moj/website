@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Hit Marker & Damage Numbers
+ * ScripForge — Hit Marker & Damage Numbers
  * Pack: Call of Duty Pack | Category: Feedback
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using UnrealEngine;
 using UnityEngine.UI;
 
-namespace ScriptForge.Feedback
+namespace ScripForge.Feedback
 {
     /// <summary>
     /// Handles combat hit feedback: a directional hit marker icon that rotates toward the hit

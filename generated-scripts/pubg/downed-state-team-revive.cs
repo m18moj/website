@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Downed State & Team Revive
+ * ScripForge — Downed State & Team Revive
  * Pack: PUBG Pack | Category: Systems
  * Version: 1.0.0
  *

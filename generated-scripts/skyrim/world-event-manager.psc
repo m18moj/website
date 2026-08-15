@@ -1,4 +1,4 @@
-; ScriptForge — Radiant World Events
+; ScripForge — Radiant World Events
 ; Pack: Skyrim Pack | Category: World
 ; Version: 1.0.0
 ;

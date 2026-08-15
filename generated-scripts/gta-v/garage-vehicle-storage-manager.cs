@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Garage & Vehicle Storage Manager
+ * ScripForge — Garage & Vehicle Storage Manager
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -19,7 +19,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// Tracks a roster of owned vehicles across multiple garages, allows storing the

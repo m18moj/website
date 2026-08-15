@@ -1,4 +1,4 @@
-; ScriptForge — Follower Recruitment & Management
+; ScripForge — Follower Recruitment & Management
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

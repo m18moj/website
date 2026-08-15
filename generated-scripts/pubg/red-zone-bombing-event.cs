@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Red Zone Bombing Event
+ * ScripForge — Red Zone Bombing Event
  * Pack: PUBG Pack | Category: Events
  * Version: 1.0.0
  *

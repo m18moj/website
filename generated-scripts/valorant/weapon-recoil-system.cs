@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weapon Recoil & Spray Pattern
+ * ScripForge — Weapon Recoil & Spray Pattern
  * Pack: Valorant Pack | Category: Weapons
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Weapons
+namespace ScripForge.Weapons
 {
     /// <summary>
     /// Drives camera/aim-punch recoil for a firearm using a per-weapon spray pattern curve.

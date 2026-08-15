@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Match Point & MVP Sequence
+ * ScripForge — Match Point & MVP Sequence
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnrealEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     public enum HighlightReason { Ace, Clutch1v3Plus, MultiKill, MatchPointRound }
 

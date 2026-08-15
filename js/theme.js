@@ -1,5 +1,5 @@
 (function () {
-  const STORAGE_KEY = 'scriptforge_theme';
+  const STORAGE_KEY = 'scripforge_theme';
 
   function getTheme() {
     return localStorage.getItem(STORAGE_KEY) === 'light' ? 'light' : 'dark';
@@ -45,5 +45,5 @@
 
   document.addEventListener('DOMContentLoaded', renderToggle);
 
-  window.ScriptForgeTheme = { getTheme, setTheme };
+  window.ScripForgeTheme = { getTheme, setTheme };
 })();

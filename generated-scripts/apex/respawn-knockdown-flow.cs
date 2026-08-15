@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Knockdown & Respawn Beacon
+ * ScripForge — Knockdown & Respawn Beacon
  * Pack: Apex Legends Pack | Category: Systems
  * Version: 1.0.0
  *

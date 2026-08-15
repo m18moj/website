@@ -1,5 +1,5 @@
 /*
- * ScriptForge — ForgeClient Plugin Manager (Minecraft)
+ * ScripForge — ForgeClient Plugin Manager (Minecraft)
  * Component: PluginInfo
  * Version: 1.0.0
  *
@@ -10,7 +10,7 @@
  * server's plugins folder. Does not connect to or modify a running server.
  */
 
-package com.scriptforge.pluginmanager;
+package com.scripforge.pluginmanager;
 
 import java.nio.file.Path;
 

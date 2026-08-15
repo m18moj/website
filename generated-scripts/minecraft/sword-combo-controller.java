@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Melee Combo & Critical Hits
+ * ScripForge — Melee Combo & Critical Hits
  * Pack: Minecraft Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.combat;
+package com.scripforge.minecraft.combat;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;

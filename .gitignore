@@ -9,3 +9,6 @@ tools/
 .wrangler/
 # Local IDE/tool state, not meant to be shared
 .claude/
+# Ticket support transcripts — customer conversations, not meant to be shared
+discord-bot/transcripts/*.txt
+!discord-bot/transcripts/.gitkeep

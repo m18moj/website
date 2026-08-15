@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Mission Trigger & Checkpoint Flow
+ * ScripForge — Mission Trigger & Checkpoint Flow
  * Pack: GTA V Pack | Category: Missions
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Missions
+namespace ScripForge.Missions
 {
     internal enum MissionStage
     {

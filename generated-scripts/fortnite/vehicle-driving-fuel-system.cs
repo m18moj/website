@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Vehicle Driving & Fuel System
+ * ScripForge — Vehicle Driving & Fuel System
  * Pack: Fortnite Pack | Category: Vehicles
  * Version: 1.0.0
  *
@@ -14,7 +14,7 @@
 
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Vehicles
+namespace ScripForge.Fortnite.Vehicles
 {
     public enum VehicleSurfaceType
     {

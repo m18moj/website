@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Bandage, Boost & Armor Tiers
+ * ScripForge — Bandage, Boost & Armor Tiers
  * Pack: PUBG Pack | Category: Systems
  * Version: 1.0.0
  *

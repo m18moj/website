@@ -1,4 +1,4 @@
-; ScriptForge — Daedric Artifact Quest Tracker
+; ScripForge — Daedric Artifact Quest Tracker
 ; Pack: Skyrim Pack | Category: Quests
 ; Version: 1.0.0
 ;

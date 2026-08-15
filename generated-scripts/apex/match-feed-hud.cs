@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Kill Feed & Squad Elims HUD
+ * ScripForge — Kill Feed & Squad Elims HUD
  * Pack: Apex Legends Pack | Category: HUD
  * Version: 1.0.0
  *

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weapon Attachment & Hop-Up System
+ * ScripForge — Weapon Attachment & Hop-Up System
  * Pack: Apex Legends Pack | Category: Weapons
  * Version: 1.0.0
  *

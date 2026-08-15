@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Random World Event Spawner
+ * ScripForge — Random World Event Spawner
  * Pack: GTA V Pack | Category: World
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.World
+namespace ScripForge.World
 {
     /// <summary>
     /// Periodically rolls a weighted table of ambient world events and, if one hits,

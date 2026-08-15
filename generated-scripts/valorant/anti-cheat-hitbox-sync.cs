@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Server-Authoritative Hit Validation
+ * ScripForge — Server-Authoritative Hit Validation
  * Pack: Valorant Pack | Category: Security
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Security
+namespace ScripForge.Security
 {
     /// <summary>
     /// A single historical snapshot of a player's hitbox transforms, stored for lag compensation.

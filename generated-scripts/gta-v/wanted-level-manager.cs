@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Wanted Level & Heat Decay
+ * ScripForge — Wanted Level & Heat Decay
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// Replaces the vanilla "fade out of the search radius" evasion model with a heat

@@ -4,7 +4,7 @@
     const message = document.getElementById('thankYouMessage');
     const reference = document.getElementById('orderReference');
     const summary = document.getElementById('orderSummary');
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
 
     if (order.status === 'paid') {
       heading.textContent = 'Payment received — thanks!';
@@ -38,8 +38,8 @@
       renderOrder(order, { pending: order.status !== 'paid' });
 
       if (order.status === 'paid') {
-        window.ScriptForgeCart.clearCart();
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show('Payment confirmed — enjoy your scripts!', 'success');
+        window.ScripForgeCart.clearCart();
+        if (window.ScripForgeToast) window.ScripForgeToast.show('Payment confirmed — enjoy your scripts!', 'success');
         return;
       }
 
@@ -65,13 +65,13 @@
     try {
       if (sessionId) {
         const fetchOrder = async () => {
-          const data = await window.ScriptForgeAuth.apiFetch(`/api/checkout/session-status?session_id=${encodeURIComponent(sessionId)}`);
+          const data = await window.ScripForgeAuth.apiFetch(`/api/checkout/session-status?session_id=${encodeURIComponent(sessionId)}`);
           return data.order;
         };
         await pollUntilPaid(fetchOrder, { maxAttempts: 3, intervalMs: 2000 });
       } else {
         const fetchOrder = async () => {
-          const data = await window.ScriptForgeAuth.apiFetch(`/api/checkout/crypto-status?order_id=${encodeURIComponent(cryptoRef)}`);
+          const data = await window.ScripForgeAuth.apiFetch(`/api/checkout/crypto-status?order_id=${encodeURIComponent(cryptoRef)}`);
           return data.order;
         };
         await pollUntilPaid(fetchOrder, { maxAttempts: 12, intervalMs: 5000 });

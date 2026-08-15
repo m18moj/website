@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Tycoon Building & Purchase System
+    ScripForge — Tycoon Building & Purchase System
     Pack: Roblox Pack | Category: Tycoon
     Version: 1.0.0
 

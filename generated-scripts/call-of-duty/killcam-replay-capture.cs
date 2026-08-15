@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Killcam & Replay Capture
+ * ScripForge — Killcam & Replay Capture
  * Pack: Call of Duty Pack | Category: Feedback
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Feedback
+namespace ScripForge.Feedback
 {
     /// <summary>A single recorded snapshot of a tracked actor's state at one point in time.</summary>
     [Serializable]

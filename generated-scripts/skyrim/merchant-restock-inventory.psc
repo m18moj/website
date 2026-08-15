@@ -1,4 +1,4 @@
-; ScriptForge — Merchant Restock & Inventory
+; ScripForge — Merchant Restock & Inventory
 ; Pack: Skyrim Pack | Category: Economy
 ; Version: 1.0.0
 ;

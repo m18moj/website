@@ -1,4 +1,4 @@
-; ScriptForge — Branching Dialogue & Persuasion
+; ScripForge — Branching Dialogue & Persuasion
 ; Pack: Skyrim Pack | Category: Dialogue
 ; Version: 1.0.0
 ;

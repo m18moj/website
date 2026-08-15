@@ -1,5 +1,5 @@
 /*
- * ScriptForge — NPC Dialogue & Relationship
+ * ScripForge — NPC Dialogue & Relationship
  * Pack: GTA V Pack | Category: Dialogue
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.UI;
 
-namespace ScriptForge.Dialogue
+namespace ScripForge.Dialogue
 {
     internal class DialogueNode
     {

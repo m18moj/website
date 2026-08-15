@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Slide-Hop Momentum Chain
+ * ScripForge — Slide-Hop Momentum Chain
  * Pack: Apex Legends Pack | Category: Movement
  * Version: 1.0.0
  *

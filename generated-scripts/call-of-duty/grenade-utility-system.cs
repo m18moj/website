@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Lethal & Tactical Equipment
+ * ScripForge — Lethal & Tactical Equipment
  * Pack: Call of Duty Pack | Category: Equipment
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Equipment
+namespace ScripForge.Equipment
 {
     public enum ThrowableEffectType
     {

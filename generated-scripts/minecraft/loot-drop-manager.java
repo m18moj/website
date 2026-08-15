@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Block & Mob Drop Tables
+ * ScripForge — Block & Mob Drop Tables
  * Pack: Minecraft Pack | Category: Loot
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.loot;
+package com.scripforge.minecraft.loot;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

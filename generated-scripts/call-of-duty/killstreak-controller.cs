@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Killstreak & Scorestreak Chain
+ * ScripForge — Killstreak & Scorestreak Chain
  * Pack: Call of Duty Pack | Category: Streaks
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Streaks
+namespace ScripForge.Streaks
 {
     [Serializable]
     public class StreakReward

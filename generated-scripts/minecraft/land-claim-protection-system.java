@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Land Claim & Protection System
+ * ScripForge — Land Claim & Protection System
  * Pack: Minecraft Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.systems;
+package com.scripforge.minecraft.systems;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;

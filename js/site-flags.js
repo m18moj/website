@@ -1,5 +1,5 @@
 (function () {
-  const BANNER_DISMISS_KEY = 'scriptforge_banner_dismissed';
+  const BANNER_DISMISS_KEY = 'scripforge_banner_dismissed';
   // Pages an admin must still be able to reach even while maintenance mode
   // is on for everyone else — otherwise there'd be no way to turn it back off.
   const MAINTENANCE_ALLOWLIST = ['/pages/login.html', '/admin/admin.html'];
@@ -37,7 +37,7 @@
     if (!flags.maintenanceMode) return;
     if (MAINTENANCE_ALLOWLIST.some((path) => window.location.pathname.endsWith(path))) return;
 
-    const me = window.ScriptForgeAuth ? await window.ScriptForgeAuth.loadCurrentUser().catch(() => null) : null;
+    const me = window.ScripForgeAuth ? await window.ScripForgeAuth.loadCurrentUser().catch(() => null) : null;
     if (me && me.role === 'admin') return;
 
     const overlay = document.createElement('div');
@@ -46,7 +46,7 @@
       <div class="maintenance-box">
         <div class="maintenance-icon">🛠️</div>
         <h1>Down for maintenance</h1>
-        <p>ScriptForge is being updated right now. Please check back in a little while.</p>
+        <p>ScripForge is being updated right now. Please check back in a little while.</p>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -60,7 +60,7 @@
     renderMaintenanceOverlay();
   });
 
-  window.ScriptForgeFlags = {
+  window.ScripForgeFlags = {
     ready,
     get flags() { return flags; },
     isEnabled(key) { return Boolean(flags && flags[key]); }

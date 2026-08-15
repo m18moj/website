@@ -5,7 +5,7 @@ const { DatabaseSync } = require('node:sqlite');
 const DATA_DIR = path.join(__dirname, '..', 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-const DB_PATH = process.env.DB_PATH || path.join(DATA_DIR, 'scriptforge.db');
+const DB_PATH = process.env.DB_PATH || path.join(DATA_DIR, 'scripforge.db');
 
 const db = new DatabaseSync(DB_PATH);
 db.exec('PRAGMA journal_mode = WAL');
@@ -230,6 +230,50 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
+  -- Discord account <-> ScripForge account mapping, created by the /verify
+  -- flow in discord-bot/. One Discord account can only ever link to one
+  -- ScripForge account (PK on discord_id); the reverse isn't enforced since
+  -- someone could reasonably re-verify on a new Discord account.
+  CREATE TABLE IF NOT EXISTS discord_links (
+    discord_id TEXT PRIMARY KEY,
+    discord_tag TEXT NOT NULL,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    linked_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  -- Every moderation action taken by the Discord bot (warn/timeout/kick/ban),
+  -- independent of Discord's own audit log so staff have a permanent,
+  -- queryable history even if a member leaves and rejoins.
+  CREATE TABLE IF NOT EXISTS mod_actions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    target_discord_id TEXT NOT NULL,
+    target_tag TEXT NOT NULL,
+    moderator_discord_id TEXT NOT NULL,
+    moderator_tag TEXT NOT NULL,
+    action_type TEXT NOT NULL CHECK (action_type IN ('warn', 'timeout', 'kick', 'ban', 'unban')),
+    reason TEXT,
+    duration_ms INTEGER,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  -- One row per support ticket thread. order_id is optional context a user
+  -- can attach when opening a ticket so staff see purchase details up front.
+  CREATE TABLE IF NOT EXISTS support_tickets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    thread_id TEXT NOT NULL UNIQUE,
+    opener_discord_id TEXT NOT NULL,
+    opener_tag TEXT NOT NULL,
+    order_id INTEGER REFERENCES orders(id) ON DELETE SET NULL,
+    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'claimed', 'closed')),
+    claimed_by_discord_id TEXT,
+    claimed_by_tag TEXT,
+    transcript_path TEXT,
+    opened_at TEXT NOT NULL DEFAULT (datetime('now')),
+    closed_at TEXT
+  );
+
   CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
   CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
   CREATE INDEX IF NOT EXISTS idx_sessions_expire ON sessions(expire);
@@ -243,6 +287,10 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_reviews_pack_id ON reviews(pack_id);
   CREATE INDEX IF NOT EXISTS idx_error_log_created_at ON error_log(created_at);
   CREATE INDEX IF NOT EXISTS idx_license_download_log_key ON license_download_log(license_key);
+  CREATE INDEX IF NOT EXISTS idx_mod_actions_target ON mod_actions(target_discord_id);
+  CREATE INDEX IF NOT EXISTS idx_mod_actions_guild ON mod_actions(guild_id);
+  CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status);
+  CREATE INDEX IF NOT EXISTS idx_discord_links_user_id ON discord_links(user_id);
 `);
 
 // Adds a column to an existing table only if it isn't already there, so

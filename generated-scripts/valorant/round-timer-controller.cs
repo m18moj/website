@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Round Timer & Spike Phases
+ * ScripForge — Round Timer & Spike Phases
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     public enum RoundPhase
     {

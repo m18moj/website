@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Kill Feed & Alive-Count HUD
+ * ScripForge — Kill Feed & Alive-Count HUD
  * Pack: PUBG Pack | Category: HUD
  * Version: 1.0.0
  *

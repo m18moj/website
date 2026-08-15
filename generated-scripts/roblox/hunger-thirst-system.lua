@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Leaderstats & Currency System
+    ScripForge — Leaderstats & Currency System
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

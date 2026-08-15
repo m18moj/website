@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Cover-Based Combat System
+ * ScripForge — Cover-Based Combat System
  * Pack: GTA V Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Combat
+namespace ScripForge.Combat
 {
     /// <summary>
     /// Adds three combat quality-of-life layers on top of default gunplay:

@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Round-Based Minigame Manager
+    ScripForge — Round-Based Minigame Manager
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

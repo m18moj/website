@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ground Loot & Contract System
+ * ScripForge — Ground Loot & Contract System
  * Pack: Call of Duty Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     public enum LootRarity { Common, Uncommon, Rare, Legendary }
 

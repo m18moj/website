@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Day-Night Cycle & Lighting
+    ScripForge — Day-Night Cycle & Lighting
     Pack: Roblox Pack | Category: World
     Version: 1.0.0
 

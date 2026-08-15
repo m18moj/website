@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Clan Tag & Squad Identity System
+ * ScripForge — Clan Tag & Squad Identity System
  * Pack: Call of Duty Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     [Serializable]
     public class SquadBanner

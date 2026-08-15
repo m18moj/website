@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Chicken Dinner Summary Screen
+ * ScripForge — Chicken Dinner Summary Screen
  * Pack: PUBG Pack | Category: Systems
  * Version: 1.0.0
  *

@@ -1,4 +1,4 @@
-# ScriptForge
+# ScripForge
 
 A game script store: browse game packs, pick individual scripts, check out with Stripe or crypto, and manage the store from an admin dashboard. Runs entirely on your own machine — no domain or external hosting required.
 
@@ -32,7 +32,7 @@ npm start
 
 The site is now at **http://localhost:3000**.
 
-**Your data persists across restarts.** Everything lives in `data/scriptforge.db`, a single SQLite file on disk — stopping and restarting the server (or editing code, which restarts it automatically under `npm run dev`) never touches it. The server logs the exact file path on every boot so you can confirm it's the same file each time. The only way to lose data is deleting the `data/` folder yourself.
+**Your data persists across restarts.** Everything lives in `data/scripforge.db`, a single SQLite file on disk — stopping and restarting the server (or editing code, which restarts it automatically under `npm run dev`) never touches it. The server logs the exact file path on every boot so you can confirm it's the same file each time. The only way to lose data is deleting the `data/` folder yourself.
 
 ## 4. Receive Stripe webhooks locally
 
@@ -87,7 +87,7 @@ The admin dashboard has full read/write access to the whole store: user manageme
 ## How it works
 
 - **Frontend** is static HTML/CSS/vanilla JS (`index.html`, `css/`, `js/`, `pages/`, `games/`). No build step.
-- **Backend** is Express (`server/`), serving both the API (`/api/*`) and the static frontend files, backed by a local SQLite database (`data/scriptforge.db`, created automatically, gitignored).
+- **Backend** is Express (`server/`), serving both the API (`/api/*`) and the static frontend files, backed by a local SQLite database (`data/scripforge.db`, created automatically, gitignored).
 - **Accounts**: username + password, no email required. Customers can register/sign in themselves; every order is tied to the signed-in account.
 - **Checkout**: the browser only ever tells the server *which* packs/scripts were selected, never a price. The server looks up real prices from `server/catalog.js`, converts them to the selected currency itself, and builds the Stripe Checkout session or NOWPayments invoice itself, so a tampered request can't change what gets charged.
 - **Cart**: kept in the browser (`localStorage`) while shopping. Login is only required at the moment of checkout, when the cart is turned into a real order tied to your account.

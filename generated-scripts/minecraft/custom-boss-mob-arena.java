@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Custom Boss Mob & Arena
+ * ScripForge — Custom Boss Mob & Arena
  * Pack: Minecraft Pack | Category: AI
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.ai;
+package com.scripforge.minecraft.ai;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

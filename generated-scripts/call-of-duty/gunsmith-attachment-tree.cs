@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Gunsmith Attachment Tree
+ * ScripForge — Gunsmith Attachment Tree
  * Pack: Call of Duty Pack | Category: Weapons
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Weapons
+namespace ScripForge.Weapons
 {
     /// <summary>Physical mount points an attachment can occupy on a weapon.</summary>
     public enum MountSlot

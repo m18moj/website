@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ranked Ladder & RP Calculator
+ * ScripForge — Ranked Ladder & RP Calculator
  * Pack: Apex Legends Pack | Category: Progression
  * Version: 1.0.0
  *

@@ -1,4 +1,4 @@
-; ScriptForge — Marriage & Player Home
+; ScripForge — Marriage & Player Home
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

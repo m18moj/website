@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Tool & Enchant Progression
+ * ScripForge — Tool & Enchant Progression
  * Pack: Minecraft Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.progression;
+package com.scripforge.minecraft.progression;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

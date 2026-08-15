@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Stunt Jump & Trick Score Tracker
+ * ScripForge — Stunt Jump & Trick Score Tracker
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// Defines custom stunt jump trigger zones. When the player's vehicle enters a zone

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Controller Aim Assist Curve
+ * ScripForge — Controller Aim Assist Curve
  * Pack: Fortnite Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Combat
+namespace ScripForge.Fortnite.Combat
 {
     public class CrosshairAimAssist : MonoBehaviour
     {

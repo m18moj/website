@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ultimate Orb Pickup & Charge
+ * ScripForge — Ultimate Orb Pickup & Charge
  * Pack: Valorant Pack | Category: Abilities
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Abilities
+namespace ScripForge.Valorant.Abilities
 {
     /// <summary>
     /// Interface implemented by any player-side component that tracks ultimate charge.

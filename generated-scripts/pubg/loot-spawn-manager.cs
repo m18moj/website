@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Loot Spawn & Airdrop Tables
+ * ScripForge — Loot Spawn & Airdrop Tables
  * Pack: PUBG Pack | Category: Loot
  * Version: 1.0.0
  *

@@ -29,7 +29,7 @@
     }, 3200);
   }
 
-  window.ScriptForgeToast = { show: showToast };
+  window.ScripForgeToast = { show: showToast };
 
   let csrfToken = null;
   let currentUser = null;
@@ -193,7 +193,7 @@
         try {
           await logout();
         } catch (err) {
-          if (window.ScriptForgeToast) window.ScriptForgeToast.show(err.message, 'error');
+          if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
         }
       });
     }
@@ -209,7 +209,7 @@
     renderAuthControl();
   });
 
-  window.ScriptForgeAuth = {
+  window.ScripForgeAuth = {
     apiFetch,
     refreshCsrfToken,
     loadCurrentUser,

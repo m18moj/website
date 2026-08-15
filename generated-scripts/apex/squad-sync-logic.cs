@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Squad Ping & Comms Wheel
+ * ScripForge — Squad Ping & Comms Wheel
  * Pack: Apex Legends Pack | Category: Squad
  * Version: 1.0.0
  *

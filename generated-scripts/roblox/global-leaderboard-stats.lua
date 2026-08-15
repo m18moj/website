@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Global Leaderboard & Stats
+    ScripForge — Global Leaderboard & Stats
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

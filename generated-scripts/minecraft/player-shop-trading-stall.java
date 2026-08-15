@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Player Shop & Trading Stall
+ * ScripForge — Player Shop & Trading Stall
  * Pack: Minecraft Pack | Category: Economy
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.economy;
+package com.scripforge.minecraft.economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

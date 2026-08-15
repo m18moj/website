@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Spike Plant & Defuse Sequence
+ * ScripForge — Spike Plant & Defuse Sequence
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ScriptForge.Valorant.Systems
+namespace ScripForge.Valorant.Systems
 {
     public enum BombSiteState
     {

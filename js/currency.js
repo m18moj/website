@@ -1,5 +1,5 @@
 (function () {
-  const STORAGE_KEY = 'scriptforge_currency';
+  const STORAGE_KEY = 'scripforge_currency';
   const DEFAULT_CURRENCY = 'GBP';
 
   // Mirrors server/currency.js — the server is always the one that decides
@@ -21,7 +21,7 @@
     if (!Object.prototype.hasOwnProperty.call(RATES, code)) return;
     localStorage.setItem(STORAGE_KEY, code);
     applyCurrencyToDom();
-    window.dispatchEvent(new CustomEvent('scriptforge:currencychange', { detail: { currency: code } }));
+    window.dispatchEvent(new CustomEvent('scripforge:currencychange', { detail: { currency: code } }));
   }
 
   // usdAmount may be a whole-dollar number (e.g. 29) or already-decimal
@@ -75,7 +75,7 @@
     applyCurrencyToDom();
   });
 
-  window.ScriptForgeCurrency = {
+  window.ScripForgeCurrency = {
     getCurrency,
     setCurrency,
     formatUsd,

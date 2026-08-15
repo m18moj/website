@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Buy Phase & Economy System
+ * ScripForge — Buy Phase & Economy System
  * Pack: Valorant Pack | Category: Economy
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Economy
+namespace ScripForge.Economy
 {
     public enum RoundResult { Win, Loss }
 

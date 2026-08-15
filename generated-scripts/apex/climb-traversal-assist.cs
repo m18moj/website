@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Climb & Traversal Assist
+ * ScripForge — Climb & Traversal Assist
  * Pack: Apex Legends Pack | Category: Movement
  * Version: 1.0.0
  *

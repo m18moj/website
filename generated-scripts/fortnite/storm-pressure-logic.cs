@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Storm Circle & Damage Ticks
+ * ScripForge — Storm Circle & Damage Ticks
  * Pack: Fortnite Pack | Category: World
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.World
+namespace ScripForge.Fortnite.World
 {
     [Serializable]
     public class StormPhase

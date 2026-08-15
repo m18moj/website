@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Legend Select & Draft Lock
+ * ScripForge — Legend Select & Draft Lock
  * Pack: Apex Legends Pack | Category: Systems
  * Version: 1.0.0
  *

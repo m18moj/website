@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Emote & Bounce Pad System
+ * ScripForge — Emote & Bounce Pad System
  * Pack: Fortnite Pack | Category: Movement
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Movement
+namespace ScripForge.Fortnite.Movement
 {
     [Serializable]
     public class EmoteDefinition

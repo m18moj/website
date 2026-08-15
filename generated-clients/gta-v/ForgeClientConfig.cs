@@ -1,35 +1,35 @@
 /*
- * ScriptForge — ForgeClient (GTA V)
+ * ScripForge — ForgeClient (GTA V)
  * Component: Shared Client Config
  * Version: 1.0.0
  *
  * Static, process-wide toggle/setting store that ForgeClientMenu writes to and that the
- * individual ScriptForge GTA V pack scripts are meant to read from.
+ * individual ScripForge GTA V pack scripts are meant to read from.
  *
  * Written for single-player use via Script Hook V .NET — not for GTA Online.
  */
 
-namespace ScriptForge.Client
+namespace ScripForge.Client
 {
     /// <summary>
     /// Central settings bag for the ForgeClient menu.
     ///
     /// HOW AN EXISTING PACK SCRIPT OPTS IN
     /// ------------------------------------
-    /// Each of the 20 ScriptForge GTA V scripts currently runs unconditionally once loaded
+    /// Each of the 20 ScripForge GTA V scripts currently runs unconditionally once loaded
     /// by Script Hook V .NET. To make a script controllable from the ForgeClientMenu, add a
     /// one-line guard at the top of its Tick handler (and, optionally, its KeyDown handler)
     /// that checks the matching flag below, e.g. inside GarageVehicleStorageManager.OnTick:
     ///
     ///     private void OnTick(object sender, EventArgs e)
     ///     {
-    ///         if (!ScriptForge.Client.ForgeClientConfig.GarageEnabled)
+    ///         if (!ScripForge.Client.ForgeClientConfig.GarageEnabled)
     ///             return;
     ///         ...
     ///     }
     ///
     /// No constructor changes, no new references, and no dependency on this DLL beyond the
-    /// single "ScriptForge.Client" using/qualified reference — the flags are plain static
+    /// single "ScripForge.Client" using/qualified reference — the flags are plain static
     /// fields so any script in the Scripts folder can read them for free. Nothing needs to
     /// write back to this class except ForgeClientMenu.
     /// </summary>
@@ -47,40 +47,40 @@ namespace ScriptForge.Client
         // pack behaves exactly as before until the player opens the menu.
         // ------------------------------------------------------------------
 
-        /// <summary>Gates GarageVehicleStorageManager (ScriptForge.Systems).</summary>
+        /// <summary>Gates GarageVehicleStorageManager (ScripForge.Systems).</summary>
         public static bool GarageEnabled = true;
 
-        /// <summary>Gates WeatherTimeOfDayController (ScriptForge.World).</summary>
+        /// <summary>Gates WeatherTimeOfDayController (ScripForge.World).</summary>
         public static bool WeatherControlEnabled = true;
 
-        /// <summary>Gates ParachuteSkydivingController (ScriptForge.Movement).</summary>
+        /// <summary>Gates ParachuteSkydivingController (ScripForge.Movement).</summary>
         public static bool ParachuteAssistEnabled = true;
 
-        /// <summary>Gates GangTerritoryTurfControl (ScriptForge.World).</summary>
+        /// <summary>Gates GangTerritoryTurfControl (ScripForge.World).</summary>
         public static bool GangTerritoryEnabled = true;
 
-        /// <summary>Gates WantedLevelManager (ScriptForge.Systems).</summary>
+        /// <summary>Gates WantedLevelManager (ScripForge.Systems).</summary>
         public static bool WantedLevelManagerEnabled = true;
 
-        /// <summary>Gates PoliceChaseSystem (ScriptForge.AI).</summary>
+        /// <summary>Gates PoliceChaseSystem (ScripForge.AI).</summary>
         public static bool PoliceChaseTweaksEnabled = true;
 
-        /// <summary>Gates StockMarketInvestmentSystem (ScriptForge.Economy).</summary>
+        /// <summary>Gates StockMarketInvestmentSystem (ScripForge.Economy).</summary>
         public static bool StockMarketEnabled = true;
 
-        /// <summary>Gates ClothingCharacterCustomizationMenu (ScriptForge.Systems).</summary>
+        /// <summary>Gates ClothingCharacterCustomizationMenu (ScripForge.Systems).</summary>
         public static bool CharacterCustomizationEnabled = true;
 
-        /// <summary>Gates NpcTrafficAi (ScriptForge.AI).</summary>
+        /// <summary>Gates NpcTrafficAi (ScripForge.AI).</summary>
         public static bool NpcTrafficAiEnabled = true;
 
-        /// <summary>Gates StuntJumpTrickScoreTracker (ScriptForge.Systems).</summary>
+        /// <summary>Gates StuntJumpTrickScoreTracker (ScripForge.Systems).</summary>
         public static bool StuntScoreTrackerEnabled = true;
 
-        /// <summary>Gates EconomyPropertySystem (ScriptForge.Economy).</summary>
+        /// <summary>Gates EconomyPropertySystem (ScripForge.Economy).</summary>
         public static bool EconomyPropertyEnabled = true;
 
-        /// <summary>Gates HeistPreparationFlow (ScriptForge.Missions).</summary>
+        /// <summary>Gates HeistPreparationFlow (ScripForge.Missions).</summary>
         public static bool HeistPrepEnabled = true;
 
         // ------------------------------------------------------------------

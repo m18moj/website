@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Recoil Pattern & Attachment System
+ * ScripForge — Recoil Pattern & Attachment System
  * Pack: PUBG Pack | Category: Weapons
  * Version: 1.0.0
  *

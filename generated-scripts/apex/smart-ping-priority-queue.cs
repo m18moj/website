@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Smart Ping Priority Queue
+ * ScripForge — Smart Ping Priority Queue
  * Pack: Apex Legends Pack | Category: Squad
  * Version: 1.0.0
  *

@@ -45,7 +45,7 @@ router.get('/', requireAuth, (req, res) => {
 // survives being opened in any editor) rather than a bolted-on suffix.
 function watermarkFor(fileExt, { username, licenseKey, orderId, downloadedAt }) {
   const lines = [
-    'ScriptForge — Licensed copy',
+    'ScripForge — Licensed copy',
     `Licensed to: ${username}`,
     `License key: ${licenseKey}`,
     `Order: SF-${orderId}`,
@@ -175,7 +175,7 @@ router.get('/zip', zipDownloadLimiter, requireAuth, (req, res) => {
     }
   }
 
-  const filename = `ScriptForge-${safeFilename(req.currentUser.username)}-downloads.zip`;
+  const filename = `ScripForge-${safeFilename(req.currentUser.username)}-downloads.zip`;
   res.setHeader('Content-Type', 'application/zip');
   res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
@@ -212,7 +212,7 @@ router.get('/zip', zipDownloadLimiter, requireAuth, (req, res) => {
   };
 
   const manifestLines = [
-    'ScriptForge — Your Scripts',
+    'ScripForge — Your Scripts',
     `Licensed to: ${req.currentUser.username}`,
     `Bundled: ${downloadedAt}`,
     '',

@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Admin Command & Moderation
+    ScripForge — Admin Command & Moderation
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

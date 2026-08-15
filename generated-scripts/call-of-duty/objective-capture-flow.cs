@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Objective Capture & Control
+ * ScripForge — Objective Capture & Control
  * Pack: Call of Duty Pack | Category: Objective
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Objectives
+namespace ScripForge.Objectives
 {
     public enum ObjectiveState
     {

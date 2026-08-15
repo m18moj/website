@@ -20,8 +20,8 @@
       // before asking for a question — otherwise this request and auth.js's
       // own startup csrf-token fetch could race and end up on two different
       // brand-new sessions, silently orphaning the stored answer.
-      await window.ScriptForgeAuth.refreshCsrfToken();
-      const { question } = await window.ScriptForgeAuth.getCaptcha();
+      await window.ScripForgeAuth.refreshCsrfToken();
+      const { question } = await window.ScripForgeAuth.getCaptcha();
       label.textContent = question;
       input.value = '';
     } catch (err) {
@@ -49,7 +49,7 @@
       const captchaAnswer = document.getElementById('captchaAnswer').value.trim();
 
       try {
-        const result = await window.ScriptForgeAuth.login(username, password, captchaAnswer);
+        const result = await window.ScripForgeAuth.login(username, password, captchaAnswer);
         if (result && result.requiresTotp) {
           loginPanel.hidden = true;
           totpPanel.hidden = false;
@@ -72,7 +72,7 @@
         const code = document.getElementById('totpCode').value.trim();
 
         try {
-          await window.ScriptForgeAuth.loginTotp(code);
+          await window.ScripForgeAuth.loginTotp(code);
           window.location.href = getRedirectTarget();
         } catch (err) {
           totpError.textContent = err.message;

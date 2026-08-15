@@ -1,6 +1,6 @@
-# ScriptForge Client for Skyrim (MCM Menu)
+# ScripForge Client for Skyrim (MCM Menu)
 
-This is the in-game configuration client for ScriptForge's Skyrim script
+This is the in-game configuration client for ScripForge's Skyrim script
 pack. It's a standard SkyUI Mod Configuration Menu (MCM) — the same
 mechanism used by thousands of Skyrim mods to expose settings through the
 pause menu. It does not inject anything or bypass any game system; it's
@@ -49,7 +49,7 @@ recompiled.
 - **SKSE** (Skyrim Script Extender) — required by SkyUI
 - **SkyUI** (version 5.1 or later recommended) — provides the MCM framework
   (`SKI_ConfigBase`) this script extends, and the in-game menu UI itself
-- The purchased ScriptForge Skyrim script pack (the `.psc`/`.pex` files under
+- The purchased ScripForge Skyrim script pack (the `.psc`/`.pex` files under
   `generated-scripts/skyrim/`), since this MCM only exposes settings for
   those scripts — it doesn't replace them
 
@@ -65,7 +65,7 @@ recompiled.
      source alongside the compiled script for future edits)
    - `ForgeClientMCM_MCM.ini` → `Data\MCM\Config\ForgeClientMCM\` (create this
      folder if it doesn't exist)
-   - The compiled `.pex` files from your purchased ScriptForge script pack
+   - The compiled `.pex` files from your purchased ScripForge script pack
      (`generated-scripts/skyrim/*.pex` once you've compiled those too) →
      `Data\Scripts\`
 4. This MCM menu script needs to run on a quest object in your game world so
@@ -84,7 +84,7 @@ recompiled.
 2. Press **Esc** to open the pause menu.
 3. Select the **Mod Configuration** tab (added by SkyUI; it appears once
    SkyUI and at least one MCM-enabled mod are installed).
-4. Find **"ScriptForge Client"** in the mod list on the left.
+4. Find **"ScripForge Client"** in the mod list on the left.
 5. You'll see four pages: **Followers & Home**, **Crime & Reputation**,
    **Progression**, and **World & Economy** — each with toggles, sliders,
    and dropdown menus tied to the corresponding scripts in the pack (follower

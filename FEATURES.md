@@ -1,4 +1,4 @@
-# ScriptForge — Feature Manual
+# ScripForge — Feature Manual
 
 Everything the site can do, organized by area. This is a living reference, not a changelog — if you add or change a feature, update the relevant section here too.
 
@@ -130,7 +130,7 @@ Optional — nothing on the site requires it. When `SMTP_HOST`/`SMTP_USER`/`SMTP
 
 ## 10. Data & Reliability
 
-- **Database**: SQLite via Node's built-in `node:sqlite` (no external database server to install). `data/scriptforge.db`, gitignored, persists across restarts.
+- **Database**: SQLite via Node's built-in `node:sqlite` (no external database server to install). `data/scripforge.db`, gitignored, persists across restarts.
 - **Durability**: `PRAGMA synchronous = FULL` plus a graceful-shutdown WAL checkpoint, so the most recent orders/signups survive even an abrupt process kill, not just a clean stop.
 - **Migrations**: additive-only (`ensureColumn`), so restarting after a schema change never touches existing data.
 - **Seeding**: the original catalog is seeded once, only if the `packs` table is empty — safe to keep this repo's `server/seedCatalog.js` around indefinitely; it's never read again after first boot.

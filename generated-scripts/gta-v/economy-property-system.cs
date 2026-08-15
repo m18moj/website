@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Property Ownership & Income
+ * ScripForge — Property Ownership & Income
  * Pack: GTA V Pack | Category: Economy
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.UI;
 
-namespace ScriptForge.Economy
+namespace ScripForge.Economy
 {
     internal class OwnedProperty
     {

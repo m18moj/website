@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Wave-Based Horde Round System
+ * ScripForge — Wave-Based Horde Round System
  * Pack: Call of Duty Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     [Serializable]
     public class EnemyArchetype

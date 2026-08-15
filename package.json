@@ -1,12 +1,15 @@
 {
-  "name": "scriptforge",
+  "name": "scripforge",
   "version": "1.0.0",
-  "description": "ScriptForge game script store",
+  "description": "ScripForge game script store",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "create-admin": "node server/scripts/create-admin.js",
+    "bot": "node discord-bot/index.js",
+    "bot:dev": "nodemon discord-bot/index.js",
+    "bot:deploy-commands": "node discord-bot/deploy-commands.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,8 +18,10 @@
   "private": "true",
   "type": "commonjs",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
     "archiver": "^7.0.1",
     "bcrypt": "^6.0.0",
+    "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-rate-limit": "^8.6.2",

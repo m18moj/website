@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Custom Crop Growth System
+ * ScripForge — Custom Crop Growth System
  * Pack: Minecraft Pack | Category: Gameplay
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.gameplay;
+package com.scripforge.minecraft.gameplay;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

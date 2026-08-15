@@ -1,4 +1,4 @@
-; ScriptForge — Follower Combat AI
+; ScripForge — Follower Combat AI
 ; Pack: Skyrim Pack | Category: AI
 ; Version: 1.0.0
 ;

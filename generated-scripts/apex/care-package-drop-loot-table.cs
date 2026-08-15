@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Care Package Drop & Loot Table
+ * ScripForge — Care Package Drop & Loot Table
  * Pack: Apex Legends Pack | Category: Loot
  * Version: 1.0.0
  *

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Gang Territory & Turf Control
+ * ScripForge — Gang Territory & Turf Control
  * Pack: GTA V Pack | Category: World
  * Version: 1.0.0
  *
@@ -18,7 +18,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.World
+namespace ScripForge.World
 {
     /// <summary>
     /// Defines a set of circular turf zones, each owned by a gang faction. The player

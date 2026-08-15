@@ -1,4 +1,4 @@
-; ScriptForge — Character Save & Build State
+; ScripForge — Character Save & Build State
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

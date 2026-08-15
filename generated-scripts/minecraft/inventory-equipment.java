@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Inventory, Hotbar & Crafting Grid
+ * ScripForge — Inventory, Hotbar & Crafting Grid
  * Pack: Minecraft Pack | Category: Inventory
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.inventory;
+package com.scripforge.minecraft.inventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

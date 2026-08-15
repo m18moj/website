@@ -14,7 +14,7 @@
       return;
     }
 
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     container.innerHTML = orders.map((order) => `
       <div class="checkout-pack-row">
         <div class="checkout-pack-header">
@@ -38,11 +38,11 @@
   }
 
   function toast(message, type) {
-    if (window.ScriptForgeToast) window.ScriptForgeToast.show(message, type);
+    if (window.ScripForgeToast) window.ScripForgeToast.show(message, type);
   }
 
   function money(usdAmount) {
-    return window.ScriptForgeCurrency ? window.ScriptForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
+    return window.ScripForgeCurrency ? window.ScripForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
   }
 
   async function loadWishlist() {
@@ -50,7 +50,7 @@
     const container = document.getElementById('wishlistContainer');
 
     try {
-      const { packs } = await window.ScriptForgeAuth.apiFetch('/api/account/wishlist');
+      const { packs } = await window.ScripForgeAuth.apiFetch('/api/account/wishlist');
       section.hidden = false;
 
       if (!packs.length) {
@@ -58,7 +58,7 @@
         return;
       }
 
-      const { escapeHtml } = window.ScriptForgeAuth;
+      const { escapeHtml } = window.ScripForgeAuth;
       container.innerHTML = packs.map((pack) => {
         const total = pack.scripts.reduce((sum, s) => sum + s.price, 0);
         return `
@@ -77,7 +77,7 @@
       container.querySelectorAll('[data-remove-wishlist]').forEach((button) => {
         button.addEventListener('click', async () => {
           try {
-            await window.ScriptForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(button.dataset.removeWishlist)}`, { method: 'DELETE' });
+            await window.ScripForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(button.dataset.removeWishlist)}`, { method: 'DELETE' });
             toast('Removed from saved packs.', 'success');
             loadWishlist();
           } catch (err) {
@@ -111,7 +111,7 @@
     if (!uniquePacks.size) { section.hidden = true; return; }
     section.hidden = false;
 
-    const { escapeHtml, apiFetch } = window.ScriptForgeAuth;
+    const { escapeHtml, apiFetch } = window.ScripForgeAuth;
     const entries = await Promise.all(
       Array.from(uniquePacks.entries()).map(async ([packId, packName]) => {
         const data = await apiFetch(`/api/account/reviews/${encodeURIComponent(packId)}`).catch(() => ({ review: null }));
@@ -147,7 +147,7 @@
         const comment = row.querySelector('.review-comment').value.trim();
         if (!rating) { toast('Pick a star rating first.', 'error'); return; }
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/account/reviews/${encodeURIComponent(packId)}`, {
+          await window.ScripForgeAuth.apiFetch(`/api/account/reviews/${encodeURIComponent(packId)}`, {
             method: 'POST',
             body: { rating, comment }
           });
@@ -184,7 +184,7 @@
       errorBox.hidden = true;
 
       try {
-        const data = await window.ScriptForgeAuth.apiFetch('/api/account/email', {
+        const data = await window.ScripForgeAuth.apiFetch('/api/account/email', {
           method: 'POST',
           body: { email: input.value.trim() }
         });
@@ -196,6 +196,83 @@
         errorBox.hidden = false;
       }
     });
+  }
+
+  const DISCORD_ERROR_MESSAGES = {
+    denied: 'Discord linking was cancelled.',
+    already_linked: 'That Discord account is already linked to a different ScripForge account. Disconnect it there first, or contact support.',
+    invalid_state: 'That link attempt expired or was invalid — please try again.',
+    not_configured: 'Discord linking is not available right now.',
+    exchange_failed: "Couldn't complete Discord linking — please try again.",
+    unknown: 'Something went wrong linking Discord — please try again.'
+  };
+
+  function consumeDiscordRedirectParams() {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get('discord');
+    if (!result) return null;
+
+    params.delete('discord');
+    const reason = params.get('reason');
+    params.delete('reason');
+    const cleanQuery = params.toString();
+    window.history.replaceState({}, '', window.location.pathname + (cleanQuery ? `?${cleanQuery}` : ''));
+
+    if (result === 'linked') return { type: 'success', message: 'Discord account connected!' };
+    return { type: 'error', message: DISCORD_ERROR_MESSAGES[reason] || DISCORD_ERROR_MESSAGES.unknown };
+  }
+
+  async function setupDiscordLink() {
+    const statusText = document.getElementById('discordLinkStatus');
+    const linkBtn = document.getElementById('discordLinkBtn');
+    const unlinkBtn = document.getElementById('discordUnlinkBtn');
+    const { escapeHtml, apiFetch } = window.ScripForgeAuth;
+
+    async function refresh() {
+      try {
+        const data = await apiFetch('/api/discord/status');
+        if (!data.configured) {
+          statusText.textContent = 'Not available right now.';
+          linkBtn.hidden = true;
+          unlinkBtn.hidden = true;
+          return;
+        }
+        if (data.linked) {
+          statusText.textContent = `Connected as ${escapeHtml(data.discordTag)}.`;
+          linkBtn.hidden = true;
+          unlinkBtn.hidden = false;
+        } else {
+          statusText.textContent = 'Not connected. Link your account to get the Verified Customer role automatically.';
+          linkBtn.hidden = false;
+          unlinkBtn.hidden = true;
+        }
+      } catch (err) {
+        statusText.textContent = 'Not available right now.';
+        linkBtn.hidden = true;
+        unlinkBtn.hidden = true;
+      }
+    }
+
+    linkBtn.addEventListener('click', () => {
+      // Full-page navigation, not a fetch — this has to leave the site to
+      // reach Discord's consent screen.
+      window.location.href = '/api/discord/start';
+    });
+
+    unlinkBtn.addEventListener('click', async () => {
+      try {
+        await apiFetch('/api/discord/unlink', { method: 'POST' });
+        toast('Discord account disconnected.', 'success');
+        await refresh();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    });
+
+    const redirectResult = consumeDiscordRedirectParams();
+    if (redirectResult) toast(redirectResult.message, redirectResult.type);
+
+    await refresh();
   }
 
   function setupPasswordForm() {
@@ -215,7 +292,7 @@
       const newPassword = document.getElementById('newPassword').value;
 
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/account/password', {
+        await window.ScripForgeAuth.apiFetch('/api/account/password', {
           method: 'POST',
           body: { currentPassword, newPassword }
         });
@@ -231,8 +308,8 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      await window.ScriptForgeAuth.refreshCsrfToken();
-      const user = await window.ScriptForgeAuth.loadCurrentUser();
+      await window.ScripForgeAuth.refreshCsrfToken();
+      const user = await window.ScripForgeAuth.loadCurrentUser();
 
       if (!user) {
         document.getElementById('accountGate').hidden = false;
@@ -244,13 +321,14 @@
 
       setupEmailForm(user);
       setupPasswordForm();
+      setupDiscordLink();
 
-      const { orders } = await window.ScriptForgeAuth.apiFetch('/api/account/orders');
+      const { orders } = await window.ScripForgeAuth.apiFetch('/api/account/orders');
       renderOrders(orders);
       loadReviews(orders.filter((o) => o.status === 'paid'));
-      if (window.ScriptForgeFlags) {
-        await window.ScriptForgeFlags.ready;
-        if (window.ScriptForgeFlags.isEnabled('wishlist')) loadWishlist();
+      if (window.ScripForgeFlags) {
+        await window.ScripForgeFlags.ready;
+        if (window.ScripForgeFlags.isEnabled('wishlist')) loadWishlist();
       }
     } catch (err) {
       document.getElementById('accountGate').hidden = false;

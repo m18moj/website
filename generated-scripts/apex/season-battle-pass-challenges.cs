@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Season Battle Pass & Challenges
+ * ScripForge — Season Battle Pass & Challenges
  * Pack: Apex Legends Pack | Category: Progression
  * Version: 1.0.0
  *

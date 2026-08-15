@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Combat Score Event Log
+ * ScripForge — Combat Score Event Log
  * Pack: Call of Duty Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnrealEngine;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     public enum ScoreEventType
     {

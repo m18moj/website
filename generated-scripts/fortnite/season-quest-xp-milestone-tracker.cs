@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Season Quest & XP Milestone Tracker
+ * ScripForge — Season Quest & XP Milestone Tracker
  * Pack: Fortnite Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Progression
+namespace ScripForge.Fortnite.Progression
 {
     [Serializable]
     public class SeasonQuest

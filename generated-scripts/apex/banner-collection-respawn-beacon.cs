@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Banner Collection & Respawn Beacon
+ * ScripForge — Banner Collection & Respawn Beacon
  * Pack: Apex Legends Pack | Category: Systems
  * Version: 1.0.0
  *

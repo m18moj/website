@@ -1,4 +1,4 @@
-; ScriptForge — Equipment Slots & Weight System
+; ScripForge — Equipment Slots & Weight System
 ; Pack: Skyrim Pack | Category: Inventory
 ; Version: 1.0.0
 ;

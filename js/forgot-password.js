@@ -13,8 +13,8 @@
       const username = document.getElementById('username').value.trim();
 
       try {
-        await window.ScriptForgeAuth.refreshCsrfToken();
-        const data = await window.ScriptForgeAuth.apiFetch('/api/auth/forgot-password', {
+        await window.ScripForgeAuth.refreshCsrfToken();
+        const data = await window.ScripForgeAuth.apiFetch('/api/auth/forgot-password', {
           method: 'POST',
           body: { username }
         });

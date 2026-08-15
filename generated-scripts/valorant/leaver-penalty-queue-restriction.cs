@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Leaver Penalty & Queue Restriction
+ * ScripForge — Leaver Penalty & Queue Restriction
  * Pack: Valorant Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Systems
+namespace ScripForge.Valorant.Systems
 {
     [Serializable]
     public class PlayerPenaltyRecord

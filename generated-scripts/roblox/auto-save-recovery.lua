@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — DataStore Auto-Save & Backup
+    ScripForge — DataStore Auto-Save & Backup
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

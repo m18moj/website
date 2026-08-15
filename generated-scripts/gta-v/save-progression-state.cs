@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Save Slot & World State
+ * ScripForge — Save Slot & World State
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -19,7 +19,7 @@ using System.Windows.Forms;
 using GTA;
 using GTA.Math;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     [Serializable]
     internal class SaveData
@@ -36,7 +36,7 @@ namespace ScriptForge.Systems
     /// <summary>
     /// Handles saving and loading a lightweight custom progression state (money, health,
     /// position, owned assets, and arbitrary world-state flags) to numbered slot files under
-    /// the script's ScriptForge/Saves directory, independent of the base game's save system.
+    /// the script's ScripForge/Saves directory, independent of the base game's save system.
     /// </summary>
     public class SaveProgressionState : Script
     {
@@ -46,7 +46,7 @@ namespace ScriptForge.Systems
 
         public SaveProgressionState()
         {
-            _saveDirectory = Path.Combine("scripts", "ScriptForge", "Saves");
+            _saveDirectory = Path.Combine("scripts", "ScripForge", "Saves");
             Directory.CreateDirectory(_saveDirectory);
 
             KeyDown += OnKeyDown;

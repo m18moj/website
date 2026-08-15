@@ -1,4 +1,4 @@
-; ScriptForge — Dragon Shout & Word Wall
+; ScripForge — Dragon Shout & Word Wall
 ; Pack: Skyrim Pack | Category: Systems
 ; Version: 1.0.0
 ;

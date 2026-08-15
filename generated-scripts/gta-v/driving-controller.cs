@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Vehicle Handling & Damage Model
+ * ScripForge — Vehicle Handling & Damage Model
  * Pack: GTA V Pack | Category: Vehicles
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Vehicles
+namespace ScripForge.Vehicles
 {
     /// <summary>
     /// Overrides default handling behavior per vehicle class and layers on a simple

@@ -6,7 +6,7 @@
   const NEW_BADGE_DAYS = 14;
 
   function escapeHtml(value) {
-    return window.ScriptForgeAuth ? window.ScriptForgeAuth.escapeHtml(value) : String(value);
+    return window.ScripForgeAuth ? window.ScripForgeAuth.escapeHtml(value) : String(value);
   }
 
   function isRecent(createdAt) {
@@ -60,11 +60,11 @@
   }
 
   async function getWishlistedPackIds() {
-    if (!window.ScriptForgeAuth) return new Set();
+    if (!window.ScripForgeAuth) return new Set();
     try {
-      const me = await window.ScriptForgeAuth.loadCurrentUser();
+      const me = await window.ScripForgeAuth.loadCurrentUser();
       if (!me) return new Set();
-      const data = await window.ScriptForgeAuth.apiFetch('/api/account/wishlist');
+      const data = await window.ScripForgeAuth.apiFetch('/api/account/wishlist');
       return new Set(data.packs.map((p) => p.packId));
     } catch (err) {
       return new Set();
@@ -72,11 +72,11 @@
   }
 
   async function toggleWishlist(packId, isSaved) {
-    await window.ScriptForgeAuth.refreshCsrfToken();
+    await window.ScripForgeAuth.refreshCsrfToken();
     if (isSaved) {
-      await window.ScriptForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(packId)}`, { method: 'DELETE' });
+      await window.ScripForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(packId)}`, { method: 'DELETE' });
     } else {
-      await window.ScriptForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(packId)}`, { method: 'POST' });
+      await window.ScripForgeAuth.apiFetch(`/api/account/wishlist/${encodeURIComponent(packId)}`, { method: 'POST' });
     }
   }
 
@@ -87,7 +87,7 @@
     try {
       const [catalogRes, flags] = await Promise.all([
         fetch('/api/catalog').then((r) => r.json()),
-        window.ScriptForgeFlags ? window.ScriptForgeFlags.ready : Promise.resolve({})
+        window.ScripForgeFlags ? window.ScripForgeFlags.ready : Promise.resolve({})
       ]);
       const packs = (catalogRes.catalog || []).filter((p) => p.scripts.length > 0);
       const showNewBadge = Boolean(flags && flags.newBadges);
@@ -109,10 +109,10 @@
       grid.querySelectorAll('[data-quick-add-pack]').forEach((button) => {
         button.addEventListener('click', () => {
           const pack = packs.find((p) => p.packId === button.dataset.quickAddPack);
-          if (!pack || !window.ScriptForgeCart) return;
-          const added = window.ScriptForgeCart.addPackToCart(pack.packId, pack.packName, pack.scripts);
-          if (window.ScriptForgeToast) {
-            window.ScriptForgeToast.show(`${pack.packName} added — ${added.items.length} script${added.items.length === 1 ? '' : 's'} in your basket.`, 'success');
+          if (!pack || !window.ScripForgeCart) return;
+          const added = window.ScripForgeCart.addPackToCart(pack.packId, pack.packName, pack.scripts);
+          if (window.ScripForgeToast) {
+            window.ScripForgeToast.show(`${pack.packName} added — ${added.items.length} script${added.items.length === 1 ? '' : 's'} in your basket.`, 'success');
           }
         });
       });
@@ -121,7 +121,7 @@
         button.addEventListener('click', async (event) => {
           event.preventDefault();
           const packId = button.dataset.wishlistToggle;
-          const me = await window.ScriptForgeAuth.loadCurrentUser();
+          const me = await window.ScripForgeAuth.loadCurrentUser();
           if (!me) {
             window.location.href = 'login.html?redirect=catalog.html';
             return;
@@ -132,16 +132,16 @@
             button.classList.toggle('active', !isSaved);
             button.setAttribute('aria-pressed', String(!isSaved));
             button.querySelector('svg').setAttribute('fill', !isSaved ? 'currentColor' : 'none');
-            if (window.ScriptForgeToast) {
-              window.ScriptForgeToast.show(isSaved ? 'Removed from saved packs.' : 'Saved — find it on your account page.', 'success');
+            if (window.ScripForgeToast) {
+              window.ScripForgeToast.show(isSaved ? 'Removed from saved packs.' : 'Saved — find it on your account page.', 'success');
             }
           } catch (err) {
-            if (window.ScriptForgeToast) window.ScriptForgeToast.show(err.message, 'error');
+            if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
           }
         });
       });
 
-      if (window.ScriptForgeCurrency) window.ScriptForgeCurrency.applyCurrencyToDom();
+      if (window.ScripForgeCurrency) window.ScripForgeCurrency.applyCurrencyToDom();
 
       // A search from the nav bar (js/search.js) lands here with ?q=... —
       // carry it into the existing search filter box and run it once.
@@ -149,7 +149,7 @@
       const searchInput = document.getElementById('catalogSearch');
       if (queryParam && searchInput) searchInput.value = queryParam;
 
-      if (window.ScriptForgeCatalogFilters) window.ScriptForgeCatalogFilters.applyFilters();
+      if (window.ScripForgeCatalogFilters) window.ScripForgeCatalogFilters.applyFilters();
     } catch (err) {
       grid.innerHTML = '<p class="empty-state">Could not load the catalog right now. Try refreshing the page.</p>';
     }

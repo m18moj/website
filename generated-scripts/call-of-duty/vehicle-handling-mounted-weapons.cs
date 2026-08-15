@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Vehicle Handling & Mounted Weapons
+ * ScripForge — Vehicle Handling & Mounted Weapons
  * Pack: Call of Duty Pack | Category: Vehicles
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System;
 using UnityEngine;
 
-namespace ScriptForge.Vehicles
+namespace ScripForge.Vehicles
 {
     /// <summary>
     /// Simple arcade-style rigidbody vehicle controller with a separate mounted-weapon seat

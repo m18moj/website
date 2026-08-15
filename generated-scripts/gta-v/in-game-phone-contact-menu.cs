@@ -1,5 +1,5 @@
 /*
- * ScriptForge — In-Game Phone & Contact Menu
+ * ScripForge — In-Game Phone & Contact Menu
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Windows.Forms;
 using GTA;
 using GTA.UI;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// A lightweight phone UI drawn with the GTA.UI scaleform-free drawing API.

@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — RemoteEvent Inventory Sync
+    ScripForge — RemoteEvent Inventory Sync
     Pack: Roblox Pack | Category: Inventory
     Version: 1.0.0
 

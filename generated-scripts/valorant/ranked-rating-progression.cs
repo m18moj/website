@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ranked Rating Progression
+ * ScripForge — Ranked Rating Progression
  * Pack: Valorant Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System;
 using UnityEngine;
 
-namespace ScriptForge.Valorant.Progression
+namespace ScripForge.Valorant.Progression
 {
     public enum RankTier
     {

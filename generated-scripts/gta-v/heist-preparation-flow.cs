@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Heist Setup & Crew Payout
+ * ScripForge — Heist Setup & Crew Payout
  * Pack: GTA V Pack | Category: Missions
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.UI;
 
-namespace ScriptForge.Missions
+namespace ScripForge.Missions
 {
     internal class PrepObjective
     {

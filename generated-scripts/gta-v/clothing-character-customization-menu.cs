@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Clothing & Character Customization Menu
+ * ScripForge — Clothing & Character Customization Menu
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Windows.Forms;
 using GTA;
 using GTA.Native;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// A simple wardrobe overlay that lets the player cycle through drawable variations

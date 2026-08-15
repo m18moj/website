@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Wanted Chase & Roadblock AI
+ * ScripForge — Wanted Chase & Roadblock AI
  * Pack: GTA V Pack | Category: AI
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.AI
+namespace ScripForge.AI
 {
     /// <summary>
     /// Watches the player's wanted level and periodically escalates the chase by spawning

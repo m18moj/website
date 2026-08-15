@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Fishing & Consumable Loot System
+ * ScripForge — Fishing & Consumable Loot System
  * Pack: Fortnite Pack | Category: Gameplay
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Gameplay
+namespace ScripForge.Fortnite.Gameplay
 {
     public enum CatchRewardType
     {

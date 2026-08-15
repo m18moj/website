@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Spectator & Killer-Cam System
+ * ScripForge — Spectator & Killer-Cam System
  * Pack: PUBG Pack | Category: HUD
  * Version: 1.0.0
  *

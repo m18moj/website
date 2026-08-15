@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Custom Animation Controller
+    ScripForge — Custom Animation Controller
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

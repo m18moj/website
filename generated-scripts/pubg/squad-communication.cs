@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Squad Markers & Ping System
+ * ScripForge — Squad Markers & Ping System
  * Pack: PUBG Pack | Category: Squad
  * Version: 1.0.0
  *

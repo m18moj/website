@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Finisher & Execution Sequence
+ * ScripForge — Finisher & Execution Sequence
  * Pack: Apex Legends Pack | Category: Combat
  * Version: 1.0.0
  *

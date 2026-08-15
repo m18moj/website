@@ -11,7 +11,7 @@
       return;
     }
 
-    await window.ScriptForgeAuth.refreshCsrfToken();
+    await window.ScripForgeAuth.refreshCsrfToken();
 
     const form = document.getElementById('resetForm');
     const errorBox = document.getElementById('formError');
@@ -23,11 +23,11 @@
       const newPassword = document.getElementById('newPassword').value;
 
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/auth/reset-password', {
+        await window.ScripForgeAuth.apiFetch('/api/auth/reset-password', {
           method: 'POST',
           body: { token, newPassword }
         });
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show('Password updated — sign in with your new password.', 'success');
+        if (window.ScripForgeToast) window.ScripForgeToast.show('Password updated — sign in with your new password.', 'success');
         window.location.href = 'login.html';
       } catch (err) {
         errorBox.textContent = err.message;

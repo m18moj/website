@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Locker & Cosmetic Equip System
+ * ScripForge — Locker & Cosmetic Equip System
  * Pack: Fortnite Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Systems
+namespace ScripForge.Fortnite.Systems
 {
     public enum CosmeticSlot
     {

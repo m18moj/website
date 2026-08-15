@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Ranked MMR & Tier System
+ * ScripForge — Ranked MMR & Tier System
  * Pack: PUBG Pack | Category: Progression
  * Version: 1.0.0
  *

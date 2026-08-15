@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Mythic Weapon Ability System
+ * ScripForge — Mythic Weapon Ability System
  * Pack: Fortnite Pack | Category: Weapons
  * Version: 1.0.0
  *
@@ -14,7 +14,7 @@
 
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Weapons
+namespace ScripForge.Fortnite.Weapons
 {
     /// <summary>
     /// Base class for a mythic-tier weapon's special ability. Derive from this to implement

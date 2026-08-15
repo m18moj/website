@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Scoreboard & Combat Score
+ * ScripForge — Scoreboard & Combat Score
  * Pack: Valorant Pack | Category: HUD
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnrealEngine;
 
-namespace ScriptForge.HUD
+namespace ScripForge.HUD
 {
     [Serializable]
     public class PlayerStatLine

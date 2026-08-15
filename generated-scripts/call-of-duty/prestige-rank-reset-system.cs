@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Prestige & Rank Reset System
+ * ScripForge — Prestige & Rank Reset System
  * Pack: Call of Duty Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace ScriptForge.Progression
+namespace ScripForge.Progression
 {
     /// <summary>Defines which unlock categories survive a prestige reset.</summary>
     [Flags]

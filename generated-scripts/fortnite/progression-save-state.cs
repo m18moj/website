@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Battle Pass Progression Save
+ * ScripForge — Battle Pass Progression Save
  * Pack: Fortnite Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Progression
+namespace ScripForge.Fortnite.Progression
 {
     [Serializable]
     public class TierReward

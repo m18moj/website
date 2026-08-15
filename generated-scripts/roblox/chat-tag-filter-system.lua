@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Chat Tag & Filter System
+    ScripForge — Chat Tag & Filter System
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

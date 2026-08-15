@@ -7,6 +7,8 @@ const usersModel = require('./models/users');
 const licensesModel = require('./models/licenses');
 const email = require('./email');
 const { serializeOrder } = require('./serialize');
+const discordLinks = require('../discord-bot/models/discordLinks');
+const discordRest = require('../discord-bot/discordRest');
 
 async function fulfillOrder(orderId) {
   const order = ordersModel.withItems(ordersModel.findById(orderId));
@@ -20,6 +22,19 @@ async function fulfillOrder(orderId) {
       await email.orderReceiptEmail({ to: user.email, username: user.username, order: serializeOrder(order) });
     } catch (err) {
       console.error('Failed to send order receipt email:', err.message);
+    }
+  }
+
+  // If this account is already linked to a Discord account, their first
+  // paid order is exactly the moment /verify would have granted the
+  // Verified role anyway — do it automatically so a customer who linked
+  // before buying doesn't need to run /verify again after paying.
+  const link = discordLinks.findByUserId(order.user_id);
+  if (link) {
+    try {
+      await discordRest.syncVerifiedRole(link.discord_id, { add: true });
+    } catch (err) {
+      console.error('Failed to sync Discord Verified role:', err.message);
     }
   }
 }

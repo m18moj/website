@@ -8,7 +8,7 @@
   }
 
   function toast(message, type) {
-    if (window.ScriptForgeToast) window.ScriptForgeToast.show(message, type);
+    if (window.ScripForgeToast) window.ScripForgeToast.show(message, type);
   }
 
   function paymentLabel(provider) {
@@ -77,7 +77,7 @@
   }
 
   async function loadSystemStatus() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const status = await apiFetch('/api/admin/system-status');
     const container = document.getElementById('systemStatusContainer');
 
@@ -110,7 +110,7 @@
 
   function packEditFormHtml(pack) {
     const p = pack || { packName: '', gameTitle: '', genre: 'other', description: '', detailUrl: '' };
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     return `
       <div class="form-grid">
         <div class="form-group">
@@ -151,7 +151,7 @@
   }
 
   function scriptRowHtml(packId, script) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     return `
       <div class="catalog-pack-script ${script.hidden ? 'script-hidden' : ''}" data-script-row="${packId}::${escapeHtml(script.id)}">
         <div class="script-view">
@@ -174,11 +174,11 @@
   }
 
   function money(usdAmount) {
-    return window.ScriptForgeCurrency ? window.ScriptForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
+    return window.ScripForgeCurrency ? window.ScripForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
   }
 
   function packCardHtml(pack) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     const total = pack.scripts.filter((s) => !s.hidden).reduce((sum, s) => sum + s.price, 0);
     return `
       <div class="catalog-pack ${pack.hidden ? 'catalog-pack-hidden' : ''}" data-pack-card="${escapeHtml(pack.packId)}">
@@ -218,7 +218,7 @@
   }
 
   async function loadCatalog() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const { catalog } = await apiFetch('/api/admin/catalog');
     const container = document.getElementById('catalogContainer');
 
@@ -246,7 +246,7 @@
         const errorBox = form.querySelector('.catalog-form-error');
         errorBox.hidden = true;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}`, {
             method: 'PATCH',
             body: readPackForm(form)
           });
@@ -263,7 +263,7 @@
       btn.addEventListener('click', async () => {
         const hidden = btn.dataset.hidden === 'true';
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(btn.dataset.togglePackHidden)}/hidden`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(btn.dataset.togglePackHidden)}/hidden`, {
             method: 'PATCH',
             body: { hidden: !hidden }
           });
@@ -279,7 +279,7 @@
       btn.addEventListener('click', async () => {
         if (!window.confirm('Delete this pack and every script in it? This cannot be undone (past orders that included it are unaffected).')) return;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(btn.dataset.deletePack)}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(btn.dataset.deletePack)}`, { method: 'DELETE' });
           toast('Pack deleted.', 'success');
           await loadCatalog();
         } catch (err) {
@@ -302,7 +302,7 @@
         const errorBox = form.querySelector('.script-form-error');
         errorBox.hidden = true;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}`, {
             method: 'PATCH',
             body: { title: form.querySelector('.sf-title').value.trim(), price: Number(form.querySelector('.sf-price').value) }
           });
@@ -320,7 +320,7 @@
         const hidden = btn.dataset.hidden === 'true';
         const [packId, scriptId] = btn.dataset.toggleScriptHidden.split('::');
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}/hidden`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}/hidden`, {
             method: 'PATCH',
             body: { hidden: !hidden }
           });
@@ -337,7 +337,7 @@
         if (!window.confirm('Delete this script? This cannot be undone (past orders that included it are unaffected).')) return;
         const [packId, scriptId] = btn.dataset.deleteScript.split('::');
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts/${encodeURIComponent(scriptId)}`, { method: 'DELETE' });
           toast('Script deleted.', 'success');
           await loadCatalog();
         } catch (err) {
@@ -353,7 +353,7 @@
         const errorBox = form.querySelector('.add-script-error');
         errorBox.hidden = true;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/catalog/packs/${encodeURIComponent(packId)}/scripts`, {
             method: 'POST',
             body: { title: form.querySelector('.as-title').value.trim(), price: Number(form.querySelector('.as-price').value) }
           });
@@ -380,7 +380,7 @@
       event.preventDefault();
       errorBox.hidden = true;
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/admin/catalog/packs', {
+        await window.ScripForgeAuth.apiFetch('/api/admin/catalog/packs', {
           method: 'POST',
           body: {
             packName: document.getElementById('newPackName').value.trim(),
@@ -405,7 +405,7 @@
   // --- Promo codes ---------------------------------------------------------
 
   function promoRowHtml(promo) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     const valueText = promo.discount_type === 'percent' ? `${promo.discount_value}%` : `$${(promo.discount_value / 100).toFixed(2)}`;
     const usesText = promo.max_uses ? `${promo.uses_count} / ${promo.max_uses}` : `${promo.uses_count} (unlimited)`;
     return `
@@ -423,7 +423,7 @@
   }
 
   async function loadPromoCodes() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const { promoCodes } = await apiFetch('/api/admin/promo-codes');
     const container = document.getElementById('promoCodesContainer');
 
@@ -435,7 +435,7 @@
       btn.addEventListener('click', async () => {
         const active = btn.dataset.active === 'true';
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/promo-codes/${encodeURIComponent(btn.dataset.togglePromo)}/active`, { method: 'PATCH', body: { active: !active } });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/promo-codes/${encodeURIComponent(btn.dataset.togglePromo)}/active`, { method: 'PATCH', body: { active: !active } });
           toast('Promo code updated.', 'success');
           loadPromoCodes();
         } catch (err) {
@@ -448,7 +448,7 @@
       btn.addEventListener('click', async () => {
         if (!window.confirm('Delete this promo code? This cannot be undone.')) return;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/promo-codes/${encodeURIComponent(btn.dataset.deletePromo)}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/promo-codes/${encodeURIComponent(btn.dataset.deletePromo)}`, { method: 'DELETE' });
           toast('Promo code deleted.', 'success');
           loadPromoCodes();
         } catch (err) {
@@ -472,7 +472,7 @@
       errorBox.hidden = true;
       try {
         const expiresAt = document.getElementById('newPromoExpires').value;
-        await window.ScriptForgeAuth.apiFetch('/api/admin/promo-codes', {
+        await window.ScripForgeAuth.apiFetch('/api/admin/promo-codes', {
           method: 'POST',
           body: {
             code: document.getElementById('newPromoCode').value.trim().toUpperCase(),
@@ -497,7 +497,7 @@
   // --- Bundles ---------------------------------------------------------
 
   function bundleRowHtml(bundle) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     return `
       <div class="settings-row">
         <div>
@@ -513,7 +513,7 @@
   }
 
   async function loadBundles() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const { bundles } = await apiFetch('/api/admin/bundles');
     const container = document.getElementById('bundlesContainer');
 
@@ -525,7 +525,7 @@
       btn.addEventListener('click', async () => {
         const active = btn.dataset.active === 'true';
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/bundles/${btn.dataset.toggleBundle}/active`, { method: 'PATCH', body: { active: !active } });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/bundles/${btn.dataset.toggleBundle}/active`, { method: 'PATCH', body: { active: !active } });
           toast('Bundle updated.', 'success');
           loadBundles();
         } catch (err) {
@@ -538,7 +538,7 @@
       btn.addEventListener('click', async () => {
         if (!window.confirm('Delete this bundle?')) return;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/bundles/${btn.dataset.deleteBundle}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/bundles/${btn.dataset.deleteBundle}`, { method: 'DELETE' });
           toast('Bundle deleted.', 'success');
           loadBundles();
         } catch (err) {
@@ -551,8 +551,8 @@
   async function populateBundlePackOptions() {
     const select = document.getElementById('newBundlePacks');
     if (!select || select.dataset.loaded) return;
-    const { catalog } = await window.ScriptForgeAuth.apiFetch('/api/admin/catalog');
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { catalog } = await window.ScripForgeAuth.apiFetch('/api/admin/catalog');
+    const { escapeHtml } = window.ScripForgeAuth;
     select.innerHTML = catalog.map((pack) => `<option value="${escapeHtml(pack.packId)}">${escapeHtml(pack.packName)}</option>`).join('');
     select.dataset.loaded = 'true';
   }
@@ -576,7 +576,7 @@
         return;
       }
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/admin/bundles', {
+        await window.ScripForgeAuth.apiFetch('/api/admin/bundles', {
           method: 'POST',
           body: {
             name: document.getElementById('newBundleName').value.trim(),
@@ -602,8 +602,8 @@
   async function populateReviewsPackSelect() {
     const select = document.getElementById('reviewsPackSelect');
     if (!select || select.dataset.loaded) return;
-    const { catalog } = await window.ScriptForgeAuth.apiFetch('/api/admin/catalog');
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { catalog } = await window.ScripForgeAuth.apiFetch('/api/admin/catalog');
+    const { escapeHtml } = window.ScripForgeAuth;
     select.innerHTML = catalog.map((pack) => `<option value="${escapeHtml(pack.packId)}">${escapeHtml(pack.packName)}</option>`).join('');
     select.dataset.loaded = 'true';
     select.addEventListener('change', () => loadReviewsForPack(select.value));
@@ -614,7 +614,7 @@
     const container = document.getElementById('reviewsContainer');
     container.innerHTML = '<p class="empty-state">Loading…</p>';
 
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const { reviews, summary } = await apiFetch(`/api/admin/reviews/${encodeURIComponent(packId)}`);
 
     if (!reviews.length) {
@@ -641,7 +641,7 @@
       btn.addEventListener('click', async () => {
         const [pId, userId] = btn.dataset.deleteReview.split('::');
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/reviews/${encodeURIComponent(pId)}/${userId}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/reviews/${encodeURIComponent(pId)}/${userId}`, { method: 'DELETE' });
           toast('Review deleted.', 'success');
           loadReviewsForPack(pId);
         } catch (err) {
@@ -654,7 +654,7 @@
   // --- Error log -------------------------------------------------------
 
   async function loadErrorLog() {
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const { entries, last24h } = await apiFetch('/api/admin/error-log');
     const container = document.getElementById('errorLogContainer');
 
@@ -685,7 +685,7 @@
     document.getElementById('clearErrorLogBtn').addEventListener('click', async () => {
       if (!window.confirm('Clear the entire error log?')) return;
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/admin/error-log', { method: 'DELETE' });
+        await window.ScripForgeAuth.apiFetch('/api/admin/error-log', { method: 'DELETE' });
         toast('Error log cleared.', 'success');
         loadErrorLog();
       } catch (err) {
@@ -710,7 +710,7 @@
   };
 
   async function loadSettings() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const { settings } = await apiFetch('/api/admin/settings');
     const container = document.getElementById('settingsContainer');
 
@@ -735,7 +735,7 @@
     `).join('');
 
     const banner = settings.announcementBanner || { enabled: false, text: '' };
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
 
     container.innerHTML = `
       ${toggleRows}
@@ -781,7 +781,7 @@
   }
 
   async function loadAnalytics() {
-    const { apiFetch } = window.ScriptForgeAuth;
+    const { apiFetch } = window.ScripForgeAuth;
     const { topPacks } = await apiFetch('/api/admin/analytics');
 
     const topContainer = document.getElementById('analyticsTopPacksContainer');
@@ -789,7 +789,7 @@
       topContainer.innerHTML = '<p class="empty-state">No paid orders yet.</p>';
     } else {
       const maxSold = Math.max(...topPacks.map((p) => p.itemsSold), 1);
-      const { escapeHtml } = window.ScriptForgeAuth;
+      const { escapeHtml } = window.ScripForgeAuth;
       topContainer.innerHTML = `
         <div class="top-packs-list">
           ${topPacks.map((p) => `
@@ -805,7 +805,7 @@
   }
 
   async function loadDashboard() {
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const [stats, ordersData] = await Promise.all([
       apiFetch('/api/admin/stats'),
       apiFetch('/api/admin/orders')
@@ -856,7 +856,7 @@
   }
 
   function loginHistoryRowsHtml(history) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     if (!history.length) return '<p class="empty-state">No recorded logins yet.</p>';
     return `
       <table class="orders-table user-history-table">
@@ -878,7 +878,7 @@
   }
 
   function moderationHistoryHtml(entries) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     if (!entries.length) return '<p class="empty-state">No moderation actions recorded for this account.</p>';
     return `
       <ul class="mod-history-list">
@@ -894,7 +894,7 @@
   }
 
   function purchaseHistoryHtml(orders) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     if (!orders.length) return '<p class="empty-state">No orders placed yet.</p>';
     return `
       <ul class="mod-history-list">
@@ -910,7 +910,7 @@
   }
 
   function licensesHtml(licenses) {
-    const { escapeHtml } = window.ScriptForgeAuth;
+    const { escapeHtml } = window.ScripForgeAuth;
     if (!licenses.length) return '<p class="empty-state">No licenses issued yet.</p>';
     return `
       <ul class="mod-history-list">
@@ -927,9 +927,20 @@
     `;
   }
 
+  function discordLinkHtml(discordLink) {
+    const { escapeHtml } = window.ScripForgeAuth;
+    if (!discordLink) return '<p class="empty-state">No Discord account linked.</p>';
+    return `
+      <div class="mod-box">
+        <p>Linked to <strong>${escapeHtml(discordLink.discordTag)}</strong> since ${formatDate(discordLink.linkedAt)}.</p>
+        <button type="button" class="btn-small btn-delete" data-discord-unlink="${escapeHtml(discordLink.discordId)}">Unlink Discord</button>
+      </div>
+    `;
+  }
+
   function userDetailHtml(detail) {
-    const { escapeHtml } = window.ScriptForgeAuth;
-    const { user, loginHistory, purchases, orders, licenses, moderationHistory } = detail;
+    const { escapeHtml } = window.ScripForgeAuth;
+    const { user, loginHistory, purchases, orders, licenses, moderationHistory, discordLink } = detail;
     const revenueText = purchases.revenueByCurrency.length
       ? purchases.revenueByCurrency.map((r) => `${CURRENCY_SYMBOLS[r.currency] || ''}${r.amount.toFixed(2)} ${r.currency}`).join(' + ')
       : '£0.00';
@@ -985,13 +996,15 @@
       ${licensesHtml(licenses)}
       <h4>Login history</h4>
       ${loginHistoryRowsHtml(loginHistory)}
+      <h4>Discord</h4>
+      ${discordLinkHtml(discordLink)}
       <h4>Moderation history</h4>
       ${moderationHistoryHtml(moderationHistory)}
     `;
   }
 
   async function loadUsers() {
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const { users } = await apiFetch('/api/admin/users');
     const container = document.getElementById('usersContainer');
 
@@ -1053,7 +1066,7 @@
       button.addEventListener('click', async () => {
         const nextRole = button.dataset.currentRole === 'admin' ? 'customer' : 'admin';
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${button.dataset.toggleRole}/role`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.toggleRole}/role`, {
             method: 'PATCH',
             body: { role: nextRole }
           });
@@ -1068,7 +1081,7 @@
     container.querySelectorAll('[data-unlock-user]').forEach((button) => {
       button.addEventListener('click', async () => {
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${button.dataset.unlockUser}/unlock`, { method: 'POST' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.unlockUser}/unlock`, { method: 'POST' });
           toast('Account unlocked.', 'success');
           await Promise.all([loadUsers(), loadAuditLog()]);
         } catch (err) {
@@ -1081,7 +1094,7 @@
       button.addEventListener('click', async () => {
         if (!window.confirm('Delete this user and all of their orders? This cannot be undone.')) return;
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${button.dataset.deleteUser}`, { method: 'DELETE' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${button.dataset.deleteUser}`, { method: 'DELETE' });
           toast('User deleted.', 'success');
           await Promise.all([loadUsers(), loadDashboard(), loadOrders(), loadAuditLog()]);
         } catch (err) {
@@ -1104,7 +1117,7 @@
     if (button) button.textContent = 'Hide';
 
     try {
-      const detail = await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${userId}`);
+      const detail = await window.ScripForgeAuth.apiFetch(`/api/admin/users/${userId}`);
       row.querySelector('td').innerHTML = userDetailHtml(detail);
       wireUserDetailRow(row, userId);
     } catch (err) {
@@ -1118,7 +1131,7 @@
       toggleDisableBtn.addEventListener('click', async () => {
         const disabled = toggleDisableBtn.dataset.disabled === 'true';
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${userId}/${disabled ? 'enable' : 'disable'}`, { method: 'POST' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${userId}/${disabled ? 'enable' : 'disable'}`, { method: 'POST' });
           toast(disabled ? 'Account re-enabled.' : 'Account disabled.', 'success');
           await Promise.all([loadUsers(), loadAuditLog()]);
           await openUserDetail(userId);
@@ -1133,7 +1146,7 @@
       banForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${userId}/ban`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${userId}/ban`, {
             method: 'POST',
             body: {
               banType: banForm.querySelector('.ban-type-select').value,
@@ -1153,8 +1166,22 @@
     if (unbanBtn) {
       unbanBtn.addEventListener('click', async () => {
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/users/${userId}/unban`, { method: 'POST' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${userId}/unban`, { method: 'POST' });
           toast('Ban lifted.', 'success');
+          await Promise.all([loadUsers(), loadAuditLog()]);
+          await openUserDetail(userId);
+        } catch (err) {
+          toast(err.message, 'error');
+        }
+      });
+    }
+
+    const discordUnlinkBtn = row.querySelector('[data-discord-unlink]');
+    if (discordUnlinkBtn) {
+      discordUnlinkBtn.addEventListener('click', async () => {
+        try {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/users/${userId}/discord-unlink`, { method: 'POST' });
+          toast('Discord account unlinked.', 'success');
           await Promise.all([loadUsers(), loadAuditLog()]);
           await openUserDetail(userId);
         } catch (err) {
@@ -1166,7 +1193,7 @@
     row.querySelectorAll('[data-reset-device]').forEach((button) => {
       button.addEventListener('click', async () => {
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/licenses/${encodeURIComponent(button.dataset.resetDevice)}/reset-device`, { method: 'POST' });
+          await window.ScripForgeAuth.apiFetch(`/api/admin/licenses/${encodeURIComponent(button.dataset.resetDevice)}/reset-device`, { method: 'POST' });
           toast('Device binding cleared — the customer can activate on a new device next download.', 'success');
           await openUserDetail(userId);
         } catch (err) {
@@ -1182,8 +1209,8 @@
         if (!log.hidden) { log.hidden = true; return; }
 
         try {
-          const { entries } = await window.ScriptForgeAuth.apiFetch(`/api/admin/licenses/${encodeURIComponent(key)}/activity`);
-          const { escapeHtml } = window.ScriptForgeAuth;
+          const { entries } = await window.ScripForgeAuth.apiFetch(`/api/admin/licenses/${encodeURIComponent(key)}/activity`);
+          const { escapeHtml } = window.ScripForgeAuth;
           log.innerHTML = entries.length
             ? entries.map((e) => `<div>${formatDate(e.created_at)} · ${e.success ? '<span class="status-badge status-paid">OK</span>' : `<span class="status-badge status-failed">${escapeHtml(e.reason || 'blocked')}</span>`} · ${escapeHtml(e.ip || '—')} · fp: ${e.device_fingerprint ? escapeHtml(e.device_fingerprint.slice(0, 12)) + '…' : '—'}</div>`).join('')
             : '<p class="empty-state">No download attempts recorded yet.</p>';
@@ -1196,7 +1223,7 @@
   }
 
   async function loadOrders() {
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const { orders } = await apiFetch('/api/admin/orders');
     const container = document.getElementById('ordersContainer');
 
@@ -1254,7 +1281,7 @@
     container.querySelectorAll('[data-order-status]').forEach((select) => {
       select.addEventListener('change', async () => {
         try {
-          await window.ScriptForgeAuth.apiFetch(`/api/admin/orders/${select.dataset.orderStatus}/status`, {
+          await window.ScripForgeAuth.apiFetch(`/api/admin/orders/${select.dataset.orderStatus}/status`, {
             method: 'PATCH',
             body: { status: select.value }
           });
@@ -1268,7 +1295,7 @@
   }
 
   async function loadAuditLog() {
-    const { apiFetch, escapeHtml } = window.ScriptForgeAuth;
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
     const { entries } = await apiFetch('/api/admin/audit-log');
     const container = document.getElementById('auditLogContainer');
 
@@ -1314,7 +1341,7 @@
       const newPassword = document.getElementById('newPassword').value;
 
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/account/password', {
+        await window.ScripForgeAuth.apiFetch('/api/account/password', {
           method: 'POST',
           body: { currentPassword, newPassword }
         });
@@ -1349,7 +1376,7 @@
       toggleBtn.hidden = false;
       toggleBtn.onclick = async () => {
         try {
-          const { secret } = await window.ScriptForgeAuth.apiFetch('/api/admin/2fa/setup');
+          const { secret } = await window.ScripForgeAuth.apiFetch('/api/admin/2fa/setup');
           document.getElementById('totpSecretText').textContent = secret;
           setupBox.hidden = false;
         } catch (err) {
@@ -1368,7 +1395,7 @@
       const code = document.getElementById('totpEnableCode').value.trim();
 
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/admin/2fa/enable', { method: 'POST', body: { code } });
+        await window.ScripForgeAuth.apiFetch('/api/admin/2fa/enable', { method: 'POST', body: { code } });
         toast('Two-factor authentication enabled.', 'success');
         renderTotpStatus(true);
       } catch (err) {
@@ -1385,7 +1412,7 @@
       const password = document.getElementById('totpDisablePassword').value;
 
       try {
-        await window.ScriptForgeAuth.apiFetch('/api/admin/2fa/disable', { method: 'POST', body: { password } });
+        await window.ScripForgeAuth.apiFetch('/api/admin/2fa/disable', { method: 'POST', body: { password } });
         toast('Two-factor authentication disabled.', 'success');
         document.getElementById('totpDisablePassword').value = '';
         renderTotpStatus(false);
@@ -1397,7 +1424,7 @@
   }
 
   async function init() {
-    const { refreshCsrfToken, loadCurrentUser, logout } = window.ScriptForgeAuth;
+    const { refreshCsrfToken, loadCurrentUser, logout } = window.ScripForgeAuth;
 
     await refreshCsrfToken();
     const user = await loadCurrentUser().catch(() => null);

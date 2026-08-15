@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Custom Crafting Recipe System
+ * ScripForge — Custom Crafting Recipe System
  * Pack: Minecraft Pack | Category: Crafting
  * Version: 1.0.0
  *
@@ -11,7 +11,7 @@
  * Bukkit/Spigot/Paper plugin module — drop into your plugin's source tree.
  */
 
-package com.scriptforge.minecraft.crafting;
+package com.scripforge.minecraft.crafting;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

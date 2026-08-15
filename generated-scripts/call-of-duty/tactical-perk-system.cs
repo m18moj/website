@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Perk Package Builder
+ * ScripForge — Perk Package Builder
  * Pack: Call of Duty Pack | Category: Progression
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnrealEngine;
 
-namespace ScriptForge.Progression
+namespace ScripForge.Progression
 {
     public enum PerkTier
     {

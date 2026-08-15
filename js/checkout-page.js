@@ -1,6 +1,6 @@
 (function () {
   function cartToPackPayload() {
-    const cart = window.ScriptForgeCart.getCart();
+    const cart = window.ScripForgeCart.getCart();
     return cart.map((pack) => ({
       packId: pack.id,
       scriptIds: pack.items.map((item) => item.id)
@@ -13,7 +13,7 @@
   }
 
   function money(usdAmount) {
-    return window.ScriptForgeCurrency ? window.ScriptForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
+    return window.ScripForgeCurrency ? window.ScripForgeCurrency.formatUsd(usdAmount) : `$${Number(usdAmount).toFixed(2)}`;
   }
 
   function wirePaymentButton(buttonId, apiPath, busyText, idleText) {
@@ -23,20 +23,20 @@
 
     button.addEventListener('click', async () => {
       errorBox.hidden = true;
-      const cart = window.ScriptForgeCart.getCart();
+      const cart = window.ScripForgeCart.getCart();
       if (!cart.length) return;
 
       button.disabled = true;
       button.textContent = busyText;
 
       try {
-        const me = await window.ScriptForgeAuth.loadCurrentUser();
+        const me = await window.ScripForgeAuth.loadCurrentUser();
         if (!me) {
           window.location.href = 'login.html?redirect=checkout.html';
           return;
         }
 
-        const data = await window.ScriptForgeAuth.apiFetch(apiPath, {
+        const data = await window.ScripForgeAuth.apiFetch(apiPath, {
           method: 'POST',
           body: {
             cart: cartToPackPayload(),
@@ -44,7 +44,7 @@
             // recomputes the actual amount itself from its own catalog and
             // rate table (see server/routes/checkout.js), so this can't be
             // used to change what gets billed, only which currency it's in.
-            currency: window.ScriptForgeCurrency ? window.ScriptForgeCurrency.getCurrency() : 'GBP',
+            currency: window.ScripForgeCurrency ? window.ScripForgeCurrency.getCurrency() : 'GBP',
             promoCode: getPromoCode() || undefined
           }
         });
@@ -55,7 +55,7 @@
         errorBox.hidden = false;
         button.disabled = false;
         button.textContent = idleText;
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show(err.message, 'error');
+        if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
       }
     });
   }
@@ -65,33 +65,33 @@
     const discountRow = document.getElementById('discountRow');
     message.hidden = true;
 
-    const cart = window.ScriptForgeCart.getCart();
+    const cart = window.ScripForgeCart.getCart();
     if (!cart.length) return;
 
     const promoCode = getPromoCode();
     if (!promoCode) {
       discountRow.hidden = true;
-      if (window.ScriptForgeCart) window.ScriptForgeCart.renderCheckoutPage();
+      if (window.ScripForgeCart) window.ScripForgeCart.renderCheckoutPage();
       return;
     }
 
     try {
-      const me = await window.ScriptForgeAuth.loadCurrentUser();
+      const me = await window.ScripForgeAuth.loadCurrentUser();
       if (!me) {
         window.location.href = 'login.html?redirect=checkout.html';
         return;
       }
 
-      const data = await window.ScriptForgeAuth.apiFetch('/api/checkout/preview-discount', {
+      const data = await window.ScripForgeAuth.apiFetch('/api/checkout/preview-discount', {
         method: 'POST',
-        body: { cart: cartToPackPayload(), currency: window.ScriptForgeCurrency ? window.ScriptForgeCurrency.getCurrency() : 'GBP', promoCode }
+        body: { cart: cartToPackPayload(), currency: window.ScripForgeCurrency ? window.ScripForgeCurrency.getCurrency() : 'GBP', promoCode }
       });
 
       if (data.discount > 0) {
         discountRow.hidden = false;
         document.getElementById('discountAmount').textContent = `-${money(data.discount)}`;
         document.getElementById('checkoutTotal').textContent = money(data.total);
-        if (window.ScriptForgeToast) window.ScriptForgeToast.show('Promo code applied.', 'success');
+        if (window.ScripForgeToast) window.ScripForgeToast.show('Promo code applied.', 'success');
       } else {
         discountRow.hidden = true;
         message.textContent = 'That code doesn\'t apply any discount to this basket.';
@@ -109,7 +109,7 @@
     const grid = document.getElementById('alsoLikeGrid');
     if (!section || !grid) return;
 
-    const cart = window.ScriptForgeCart.getCart();
+    const cart = window.ScripForgeCart.getCart();
     if (!cart.length) { section.hidden = true; return; }
 
     try {
@@ -121,7 +121,7 @@
       if (!candidates.length) { section.hidden = true; return; }
 
       const picks = candidates.sort(() => Math.random() - 0.5).slice(0, 3);
-      const { escapeHtml } = window.ScriptForgeAuth;
+      const { escapeHtml } = window.ScripForgeAuth;
 
       grid.innerHTML = picks.map((pack) => {
         const total = pack.scripts.reduce((sum, s) => sum + s.price, 0);
@@ -139,7 +139,7 @@
       }).join('');
 
       section.hidden = false;
-      if (window.ScriptForgeCurrency) window.ScriptForgeCurrency.applyCurrencyToDom();
+      if (window.ScripForgeCurrency) window.ScripForgeCurrency.applyCurrencyToDom();
     } catch (err) {
       section.hidden = true;
     }

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Shield Potion & Regen Logic
+ * ScripForge — Shield Potion & Regen Logic
  * Pack: Fortnite Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Systems
+namespace ScripForge.Fortnite.Systems
 {
     [Serializable]
     public class ShieldConsumable

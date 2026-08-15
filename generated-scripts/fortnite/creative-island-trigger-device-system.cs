@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Creative Island Trigger & Device System
+ * ScripForge — Creative Island Trigger & Device System
  * Pack: Fortnite Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Systems
+namespace ScripForge.Fortnite.Systems
 {
     /// <summary>
     /// Base class for a "device" — a configurable, chainable logic node that custom game

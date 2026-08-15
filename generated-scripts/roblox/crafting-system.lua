@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Gamepass & Dev Product Shop
+    ScripForge — Gamepass & Dev Product Shop
     Pack: Roblox Pack | Category: Monetization
     Version: 1.0.0
 

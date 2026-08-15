@@ -1,5 +1,5 @@
 /*
- * ScriptForge — ForgeClient Plugin Manager (Minecraft)
+ * ScripForge — ForgeClient Plugin Manager (Minecraft)
  * Component: MainWindow
  * Version: 1.0.0
  *
@@ -10,7 +10,7 @@
  * server's plugins folder. Does not connect to or modify a running server.
  */
 
-package com.scriptforge.pluginmanager;
+package com.scripforge.pluginmanager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -67,7 +67,7 @@ public class MainWindow {
     private Path currentFolder;
 
     public MainWindow() {
-        frame = new JFrame("ScriptForge ForgeClient Plugin Manager");
+        frame = new JFrame("ScripForge ForgeClient Plugin Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 520);
         frame.setLocationRelativeTo(null);
@@ -171,7 +171,7 @@ public class MainWindow {
         int result = chooser.showOpenDialog(frame);
         if (result == JFileChooser.APPROVE_OPTION) {
             currentFolder = chooser.getSelectedFile().toPath();
-            frame.setTitle("ScriptForge ForgeClient Plugin Manager — " + currentFolder);
+            frame.setTitle("ScripForge ForgeClient Plugin Manager — " + currentFolder);
             onRefresh();
         }
     }
@@ -189,10 +189,10 @@ public class MainWindow {
 
             if (plugins.isEmpty()) {
                 // Empty-state text references how buyers actually get a JAR into this
-                // folder: they compile one of ScriptForge's .java plugin sources
+                // folder: they compile one of ScripForge's .java plugin sources
                 // (e.g. from generated-scripts/minecraft/*.java) into a JAR first.
                 statusLabel.setText("No plugin JARs found in " + currentFolder
-                        + ". Compile a ScriptForge Minecraft script (.java) into a JAR and drop it here, then Refresh.");
+                        + ". Compile a ScripForge Minecraft script (.java) into a JAR and drop it here, then Refresh.");
             } else {
                 long enabledCount = plugins.stream().filter(PluginInfo::isEnabled).count();
                 statusLabel.setText(plugins.size() + " plugin(s) found in " + currentFolder

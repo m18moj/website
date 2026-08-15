@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — NPC Quest Giver & Dialogue
+    ScripForge — NPC Quest Giver & Dialogue
     Pack: Roblox Pack | Category: Dialogue
     Version: 1.0.0
 

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Safe Zone Rotation Predictor
+ * ScripForge — Safe Zone Rotation Predictor
  * Pack: PUBG Pack | Category: World
  * Version: 1.0.0
  *

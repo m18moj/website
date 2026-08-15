@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Character Switch & Camera Transition
+ * ScripForge — Character Switch & Camera Transition
  * Pack: GTA V Pack | Category: Systems
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using GTA;
 using GTA.Math;
 using GTA.Native;
 
-namespace ScriptForge.Systems
+namespace ScripForge.Systems
 {
     /// <summary>
     /// Hooks a hotkey-driven character roster (Michael/Franklin/Trevor by default) and,

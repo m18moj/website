@@ -5,4 +5,4 @@ Disallow: /pages/checkout.html
 Disallow: /pages/account.html
 Disallow: /pages/thank-you.html
 
-Sitemap: https://scriptforge.gg/sitemap.xml
+Sitemap: https://scripforge.gg/sitemap.xml

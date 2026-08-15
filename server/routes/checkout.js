@@ -237,7 +237,7 @@ router.post('/create-crypto-charge', requireAuth, verifyCsrfToken, async (req, r
     const packNames = priced.packs.map((p) => p.packName).join(', ');
     const invoice = await nowpayments.createInvoice({
       orderId: order.id,
-      description: `ScriptForge order — ${packNames}`,
+      description: `ScripForge order — ${packNames}`,
       amount: priced.totalCents / 100,
       currency: priced.currency.toLowerCase(),
       successUrl: `${origin}/pages/thank-you.html?crypto_ref=${order.id}`,

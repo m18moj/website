@@ -1,4 +1,4 @@
-; ScriptForge — Perk Tree & Skill Leveling
+; ScripForge — Perk Tree & Skill Leveling
 ; Pack: Skyrim Pack | Category: Progression
 ; Version: 1.0.0
 ;

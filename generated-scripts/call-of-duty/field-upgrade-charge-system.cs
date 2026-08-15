@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Field Upgrade Charge System
+ * ScripForge — Field Upgrade Charge System
  * Pack: Call of Duty Pack | Category: Equipment
  * Version: 1.0.0
  *
@@ -16,10 +16,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Equipment
+namespace ScripForge.Equipment
 {
     /// <summary>Config for a single field upgrade type, editable per-item as a ScriptableObject.</summary>
-    [CreateAssetMenu(fileName = "FieldUpgradeDefinition", menuName = "ScriptForge/Field Upgrade Definition")]
+    [CreateAssetMenu(fileName = "FieldUpgradeDefinition", menuName = "ScripForge/Field Upgrade Definition")]
     public class FieldUpgradeDefinition : ScriptableObject
     {
         public string upgradeId;

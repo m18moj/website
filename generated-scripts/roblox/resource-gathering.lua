@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Tool-Based Resource Nodes
+    ScripForge — Tool-Based Resource Nodes
     Pack: Roblox Pack | Category: Gameplay
     Version: 1.0.0
 

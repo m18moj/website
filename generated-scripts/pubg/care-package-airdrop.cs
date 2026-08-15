@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Care Package Airdrop
+ * ScripForge — Care Package Airdrop
  * Pack: PUBG Pack | Category: Loot
  * Version: 1.0.0
  *

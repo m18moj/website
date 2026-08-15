@@ -1,5 +1,5 @@
 --[[
-    ScriptForge — Particle & VFX Trigger
+    ScripForge — Particle & VFX Trigger
     Pack: Roblox Pack | Category: Systems
     Version: 1.0.0
 

@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Death Recap & Damage Log
+ * ScripForge — Death Recap & Damage Log
  * Pack: Apex Legends Pack | Category: Feedback
  * Version: 1.0.0
  *

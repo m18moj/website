@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Third-Person Combat Loop
+ * ScripForge — Third-Person Combat Loop
  * Pack: Fortnite Pack | Category: Combat
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections;
 using UnrealEngine;
 
-namespace ScriptForge.Fortnite.Combat
+namespace ScripForge.Fortnite.Combat
 {
     [RequireComponent(typeof(CharacterController))]
     public class CombatFlowManager : MonoBehaviour

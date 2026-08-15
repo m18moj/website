@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Crafting & Upgrade Bench
+ * ScripForge — Crafting & Upgrade Bench
  * Pack: Fortnite Pack | Category: Crafting
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Crafting
+namespace ScripForge.Fortnite.Crafting
 {
     public enum WeaponRarity
     {

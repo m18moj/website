@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Throwable & Utility Grenade System
+ * ScripForge — Throwable & Utility Grenade System
  * Pack: PUBG Pack | Category: Equipment
  * Version: 1.0.0
  *

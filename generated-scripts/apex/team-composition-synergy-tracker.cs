@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Team Composition Synergy Tracker
+ * ScripForge — Team Composition Synergy Tracker
  * Pack: Apex Legends Pack | Category: Systems
  * Version: 1.0.0
  *

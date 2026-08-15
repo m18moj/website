@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Stance & Prone Movement
+ * ScripForge — Stance & Prone Movement
  * Pack: PUBG Pack | Category: Movement
  * Version: 1.0.0
  *

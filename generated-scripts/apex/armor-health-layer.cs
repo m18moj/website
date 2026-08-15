@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Armor Tier & Shield Swap
+ * ScripForge — Armor Tier & Shield Swap
  * Pack: Apex Legends Pack | Category: Combat
  * Version: 1.0.0
  *

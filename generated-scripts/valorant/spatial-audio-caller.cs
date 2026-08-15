@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Positional Audio & Footstep Callouts
+ * ScripForge — Positional Audio & Footstep Callouts
  * Pack: Valorant Pack | Category: Audio
  * Version: 1.0.0
  *
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using UnrealEngine;
 
-namespace ScriptForge.Audio
+namespace ScripForge.Audio
 {
     public enum SoundCategory { Footstep, AbilityCast, WeaponFire, Reload }
 

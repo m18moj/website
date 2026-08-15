@@ -1,8 +1,8 @@
-; ScriptForge — ForgeClient (Skyrim)
+; ScripForge — ForgeClient (Skyrim)
 ; Component: MCM Configuration Menu
 ; Version: 1.0.0
 ;
-; Central Mod Configuration Menu exposing tunable settings for the ScriptForge Skyrim script pack.
+; Central Mod Configuration Menu exposing tunable settings for the ScripForge Skyrim script pack.
 ;
 ; SkyUI Mod Configuration Menu (MCM) script — compile with the Creation Kit
 ; or a Papyrus compiler, and requires SKSE + SkyUI installed.
@@ -44,7 +44,7 @@ String[] Property WorldEventFrequencyLabels Auto Hidden
 ; --- Initialization ---------------------------------------------------------
 
 Event OnConfigInit()
-    ModName = "ScriptForge Client"
+    ModName = "ScripForge Client"
     Pages = new String[4]
     Pages[0] = "Followers & Home"
     Pages[1] = "Crime & Reputation"

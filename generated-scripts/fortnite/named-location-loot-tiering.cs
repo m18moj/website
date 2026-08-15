@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Named Location Loot Tiering
+ * ScripForge — Named Location Loot Tiering
  * Pack: Fortnite Pack | Category: Loot
  * Version: 1.0.0
  *
@@ -15,7 +15,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ScriptForge.Fortnite.Loot
+namespace ScripForge.Fortnite.Loot
 {
     public enum LootTier
     {

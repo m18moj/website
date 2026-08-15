@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Weapon Attachment Loadout
+ * ScripForge — Weapon Attachment Loadout
  * Pack: PUBG Pack | Category: Weapons
  * Version: 1.0.0
  *

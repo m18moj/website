@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Custom Loadout & Gunsmith
+ * ScripForge — Custom Loadout & Gunsmith
  * Pack: Call of Duty Pack | Category: Weapons
  * Version: 1.0.0
  *
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnrealEngine;
 
-namespace ScriptForge.Weapons
+namespace ScripForge.Weapons
 {
     /// <summary>Categories of attachment slots a weapon can expose.</summary>
     public enum AttachmentSlot

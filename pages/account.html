@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="View your ScriptForge account and order history.">
-    <title>Your Account | ScriptForge</title>
+    <meta name="description" content="View your ScripForge account and order history.">
+    <title>Your Account | ScripForge</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../css/styles.css">
     <script src="../js/theme.js"></script>
@@ -20,7 +20,7 @@
                     <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                     <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                 </svg>
-                ScriptForge
+                ScripForge
             </a>
             <div class="nav-menu" id="navMenu">
                 <a href="../index.html" class="nav-link">Home</a>
@@ -91,6 +91,21 @@
 
             <div class="container">
                 <div class="checkout-box security-box">
+                    <h2>Connected accounts</h2>
+
+                    <div class="security-row">
+                        <div>
+                            <h3>Discord</h3>
+                            <p id="discordLinkStatus">Loading…</p>
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="discordLinkBtn" hidden>Connect Discord</button>
+                        <button type="button" class="btn btn-secondary" id="discordUnlinkBtn" hidden>Disconnect</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="checkout-box security-box">
                     <h2>Security</h2>
 
                     <div class="security-row">
@@ -144,7 +159,7 @@
                         <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
                         <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
                     </svg>
-                    ScriptForge
+                    ScripForge
                 </a>
                 <p>Premium, production-ready game systems for developers, indies, and studios.</p>
                 <div class="footer-socials">
@@ -175,7 +190,7 @@
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>&copy; <span id="footerYear"></span> ScriptForge. All rights reserved.</p>
+            <p>&copy; <span id="footerYear"></span> ScripForge. All rights reserved.</p>
             <p>Built for developers, by developers.</p>
         </div>
     </footer>
@@ -185,5 +200,6 @@
     <script src="../js/site-flags.js"></script>
     <script src="../js/search.js"></script>
     <script src="../js/account-page.js"></script>
-</body>
+    <script src="../js/chat-widget.js" defer></script>
+  </body>
 </html>

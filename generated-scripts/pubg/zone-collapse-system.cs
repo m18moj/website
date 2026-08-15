@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Blue Zone Shrink & Damage
+ * ScripForge — Blue Zone Shrink & Damage
  * Pack: PUBG Pack | Category: World
  * Version: 1.0.0
  *

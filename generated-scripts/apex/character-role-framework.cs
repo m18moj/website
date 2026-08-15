@@ -1,5 +1,5 @@
 /*
- * ScriptForge — Legend Perk & Passive Tree
+ * ScripForge — Legend Perk & Passive Tree
  * Pack: Apex Legends Pack | Category: Progression
  * Version: 1.0.0
  *

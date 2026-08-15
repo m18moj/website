@@ -10,6 +10,8 @@
     "bot": "node discord-bot/index.js",
     "bot:dev": "nodemon discord-bot/index.js",
     "bot:deploy-commands": "node discord-bot/deploy-commands.js",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -33,6 +35,7 @@
     "ua-parser-js": "^2.0.10"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "wrangler": "^4.123.0"
   }
 }

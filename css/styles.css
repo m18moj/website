@@ -63,8 +63,10 @@ body {
 .navbar {
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
     box-shadow: 0 2px 10px rgba(0, 217, 255, 0.05);
 }
@@ -291,6 +293,11 @@ a,
     color: var(--text-secondary);
     font-size: 0.9rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .account-menu button.auth-btn-outline {
@@ -1422,15 +1429,80 @@ a,
     width: 100%;
 }
 
-/* Admin Link */
+/* Admin Link — styled as a small pill/button (not a plain text link like the
+   other nav items) so it reads as a distinct, privileged action rather than
+   just one more item crowding the signed-in nav cluster. */
 .admin-link {
     padding: 8px 16px !important;
     border: 1px solid var(--accent-purple) !important;
     border-radius: var(--radius);
     color: var(--accent-purple) !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.admin-link::after {
+    display: none;
+}
+
+/* "Viewing as" indicator — shown in the sticky nav for the whole time an
+   admin is impersonating another account (see js/admin.js Impersonate
+   button), not just on the page where they clicked it, so it's impossible to
+   forget which identity is currently active. */
+.impersonation-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid #fbbf24;
+    color: #fbbf24;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.impersonation-exit-btn {
+    padding: 6px 12px !important;
+    font-size: 0.8rem;
+    border-color: #fbbf24 !important;
+    color: #fbbf24 !important;
+}
+
+.impersonation-exit-btn:hover {
+    background: rgba(251, 191, 36, 0.12) !important;
+}
+
+.navbar-impersonating {
+    border-bottom-color: #fbbf24;
+    box-shadow: 0 2px 10px rgba(251, 191, 36, 0.15);
 }
 
 /* Responsive */
+/* Between this and the 768px breakpoint below (which hides .account-menu
+   entirely), the signed-in nav cluster is at its most cramped: the 4
+   .nav-menu links plus, for an admin, "Hi, name" / "Downloads" / "Admin" /
+   "Log out" all share one unwrapped row. Tightening gaps and the container's
+   side padding here buys enough room that this middle range doesn't overflow
+   before the mobile layout takes over. */
+@media (max-width: 1150px) {
+    .nav-container {
+        padding: 1rem 1.25rem;
+    }
+
+    .nav-menu {
+        gap: 1.1rem;
+    }
+
+    .account-menu {
+        gap: 0.5rem;
+    }
+
+    .account-name {
+        max-width: 90px;
+    }
+}
+
 @media (max-width: 1024px) {
     .hero-content {
         grid-template-columns: 1fr;

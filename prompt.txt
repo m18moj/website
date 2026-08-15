@@ -1,0 +1,1 @@
+Make the SMM one sell in packs, either 10, 20, 50, 100, 500. The packs should have a toggle that changes between "Cheapest" and "best"

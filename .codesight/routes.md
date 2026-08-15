@@ -1,0 +1,85 @@
+# Routes
+
+## CRUD Resources
+
+- **`/api/account/wishlist`** GET | POST | GET/:id | DELETE/:id → Wishlist
+- **`/api/account/reviews`** POST | GET/:id | DELETE/:id → Review
+- **`/api/admin/users`** GET | POST | GET/:id | DELETE/:id → User
+- **`/api/admin/catalog/packs`** POST | PATCH/:id | DELETE/:id → Pack
+- **`/api/admin/catalog/packs/:packId/scripts`** POST | PATCH/:id | DELETE/:id → Script
+- **`/api/admin/promo-codes`** GET | POST | GET/:id | DELETE/:id → Promo-code
+- **`/api/admin/bundles`** GET | POST | GET/:id | PATCH/:id | DELETE/:id → Bundle
+
+## Other Routes
+
+- `POST` `/api/webhooks/stripe` [payment, webhook] `[inferred]`
+- `POST` `/api/webhooks/nowpayments` [auth, payment, webhook] `[inferred]`
+- `GET` `/robots.txt` `[inferred]`
+- `GET` `/sitemap.xml` `[inferred]`
+- `GET` `/favicon.svg` [auth] `[inferred]`
+- `GET` `/api/account/orders` [auth] `[inferred]`
+- `POST` `/api/account/email` [auth] `[inferred]`
+- `POST` `/api/account/password` [auth] `[inferred]`
+- `GET` `/api/admin/stats` `[inferred]`
+- `POST` `/api/admin/users/:id/discord-unlink` params(id) [auth] `[inferred]`
+- `GET` `/api/admin/analytics` `[inferred]`
+- `GET` `/api/admin/orders/export.csv` `[inferred]`
+- `PATCH` `/api/admin/users/:id/role` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/unlock` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/disable` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/enable` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/ban` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/unban` params(id) [auth] `[inferred]`
+- `PATCH` `/api/admin/users/:id/test` params(id) [auth] `[inferred]`
+- `POST` `/api/admin/users/:id/impersonate` params(id) [auth] `[inferred]`
+- `GET` `/api/admin/orders` `[inferred]`
+- `PATCH` `/api/admin/orders/:id/status` params(id) [auth] `[inferred]`
+- `PATCH` `/api/admin/orders/:id/test` params(id) [auth] `[inferred]`
+- `GET` `/api/admin/audit-log` `[inferred]`
+- `GET` `/api/admin/catalog` `[inferred]`
+- `PATCH` `/api/admin/catalog/packs/:packId/hidden` params(packId) [auth] `[inferred]`
+- `PATCH` `/api/admin/catalog/packs/:packId/scripts/:scriptId/hidden` params(packId, scriptId) [auth] `[inferred]`
+- `POST` `/api/admin/catalog/packs/:packId/scripts/:scriptId/changelog` params(packId, scriptId) [auth] `[inferred]`
+- `PATCH` `/api/admin/promo-codes/:code/active` params(code) [auth] `[inferred]`
+- `PATCH` `/api/admin/bundles/:id/active` params(id) [auth] `[inferred]`
+- `GET` `/api/admin/reviews/:packId` params(packId) `[inferred]`
+- `DELETE` `/api/admin/reviews/:packId/:userId` params(packId, userId) [auth, db] `[inferred]`
+- `POST` `/api/admin/licenses/:licenseKey/reset-device` params(licenseKey) [auth] `[inferred]`
+- `GET` `/api/admin/licenses/:licenseKey/activity` params(licenseKey) `[inferred]`
+- `GET` `/api/admin/error-log` `[inferred]`
+- `DELETE` `/api/admin/error-log` [auth, db] `[inferred]`
+- `GET` `/api/admin/settings` `[inferred]`
+- `PATCH` `/api/admin/settings/:key` params(key) [auth] `[inferred]`
+- `GET` `/api/admin/system-status` [auth] `[inferred]`
+- `GET` `/api/admin/2fa/setup` [auth] `[inferred]`
+- `POST` `/api/admin/2fa/enable` [auth] `[inferred]`
+- `POST` `/api/admin/2fa/disable` [auth] `[inferred]`
+- `GET` `/api/auth/csrf-token` [auth] `[inferred]`
+- `GET` `/api/auth/captcha` `[inferred]`
+- `POST` `/api/auth/register` [auth] `[inferred]`
+- `POST` `/api/auth/login` [auth] `[inferred]`
+- `POST` `/api/auth/login-totp` [auth] `[inferred]`
+- `POST` `/api/auth/forgot-password` [auth] `[inferred]`
+- `POST` `/api/auth/reset-password` [auth] `[inferred]`
+- `POST` `/api/auth/logout` [auth] `[inferred]`
+- `GET` `/api/auth/me` [auth] `[inferred]`
+- `POST` `/api/auth/stop-impersonating` [auth] `[inferred]`
+- `GET` `/api/bundles` `[inferred]`
+- `GET` `/api/catalog` `[inferred]`
+- `GET` `/api/catalog/:packId/reviews` params(packId) `[inferred]`
+- `POST` `/api/chat` [auth] `[inferred]`
+- `POST` `/api/checkout/create-session` [auth, payment] `[inferred]`
+- `POST` `/api/checkout/preview-discount` [auth] `[inferred]`
+- `GET` `/api/checkout/session-status` [auth] `[inferred]`
+- `POST` `/api/checkout/create-crypto-charge` [auth, payment, webhook] `[inferred]`
+- `GET` `/api/checkout/crypto-status` [auth] `[inferred]`
+- `GET` `/api/discord/status` [auth] `[inferred]`
+- `GET` `/api/discord/start` [auth] `[inferred]`
+- `GET` `/api/discord/callback` [auth] `[inferred]`
+- `POST` `/api/discord/unlink` [auth] `[inferred]`
+- `GET` `/api/downloads` [auth] `[inferred]`
+- `GET` `/api/downloads/admin/:packId/:scriptId/file` params(packId, scriptId) `[inferred]`
+- `GET` `/api/downloads/:licenseKey/file` params(licenseKey) [auth] `[inferred]`
+- `GET` `/api/downloads/zip` [auth] `[inferred]`
+- `POST` `/api/errors` [auth] `[inferred]`
+- `GET` `/api/settings/public` `[inferred]`

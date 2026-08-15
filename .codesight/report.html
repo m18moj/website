@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scripforge — codesight report</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--border:#1e1e2e;--text:#e0e0e8;--muted:#6b6b80;--accent:#6366f1;--accent2:#22d3ee;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--pink:#ec4899}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:2rem;max-width:1400px;margin:0 auto;line-height:1.6}
+h1{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.25rem}
+.subtitle{color:var(--muted);font-size:1rem;margin-bottom:2rem}
+.stack-badge{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:2px 10px;font-size:.85rem;color:var(--accent2);margin:0 4px 4px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin:2rem 0}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center}
+.stat-value{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{color:var(--muted);font-size:.85rem;margin-top:.25rem}
+.token-hero{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid var(--accent);border-radius:16px;padding:2rem;margin:2rem 0;text-align:center}
+.token-saved{font-size:3rem;font-weight:900;color:var(--green)}
+.token-detail{color:var(--muted);font-size:.9rem;margin-top:.5rem}
+.section{margin:2.5rem 0}
+.section h2{font-size:1.4rem;font-weight:700;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;transition:border-color .2s}
+.card:hover{border-color:var(--accent)}
+.card-title{font-weight:700;font-size:1rem;margin-bottom:.5rem}
+.card-meta{color:var(--muted);font-size:.8rem}
+.tag{display:inline-block;background:rgba(99,102,241,.15);color:var(--accent);border-radius:4px;padding:1px 6px;font-size:.75rem;margin:1px}
+.tag-auth{background:rgba(239,68,68,.15);color:var(--red)}
+.tag-db{background:rgba(34,211,238,.15);color:var(--accent2)}
+.tag-ai{background:rgba(236,72,153,.15);color:var(--pink)}
+.tag-payment{background:rgba(245,158,11,.15);color:var(--orange)}
+.tag-email{background:rgba(34,197,94,.15);color:var(--green)}
+.tag-queue{background:rgba(168,85,247,.15);color:#a855f7}
+.tag-cache{background:rgba(245,158,11,.15);color:var(--orange)}
+.method{font-weight:700;font-size:.8rem;padding:2px 6px;border-radius:4px;margin-right:6px}
+.method-GET{background:rgba(34,197,94,.2);color:var(--green)}
+.method-POST{background:rgba(99,102,241,.2);color:var(--accent)}
+.method-PUT{background:rgba(245,158,11,.2);color:var(--orange)}
+.method-PATCH{background:rgba(245,158,11,.2);color:var(--orange)}
+.method-DELETE{background:rgba(239,68,68,.2);color:var(--red)}
+.method-ALL{background:rgba(107,107,128,.2);color:var(--muted)}
+.route-path{font-family:'Fira Code',monospace;font-size:.9rem}
+.route-contract{color:var(--muted);font-size:.8rem;font-style:italic;margin-left:.5rem}
+.field{display:flex;gap:.5rem;padding:3px 0;font-size:.9rem}
+.field-name{font-family:monospace;color:var(--accent2)}
+.field-type{color:var(--muted);font-family:monospace}
+.field-flags{display:flex;gap:3px}
+.flag{font-size:.7rem;padding:0 4px;border-radius:3px;background:rgba(99,102,241,.1);color:var(--accent)}
+.flag-pk{background:rgba(245,158,11,.2);color:var(--orange)}
+.flag-fk{background:rgba(34,211,238,.2);color:var(--accent2)}
+.flag-unique{background:rgba(236,72,153,.2);color:var(--pink)}
+.hot-bar{height:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;margin-top:4px}
+.component-props{color:var(--muted);font-size:.85rem}
+.badge-client{background:rgba(34,197,94,.15);color:var(--green);font-size:.75rem;padding:1px 6px;border-radius:4px}
+.badge-server{background:rgba(99,102,241,.15);color:var(--accent);font-size:.75rem;padding:1px 6px;border-radius:4px}
+.env-required{color:var(--red);font-weight:600;font-size:.8rem}
+.env-default{color:var(--green);font-size:.8rem}
+.footer{text-align:center;color:var(--muted);margin-top:4rem;padding-top:2rem;border-top:1px solid var(--border);font-size:.85rem}
+.footer a{color:var(--accent);text-decoration:none}
+table{width:100%;border-collapse:collapse}
+table td,table th{padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:.9rem}
+table th{color:var(--muted);font-size:.8rem;font-weight:600;text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<h1>scripforge</h1>
+<div class="subtitle">AI Context Map — generated by codesight</div>
+
+<div>
+<span class="stack-badge">express</span>
+
+<span class="stack-badge">unknown</span>
+<span class="stack-badge">javascript</span>
+
+</div>
+
+<div class="token-hero">
+  <div class="token-saved">~93,063 tokens saved</div>
+  <div class="token-detail">
+    Output: 12,107 tokens — Exploration cost without codesight: ~105,170 tokens — 307 files scanned
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-value">94</div><div class="stat-label">Routes</div></div>
+  <div class="stat"><div class="stat-value">0</div><div class="stat-label">Models</div></div>
+  <div class="stat"><div class="stat-value">0</div><div class="stat-label">Components</div></div>
+  <div class="stat"><div class="stat-value">160</div><div class="stat-label">Libraries</div></div>
+  <div class="stat"><div class="stat-value">27</div><div class="stat-label">Env Vars</div></div>
+  <div class="stat"><div class="stat-value">8</div><div class="stat-label">Middleware</div></div>
+  <div class="stat"><div class="stat-value">182</div><div class="stat-label">Import Links</div></div>
+</div>
+
+
+<div class="section">
+<h2>Routes</h2>
+<table>
+<tr><th>Method</th><th>Path</th><th>Contract</th><th>Tags</th><th>File</th></tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/webhooks/stripe</td>
+  <td></td>
+  <td><span class="tag tag-payment">payment</span><span class="tag tag-webhook">webhook</span></td>
+  <td class="card-meta">server\index.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/webhooks/nowpayments</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-payment">payment</span><span class="tag tag-webhook">webhook</span></td>
+  <td class="card-meta">server\index.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/robots.txt</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\index.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/sitemap.xml</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\index.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/favicon.svg</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\index.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/account/orders</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/account/wishlist</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/account/wishlist/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/account/wishlist/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/account/email</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/account/reviews/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/account/reviews/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/account/reviews/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/account/password</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\account.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/stats</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/users</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/users/:id <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/discord-unlink <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/analytics</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/orders/export.csv</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/users/:id/role <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/unlock <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/disable <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/enable <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/ban <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/unban <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/users/:id/test <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/users/:id/impersonate <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/users/:id <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/orders</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/orders/:id/status <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/orders/:id/test <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/audit-log</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/catalog</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/catalog/packs</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/hidden <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/scripts <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/scripts/:scriptId <span class="route-contract">params: packId, scriptId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/scripts/:scriptId/hidden <span class="route-contract">params: packId, scriptId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/scripts/:scriptId <span class="route-contract">params: packId, scriptId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/catalog/packs/:packId/scripts/:scriptId/changelog <span class="route-contract">params: packId, scriptId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/promo-codes</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/promo-codes</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/promo-codes/:code/active <span class="route-contract">params: code</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/promo-codes/:code <span class="route-contract">params: code</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/bundles</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/bundles</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/bundles/:id <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/bundles/:id/active <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/bundles/:id <span class="route-contract">params: id</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/reviews/:packId <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/reviews/:packId/:userId <span class="route-contract">params: packId, userId</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/licenses/:licenseKey/reset-device <span class="route-contract">params: licenseKey</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/licenses/:licenseKey/activity <span class="route-contract">params: licenseKey</span></td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/error-log</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-DELETE">DELETE</span></td>
+  <td class="route-path">/api/admin/error-log</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-db">db</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/settings</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-PATCH">PATCH</span></td>
+  <td class="route-path">/api/admin/settings/:key <span class="route-contract">params: key</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/system-status</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/admin/2fa/setup</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/2fa/enable</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/admin/2fa/disable</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\admin.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/auth/csrf-token</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/auth/captcha</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/register</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/login</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/login-totp</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/forgot-password</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/reset-password</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/logout</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/auth/me</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/auth/stop-impersonating</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\auth.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/bundles</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\bundles.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/catalog</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\catalog.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/catalog/:packId/reviews <span class="route-contract">params: packId</span></td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\catalog.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/chat</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\chat.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/checkout/create-session</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-payment">payment</span></td>
+  <td class="card-meta">server\routes\checkout.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/checkout/preview-discount</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\checkout.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/checkout/session-status</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\checkout.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/checkout/create-crypto-charge</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span><span class="tag tag-payment">payment</span><span class="tag tag-webhook">webhook</span></td>
+  <td class="card-meta">server\routes\checkout.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/checkout/crypto-status</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\checkout.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/discord/status</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\discordLink.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/discord/start</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\discordLink.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/discord/callback</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\discordLink.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/discord/unlink</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\discordLink.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/downloads</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\downloads.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/downloads/admin/:packId/:scriptId/file <span class="route-contract">params: packId, scriptId</span></td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\downloads.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/downloads/:licenseKey/file <span class="route-contract">params: licenseKey</span></td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\downloads.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/downloads/zip</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\downloads.js</td>
+</tr>
+<tr>
+  <td><span class="method method-POST">POST</span></td>
+  <td class="route-path">/api/errors</td>
+  <td></td>
+  <td><span class="tag tag-auth">auth</span></td>
+  <td class="card-meta">server\routes\errors.js</td>
+</tr>
+<tr>
+  <td><span class="method method-GET">GET</span></td>
+  <td class="route-path">/api/settings/public</td>
+  <td></td>
+  <td></td>
+  <td class="card-meta">server\routes\settings.js</td>
+</tr>
+</table>
+</div>
+
+
+
+
+
+
+<div class="section">
+<h2>Dependency Hot Files</h2>
+<div class="grid">
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\db.js</div>
+  <div class="card-meta">imported by 15 files</div>
+  <div class="hot-bar" style="width:100%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\models\catalog.js</div>
+  <div class="card-meta">imported by 13 files</div>
+  <div class="hot-bar" style="width:87%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\models\users.js</div>
+  <div class="card-meta">imported by 11 files</div>
+  <div class="hot-bar" style="width:73%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">discord-bot\config.js</div>
+  <div class="card-meta">imported by 10 files</div>
+  <div class="hot-bar" style="width:67%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\models\orders.js</div>
+  <div class="card-meta">imported by 10 files</div>
+  <div class="hot-bar" style="width:67%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">discord-bot\models\discordLinks.js</div>
+  <div class="card-meta">imported by 7 files</div>
+  <div class="hot-bar" style="width:47%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\middleware\rateLimit.js</div>
+  <div class="card-meta">imported by 7 files</div>
+  <div class="hot-bar" style="width:47%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">discord-bot\moderationLog.js</div>
+  <div class="card-meta">imported by 6 files</div>
+  <div class="hot-bar" style="width:40%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">discord-bot\models\guildConfig.js</div>
+  <div class="card-meta">imported by 6 files</div>
+  <div class="hot-bar" style="width:40%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\middleware\csrf.js</div>
+  <div class="card-meta">imported by 6 files</div>
+  <div class="hot-bar" style="width:40%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">discord-bot\db.js</div>
+  <div class="card-meta">imported by 5 files</div>
+  <div class="hot-bar" style="width:33%"></div>
+</div>
+<div class="card">
+  <div class="card-title" style="font-size:.9rem">server\middleware\auth.js</div>
+  <div class="card-meta">imported by 5 files</div>
+  <div class="hot-bar" style="width:33%"></div>
+</div>
+</div>
+</div>
+
+
+<div class="section">
+<h2>Environment Variables</h2>
+<table>
+<tr><th>Variable</th><th>Status</th><th>Source</th></tr>
+<tr>
+  <td><code>ADMIN_PASSWORD</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>ADMIN_USERNAME</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>ANTHROPIC_API_KEY</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>ANTHROPIC_MODEL</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">discord-bot\assistant.js</td>
+</tr>
+<tr>
+  <td><code>AUTOMOD_BLOCK_INVITES</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\config.js</td>
+</tr>
+<tr>
+  <td><code>AUTOMOD_ENABLED</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\config.js</td>
+</tr>
+<tr>
+  <td><code>AUTOMOD_MAX_MENTIONS</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\config.js</td>
+</tr>
+<tr>
+  <td><code>AUTOMOD_SPAM_COUNT</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\config.js</td>
+</tr>
+<tr>
+  <td><code>AUTOMOD_SPAM_WINDOW_MS</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\config.js</td>
+</tr>
+<tr>
+  <td><code>DB_PATH</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>DISCORD_BOT_TOKEN</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>DISCORD_CLIENT_ID</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>DISCORD_CLIENT_SECRET</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>DISCORD_GUILD_ID</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>DISCORD_OAUTH_REDIRECT_URI</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">discord-bot\.env.example</td>
+</tr>
+<tr>
+  <td><code>EMAIL_FROM</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>NODE_ENV</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>NOWPAYMENTS_API_KEY</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>NOWPAYMENTS_IPN_SECRET</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>PORT</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>SESSION_SECRET</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>SMTP_HOST</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>SMTP_PASS</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>SMTP_PORT</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>SMTP_USER</code></td>
+  <td><span class="env-required">required</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>STRIPE_SECRET_KEY</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+<tr>
+  <td><code>STRIPE_WEBHOOK_SECRET</code></td>
+  <td><span class="env-default">has default</span></td>
+  <td class="card-meta">.env.example</td>
+</tr>
+</table>
+</div>
+
+
+<div class="section">
+<h2>Middleware</h2>
+<div class="grid">
+<div class="card">
+  <div class="card-title">rateLimiter <span class="tag tag-auth">auth</span></div>
+  <div class="card-meta">discord-bot\rateLimiter.js</div>
+</div>
+<div class="card">
+  <div class="card-title">loot-crate-key-unlock-progression <span class="tag tag-custom">custom</span></div>
+  <div class="card-meta">generated-scripts\pubg\loot-crate-key-unlock-progression.cs</div>
+</div>
+<div class="card">
+  <div class="card-title">weapon-skin-crate-unlock-system <span class="tag tag-custom">custom</span></div>
+  <div class="card-meta">generated-scripts\pubg\weapon-skin-crate-unlock-system.cs</div>
+</div>
+<div class="card">
+  <div class="card-title">auth <span class="tag tag-auth">auth</span></div>
+  <div class="card-meta">js\auth.js</div>
+</div>
+<div class="card">
+  <div class="card-title">auth <span class="tag tag-auth">auth</span></div>
+  <div class="card-meta">server\middleware\auth.js</div>
+</div>
+<div class="card">
+  <div class="card-title">csrf <span class="tag tag-auth">auth</span></div>
+  <div class="card-meta">server\middleware\csrf.js</div>
+</div>
+<div class="card">
+  <div class="card-title">rateLimit <span class="tag tag-auth">auth</span></div>
+  <div class="card-meta">server\middleware\rateLimit.js</div>
+</div>
+<div class="card">
+  <div class="card-title">link-generated-files <span class="tag tag-validation">validation</span></div>
+  <div class="card-meta">server\scripts\link-generated-files.js</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+  Generated by <a href="https://github.com/Houseofmvps/codesight">codesight</a> — see your codebase clearly
+</div>
+
+</body>
+</html>

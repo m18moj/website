@@ -1,0 +1,913 @@
+# Libraries
+
+- `generated-clients\gta-v\ForgeClientConfig.cs` — class ForgeClientConfig
+- `generated-clients\gta-v\ForgeClientMenu.cs` — class ForgeClientMenu
+- `generated-scripts\apex\ability-cast-system.cs`
+  - enum AbilitySlot
+  - class AbilityDefinition
+  - class AbilityRuntime
+  - class LegendAbilityFramework
+  - function TryCast
+  - function TryInterrupt
+  - _...2 more_
+- `generated-scripts\apex\arena-round-draft-bans.cs`
+  - enum ArenaMatchPhase
+  - enum DraftActionType
+  - class DraftAction
+  - class ArenaRoundDraftBans
+  - function BeginMatch
+  - function SubmitDraftAction
+  - _...3 more_
+- `generated-scripts\apex\armor-health-layer.cs`
+  - enum ArmorTier
+  - class ArmorTierStats
+  - class ArmorHealthLayer
+  - function EquipArmor
+  - function ApplyDamage
+  - function HealHealth
+  - _...3 more_
+- `generated-scripts\apex\banner-collection-respawn-beacon.cs`
+  - class SquadBanner
+  - class BannerCollectionRespawnBeacon
+  - function CollectBanner
+  - function TryUseBeacon
+  - function CancelRespawn
+  - function ClearAllBanners
+- `generated-scripts\apex\care-package-drop-loot-table.cs`
+  - class LootTableEntry
+  - class RolledLootItem
+  - class CarePackageDropLootTable
+  - function BeginDrop
+  - function RollLoot
+- `generated-scripts\apex\champion-squad-spotlight-camera.cs`
+  - class SpotlightShot
+  - class ChampionSquadSpotlightCamera
+  - function BeginSpotlightSequence
+  - function StopSequence
+- `generated-scripts\apex\character-role-framework.cs`
+  - enum CharacterClass
+  - class PerkDefinition
+  - class PerkTreeState
+  - class LegendPerkPassiveTree
+  - function GetAvailablePerksForClass
+  - function GetUnlockablePerks
+  - _...6 more_
+- `generated-scripts\apex\climb-traversal-assist.cs`
+  - enum TraversalState
+  - class ClimbTraversalAssist
+  - function TryDetectLedge
+  - function BeginMantle
+  - function AttachToZipline
+- `generated-scripts\apex\crafting-replicator-rotation.cs`
+  - enum CraftingBundleTier
+  - class CraftingBundleDefinition
+  - class CraftingQueueEntry
+  - class CraftingReplicatorRotation
+  - function DepositMaterials
+  - function GetMaterialBalance
+  - _...2 more_
+- `generated-scripts\apex\death-recap-damage-log.cs`
+  - enum HitLocation
+  - enum DamageSource
+  - class DamageLogEntry
+  - class RecapSummaryLine
+  - class DeathRecapDamageLog
+  - function RecordDamage
+  - _...3 more_
+- `generated-scripts\apex\evac-tower-extraction-flow.cs`
+  - enum EvacTowerState
+  - class EvacSurvivorEntry
+  - class EvacTowerExtractionFlow
+  - function EnterConsoleRange
+  - function ExitConsoleRange
+  - function TryBoardPlayer
+  - _...2 more_
+- `generated-scripts\apex\finisher-execution-sequence.cs`
+  - class FinisherData
+  - class FinisherExecutionSequence
+  - function TryTriggerFinisher
+  - function InterruptCurrentFinisher
+- `generated-scripts\apex\grapple-zipline-traversal-kit.cs`
+  - enum TraversalState
+  - class GrappleZiplineTraversalKit
+  - function TryFireGrapple
+  - function ReleaseGrapple
+  - function TryMountZipline
+  - function DismountZipline
+- `generated-scripts\apex\heal-item-stacking-system.cs`
+  - enum ConsumableType
+  - class ConsumableDefinition
+  - class ConsumableStack
+  - class HealItemStackingSystem
+  - function AddToStack
+  - function GetStackCount
+  - _...4 more_
+- `generated-scripts\apex\legend-select-draft-lock.cs`
+  - class PlayerSelection
+  - class LegendSelectDraftLock
+  - function BeginDraft
+  - function SelectCharacter
+  - function LockIn
+  - function GetSelection
+- `generated-scripts\apex\legend-synergy-duo-bonuses.cs`
+  - class SynergyPairDefinition
+  - class PendingSynergyLanding
+  - class LegendSynergyDuoBonuses
+  - function ReportAbilityLanded
+  - function TryGetActiveBuffPotency
+- `generated-scripts\apex\loot-pickup-manager.cs`
+  - enum LootRarity
+  - class LootEntry
+  - class RarityWeight
+  - class DeathBoxLootSystem
+  - class LootContainer
+  - function SpawnDeathBox
+  - _...5 more_
+- `generated-scripts\apex\movement-controller.cs` — class SlideHopMomentumChain, function OnWallBounce
+- `generated-scripts\apex\ordnance-cook-throw-arc.cs`
+  - enum OrdnanceType
+  - class OrdnanceDefinition
+  - class OrdnanceCookThrowArc
+  - function StartCook
+  - function ReleaseThrow
+  - function SampleTrajectoryArc
+  - _...1 more_
+- `generated-scripts\apex\respawn-knockdown-flow.cs`
+  - enum PlayerLifeState
+  - class KnockdownRespawnFlow
+  - function Knockdown
+  - function TakeKnockedDamage
+  - function ReviveBySquadmate
+  - function TryUseSelfRevive
+  - _...2 more_
+- `generated-scripts\apex\season-battle-pass-challenges.cs`
+  - class TierReward
+  - class BattlePassChallenge
+  - class SeasonBattlePassChallenges
+  - function GetXpRequiredForLevel
+  - function AddXp
+  - function TrackChallengeProgress
+  - _...2 more_
+- `generated-scripts\apex\smart-ping-priority-queue.cs`
+  - enum PingType
+  - class PingRequest
+  - class SmartPingPriorityQueue
+  - function EnqueuePing
+  - function GetRankedPings
+- `generated-scripts\apex\squad-sync-logic.cs`
+  - enum PingType
+  - class PingData
+  - class SquadMemberStatus
+  - class SquadPingCommsWheel
+  - function RaisePing
+  - function UpdateSquadStatus
+  - _...2 more_
+- `generated-scripts\apex\team-composition-synergy-tracker.cs`
+  - enum LegendClass
+  - class SquadPick
+  - class SynergyRule
+  - class TeamCompositionSynergyTracker
+  - function SetPick
+  - function RemovePick
+  - _...3 more_
+- `generated-scripts\apex\weapon-attachment-hop-up-system.cs`
+  - enum AttachmentSlot
+  - class AttachmentModifier
+  - class WeaponBaseStats
+  - class WeaponAttachmentSystem
+  - function Identity
+  - function AttachAttachment
+  - _...2 more_
+- `generated-scripts\call-of-duty\clan-tag-squad-identity-system.cs`
+  - class SquadBanner
+  - class PlayerIdentity
+  - class SquadInfo
+  - class ClanTagSquadIdentitySystem
+  - function SetClanTag
+  - function SetBanner
+  - _...4 more_
+- `generated-scripts\call-of-duty\combat-pacing-flow-state-tracker.cs`
+  - enum MatchPacing
+  - class EngagementRecord
+  - class CombatPacingFlowStateTracker
+  - function RecordEngagement
+  - function GetCurrentPacing
+  - function GetAverageTimeToKill
+  - _...2 more_
+- `generated-scripts\call-of-duty\dead-silence-footstep-audio-system.cs`
+  - enum FootstepSurface
+  - enum MovementStance
+  - class SurfaceFootstepProfile
+  - class DeadSilenceFootstepAudioSystem
+  - function SetStance
+  - function EmitFootstep
+  - _...5 more_
+- `generated-scripts\call-of-duty\field-upgrade-charge-system.cs`
+  - class FieldUpgradeDefinition
+  - class FieldUpgradeChargeSystem
+  - function RegenerateCharge
+  - function HasEnoughCharge
+  - function TryActivate
+  - function EquipUpgrade
+  - _...2 more_
+- `generated-scripts\call-of-duty\grenade-utility-system.cs`
+  - enum ThrowableEffectType
+  - class GrenadeUtilitySystem
+  - function BeginFuse
+  - function TickCookTimer
+  - function IsCooking
+  - function GetFuseTimeRemaining
+- `generated-scripts\call-of-duty\ground-loot-contract-system.cs`
+  - enum LootRarity
+  - class LootItem
+  - class LootSpawnPoint
+  - enum ContractType
+  - class SideContract
+  - class GroundLootContractSystem
+  - _...3 more_
+- `generated-scripts\call-of-duty\gulag-1v1-duel-queue.cs`
+  - enum DuelOutcome
+  - class DuelMatch
+  - class Gulag1v1DuelQueue
+  - function EnqueuePlayer
+  - function ReportDuelKill
+  - function GetQueueLength
+  - _...1 more_
+- `generated-scripts\call-of-duty\gunsmith-attachment-tree.cs`
+  - enum MountSlot
+  - class AttachmentNode
+  - class StatPreview
+  - class GunsmithAttachmentTree
+  - function IsNodeAvailable
+  - function EquipAttachment
+  - _...3 more_
+- `generated-scripts\call-of-duty\hit-feedback-damage.cs` — class HitFeedbackDamage, function RegisterHit
+- `generated-scripts\call-of-duty\juggernaut-killstreak-suit-system.cs`
+  - enum JuggernautState
+  - class JuggernautKillstreakSuitSystem
+  - function TryClaimJuggernaut
+  - function TryEquipSuit
+  - function ApplyDamageReduction
+  - function ReportWearerKilled
+  - _...6 more_
+- `generated-scripts\call-of-duty\killcam-replay-capture.cs`
+  - class ReplayFrame
+  - class KillcamReplayCapture
+  - function SetLiveState
+  - function CaptureKillcam
+  - function TrySample
+- `generated-scripts\call-of-duty\killstreak-controller.cs`
+  - class StreakReward
+  - class KillstreakController
+  - function RegisterPoints
+  - function HandlePlayerDeath
+  - function ActivateReward
+  - function GetCurrentPoints
+  - _...2 more_
+- `generated-scripts\call-of-duty\loadout-drop-marker-system.cs`
+  - enum LoadoutDropState
+  - class LoadoutDropRequest
+  - class LoadoutDropMarkerSystem
+  - function TryCallLoadoutDrop
+  - function ReportCrateLanded
+  - function TryClaimDrop
+  - _...3 more_
+- `generated-scripts\call-of-duty\mission-objective-hud.cs`
+  - enum ObjectiveMarkerStatus
+  - class ObjectiveMarkerData
+  - class MissionObjectiveHud
+  - function SetObjectiveStatus
+  - function AddObjective
+  - function RemoveObjective
+- `generated-scripts\call-of-duty\multiplayer-spawn-logic.cs`
+  - class SpawnPointDefinition
+  - class MultiplayerSpawnLogic
+  - function RegisterDeath
+  - function SelectSpawnPoint
+  - function GetActiveDeathClusterCount
+- `generated-scripts\call-of-duty\objective-capture-flow.cs`
+  - enum ObjectiveState
+  - class ObjectiveCaptureFlow
+  - function RegisterPlayer
+  - function UnregisterPlayer
+  - function GetNormalizedProgress
+  - function IsOwnedBy
+- `generated-scripts\call-of-duty\operator-skin-voice-line-loadout.cs`
+  - class OperatorSkinDefinition
+  - class VoiceLineSet
+  - class OperatorSkinVoiceLineLoadout
+  - function HandleChallengeCompleted
+  - function TryEquipSkin
+  - function TryEquipVoiceLineSet
+  - _...8 more_
+- `generated-scripts\call-of-duty\perk-a-cola-machine-mystery-box-economy.cs`
+  - class PerkDefinition
+  - class MysteryBoxEntry
+  - class PerkColaMysteryBoxEconomy
+  - function AddCredits
+  - function TryPurchasePerk
+  - function TryRollMysteryBox
+  - _...6 more_
+- `generated-scripts\call-of-duty\prestige-emblem-calling-card-vault.cs`
+  - enum VaultItemRarity
+  - interface IVaultUnlockable
+  - class EmblemDefinition
+  - class CallingCardDefinition
+  - class PrestigeEmblemCallingCardVault
+  - function RegisterPrestige
+  - _...5 more_
+- `generated-scripts\call-of-duty\prestige-rank-reset-system.cs`
+  - enum CarryOverFlags
+  - class PrestigeTier
+  - class PrestigeRankResetSystem
+  - function AddExperience
+  - function CanPrestige
+  - function PerformPrestige
+- `generated-scripts\call-of-duty\score-event-tracker.cs`
+  - enum ScoreEventType
+  - class ScoreEvent
+  - class ScoreEventTracker
+  - function LogEvent
+  - function GetTotalScoreForPlayer
+  - function GetEventCountForPlayer
+  - _...3 more_
+- `generated-scripts\call-of-duty\tactical-perk-system.cs`
+  - enum PerkTier
+  - class Perk
+  - class TacticalPerkSystem
+  - function TryEquipPerk
+  - function UnequipPerk
+  - function GetEquippedPerk
+  - _...3 more_
+- `generated-scripts\call-of-duty\vehicle-handling-mounted-weapons.cs`
+  - class VehicleHandlingMountedWeapons
+  - interface IDamageable
+  - function SetDriveInput
+  - function SetWeaponAimInput
+  - function SetSeatOccupancy
+  - function TryFireMountedWeapon
+- `generated-scripts\call-of-duty\wave-based-horde-round-system.cs`
+  - class EnemyArchetype
+  - class WaveBasedHordeRoundSystem
+  - interface IRoundScalable
+  - function StartHorde
+  - function StopHorde
+  - function NotifyEnemyKilled
+  - _...1 more_
+- `generated-scripts\call-of-duty\weapon-camo-challenge-tracker.cs`
+  - enum ChallengeEventType
+  - class CamoChallenge
+  - class WeaponCamoProgress
+  - class WeaponCamoChallengeTracker
+  - function ReportEvent
+  - function GetCamoCompletionFraction
+  - _...3 more_
+- `generated-scripts\call-of-duty\weapon-loadout-manager.cs`
+  - enum AttachmentSlot
+  - class Attachment
+  - class WeaponBlueprint
+  - class LoadoutSlot
+  - class WeaponLoadoutManager
+  - function ApplyAttachment
+  - _...6 more_
+- `generated-scripts\fortnite\augment-perk-selection-system.cs`
+  - enum AugmentSlotType
+  - class AugmentDefinition
+  - class AugmentSlotController
+  - function SelectOption
+- `generated-scripts\fortnite\boogie-bounce-controller.cs`
+  - class EmoteDefinition
+  - class BoogieBounceController
+  - class BouncePad
+  - interface IBouncable
+  - function PlayEmote
+- `generated-scripts\fortnite\build-assist-controller.cs` — enum PieceType, class BuildAssistController
+- `generated-scripts\fortnite\combat-flow-manager.cs` — class CombatFlowManager
+- `generated-scripts\fortnite\crafting-upgrade-bench.cs`
+  - enum WeaponRarity
+  - interface IUpgradeableWeapon
+  - class MaterialCost
+  - class UpgradeRecipe
+  - class CraftingUpgradeBench
+  - function UpgradeSucceededHandler
+  - _...2 more_
+- `generated-scripts\fortnite\creative-island-trigger-device-system.cs`
+  - class GameDevice
+  - class TriggerDevice
+  - class TimerDevice
+  - class SpawnDevice
+  - function SetEnabled
+  - function Activate
+  - _...1 more_
+- `generated-scripts\fortnite\crosshair-aim-assist.cs` — class CrosshairAimAssist, function ProcessLookInput
+- `generated-scripts\fortnite\fishing-consumable-loot-system.cs`
+  - enum CatchRewardType
+  - class CatchReward
+  - class FishingConsumableLootSystem
+  - function CaughtHandler
+  - function MissedHandler
+  - function StartFishing
+  - _...2 more_
+- `generated-scripts\fortnite\launch-pad-slipstream-traversal.cs`
+  - class LaunchPadTraversal
+  - class SlipstreamTrail
+  - interface IFallDamageNegatable
+  - function EnterSlipstream
+- `generated-scripts\fortnite\locker-cosmetic-equip-system.cs`
+  - enum CosmeticSlot
+  - class CosmeticItem
+  - class LockerCosmeticEquipSystem
+  - function Owns
+  - function GetEquipped
+  - function Equip
+  - _...3 more_
+- `generated-scripts\fortnite\loot-rarity-engine.cs`
+  - enum Rarity
+  - class LootEntry
+  - class RarityWeight
+  - class LootRarityEngine
+  - function RollChestLoot
+  - function RollFloorLoot
+  - _...1 more_
+- `generated-scripts\fortnite\match-feed-hud.cs`
+  - class MatchFeedHud
+  - function ReportElimination
+  - function ReportKnockdown
+  - function StartStormTimer
+  - function StopStormTimer
+- `generated-scripts\fortnite\mythic-weapon-ability-system.cs`
+  - class MythicWeaponAbility
+  - class MythicWeaponAbilitySystem
+  - class KnockbackNovaAbility
+  - function TryActivate
+  - function AbilityActivatedHandler
+  - function AbilityDeniedHandler
+  - _...2 more_
+- `generated-scripts\fortnite\named-location-loot-tiering.cs`
+  - enum LootTier
+  - class LootTierProfile
+  - class NamedLocationLootTiering
+  - function PopulateLoot
+  - function ClearLoot
+- `generated-scripts\fortnite\no-build-mode-toggle-overshield.cs`
+  - class NoBuildModeToggleOvershield
+  - interface IBuildBlocker
+  - function SetNoBuildMode
+  - function ApplyDamage
+  - function RestoreOvershield
+- `generated-scripts\fortnite\progression-save-state.cs`
+  - class TierReward
+  - class ProgressionSaveData
+  - class ProgressionSaveState
+  - function GetXpRequiredForTier
+  - function AddXp
+  - function HasClaimedReward
+  - _...3 more_
+- `generated-scripts\fortnite\prop-disguise-movement-system.cs`
+  - class PropDisguiseDefinition
+  - class PropDisguiseMovementSystem
+  - function TryEnterDisguise
+  - function NotifyDamageTaken
+  - function BreakDisguise
+- `generated-scripts\fortnite\reboot-van-teammate-revive.cs`
+  - class TeammateRebootCard
+  - class RebootVanTeammateRevive
+  - class RebootStation
+  - function CardSpawnedHandler
+  - function CardExpiredHandler
+  - function TeammateRevivedHandler
+  - _...5 more_
+- `generated-scripts\fortnite\respawn-truck-teammate-recovery.cs`
+  - enum RespawnTruckState
+  - class RespawnTruckSite
+  - class RespawnTruckManager
+  - function QueueTeammateForRecovery
+  - function ThrowFlare
+  - function ConfirmPickupAt
+- `generated-scripts\fortnite\season-quest-xp-milestone-tracker.cs`
+  - class SeasonQuest
+  - class XpMilestone
+  - class SeasonQuestXpMilestoneTracker
+  - function AddProgress
+  - function ResetForNewWeek
+- `generated-scripts\fortnite\shield-regen-circuit.cs`
+  - class ShieldConsumable
+  - class ShieldRegenCircuit
+  - function TryConsume
+  - function CancelConsume
+  - function AbsorbDamage
+  - function AddStack
+- `generated-scripts\fortnite\squad-fill-auto-balance-matchmaking.cs`
+  - class LobbyPlayer
+  - class Squad
+  - class SquadFillAutoBalanceMatchmaking
+  - function RegisterSquad
+  - function EnqueueSoloPlayer
+  - function FillIncompleteSquads
+  - _...1 more_
+- `generated-scripts\fortnite\storm-pressure-logic.cs`
+  - class StormPhase
+  - class StormPressureLogic
+  - interface IStormDamageable
+  - function BeginStorm
+- `generated-scripts\fortnite\structure-edit-piece-confirm.cs`
+  - class StructureEditPieceConfirm
+  - class EditPattern
+  - function EditConfirmedHandler
+  - function BeginEdit
+  - function ConfirmEdit
+  - function CancelEdit
+- `generated-scripts\fortnite\team-rumble-respawn-wave-system.cs`
+  - enum RumbleTeam
+  - class TeamRumbleConfig
+  - class TeamRumbleRespawnWaveSystem
+  - function ReportElimination
+  - function GetEliminationCount
+- `generated-scripts\fortnite\vault-keycard-boss-loot-room.cs`
+  - enum VaultState
+  - class VaultKeycardBossLootRoom
+  - interface IVaultBoss
+  - function TryUnlockWithKeycard
+- `generated-scripts\fortnite\weekly-bounty-board-elimination-contracts.cs`
+  - enum ContractStatus
+  - class BountyContract
+  - class WeeklyBountyBoardEliminationContracts
+  - function LoadWeeklyPool
+  - function ReportElimination
+- `generated-scripts\fortnite\zero-point-rift-portal-network.cs`
+  - class RiftPortalNode
+  - class RiftPortalNetwork
+  - function BindPartner
+  - function Register
+  - function Unregister
+- `generated-scripts\gta-v\arms-dealer-black-market-trade.cs` — class ArmsDealerBlackMarketTrade
+- `generated-scripts\gta-v\bounty-hunter-contract-board.cs` — class BountyHunterContractBoard
+- `generated-scripts\gta-v\character-switch-camera-transition.cs` — class CharacterSwitchCameraTransition
+- `generated-scripts\gta-v\clothing-character-customization-menu.cs` — class ClothingCharacterCustomizationMenu
+- `generated-scripts\gta-v\collectible-hunt-tracker.cs` — class CollectibleHuntTracker
+- `generated-scripts\gta-v\driving-controller.cs` — class DrivingController
+- `generated-scripts\gta-v\drug-trafficking-supply-chain.cs` — class DrugTraffickingSupplyChain
+- `generated-scripts\gta-v\economy-property-system.cs` — class EconomyPropertySystem
+- `generated-scripts\gta-v\emergency-services-response-ai.cs` — class EmergencyServicesResponseAI
+- `generated-scripts\gta-v\gang-territory-turf-control.cs` — class GangTerritoryTurfControl
+- `generated-scripts\gta-v\garage-vehicle-storage-manager.cs`
+  - class GarageVehicleStorageManager
+  - function MarkImpounded
+  - function RecoverFromImpound
+- `generated-scripts\gta-v\heist-preparation-flow.cs` — class HeistPreparationFlow
+- `generated-scripts\gta-v\in-game-phone-contact-menu.cs` — class InGamePhoneContactMenu
+- `generated-scripts\gta-v\mission-event-trigger.cs` — class MissionEventTrigger
+- `generated-scripts\gta-v\npc-traffic-ai.cs` — class NpcTrafficAi
+- `generated-scripts\gta-v\parachute-skydiving-controller.cs` — class ParachuteSkydivingController, function SetTargetLandingZone
+- `generated-scripts\gta-v\police-chase-system.cs` — class PoliceChaseSystem
+- `generated-scripts\gta-v\radio-station-in-car-playlist-manager.cs` — class RadioStationInCarPlaylistManager
+- `generated-scripts\gta-v\random-world-event-spawner.cs` — class RandomWorldEventSpawner
+- `generated-scripts\gta-v\stock-market-investment-system.cs`
+  - class StockMarketInvestmentSystem
+  - function Buy
+  - function Sell
+  - function GetPrice
+- `generated-scripts\gta-v\traffic-collision-damage-model.cs` — class TrafficCollisionDamageModel
+- `generated-scripts\gta-v\underground-fight-club-wager-system.cs` — class UndergroundFightClubWagerSystem
+- `generated-scripts\gta-v\vehicle-mod-shop-customization.cs` — class VehicleModShopCustomization
+- `generated-scripts\gta-v\wanted-level-manager.cs` — class WantedLevelManager
+- `generated-scripts\gta-v\weapon-combat-controller.cs` — class WeaponCombatController
+- `generated-scripts\gta-v\weather-time-of-day-controller.cs`
+  - class WeatherTimeOfDayController
+  - function ForceWeather
+  - function SetDynamicWeatherEnabled
+- `generated-scripts\pubg\bluezone-damage-insurance-item.cs`
+  - class BluezoneDamageInsuranceItem
+  - function TryActivate
+  - function FilterZoneDamage
+  - function AddCharge
+- `generated-scripts\pubg\care-package-airdrop.cs` — class CarePackageAirdrop, function RequestAirdrop
+- `generated-scripts\pubg\convoy-escort-checkpoint-mode.cs`
+  - class ConvoyCheckpoint
+  - class EnemySpawnWaveDefinition
+  - class ConvoyEscortCheckpointMode
+  - function StartEvent
+  - function SetConvoyContested
+  - function ApplyConvoyDamage
+- `generated-scripts\pubg\downed-state-team-revive.cs`
+  - class DownedStateTeamRevive
+  - function EnterDownedState
+  - function TryStartRevive
+  - function InterruptRevive
+- `generated-scripts\pubg\emergency-pickup-helicopter-extraction.cs`
+  - enum ExtractionState
+  - class EmergencyPickupHelicopterExtraction
+  - function TryTriggerExtraction
+  - function TryBoardPlayer
+- `generated-scripts\pubg\enemy-awareness-ai.cs`
+  - enum AiCombatState
+  - class EnemyAwarenessAI
+  - function HearNoise
+  - function CanSeeTarget
+  - function UpdateAwareness
+- `generated-scripts\pubg\health-armor-recovery.cs`
+  - enum ArmorTier
+  - class HealingItemDefinition
+  - class HealthArmorRecovery
+  - function StartHealing
+  - function CancelHealing
+  - function ApplyBoostItem
+  - _...2 more_
+- `generated-scripts\pubg\inventory-weight-encumbrance.cs`
+  - class InventoryItemStack
+  - class InventoryWeightEncumbrance
+  - enum LoadState
+  - function TryAddItem
+  - function RemoveItem
+- `generated-scripts\pubg\loot-crate-key-unlock-progression.cs`
+  - enum CrateRewardRarity
+  - class CrateRewardDefinition
+  - class CrateRarityWeight
+  - class UnlockHistoryEntry
+  - class LootCrateKeyUnlockProgression
+  - function AddKeys
+  - _...3 more_
+- `generated-scripts\pubg\loot-spawn-manager.cs`
+  - enum LootTier
+  - class LootEntry
+  - class LootTable
+  - class LootSpawnManager
+  - function RollItem
+  - function RollBuildingLoot
+  - _...2 more_
+- `generated-scripts\pubg\loot-truck-roaming-convoy.cs` — class LootTruckRoamingConvoy, function TakeDamage
+- `generated-scripts\pubg\match-feed-system.cs`
+  - class FeedEntry
+  - class MatchFeedSystem
+  - function ReportElimination
+  - function GetActiveFeed
+  - function SetSpectatablePool
+  - function CycleSpectateNext
+  - _...2 more_
+- `generated-scripts\pubg\match-summary-screen.cs`
+  - class MatchSummaryData
+  - class MatchSummaryScreen
+  - function RecordDamageDealt
+  - function RecordKnockdown
+  - function RecordElimination
+  - function FinalizeMatch
+  - _...2 more_
+- `generated-scripts\pubg\ranked-season-reset-placement-matches.cs`
+  - enum SeasonRankStage
+  - class PlacementMatchResult
+  - class RankedSeasonResetPlacementMatches
+  - function BeginNewSeason
+  - function ReportPlacementMatch
+- `generated-scripts\pubg\red-zone-bombing-event.cs` — class RedZoneBombingEvent
+- `generated-scripts\pubg\safe-zone-rotation-predictor.cs`
+  - class SafeZoneRotationPredictor
+  - function RecordConfirmedZone
+  - function ClearHistory
+- `generated-scripts\pubg\spectator-killer-cam-system.cs`
+  - enum SpectateMode
+  - class SpectatorKillerCamSystem
+  - function BeginSpectating
+  - function SetFreeCamLook
+  - function CycleFollowTarget
+  - function SetMode
+- `generated-scripts\pubg\stance-prone-movement.cs`
+  - enum Stance
+  - class StanceProneMovement
+  - function TrySetStance
+- `generated-scripts\pubg\supply-drop-events.cs`
+  - class SupplyDropEvents
+  - function TriggerFlare
+  - function OpenCrate
+- `generated-scripts\pubg\team-formation-custom-room-lobby.cs`
+  - enum TeamSizePreset
+  - class LobbyMember
+  - class TeamFormationCustomRoomLobby
+  - function CreateRoom
+  - function TryJoin
+  - function Leave
+  - _...1 more_
+- `generated-scripts\pubg\throwable-trajectory-preview-arc.cs`
+  - class ThrowableTrajectoryPreviewArc
+  - function BeginPreview
+  - function EndPreview
+  - function UpdatePreview
+  - function SetOrigin
+- `generated-scripts\pubg\throwable-utility-grenade-system.cs`
+  - enum ThrowableType
+  - class ThrowableDefinition
+  - class ThrowableUtilityGrenadeSystem
+  - interface IDamageable
+  - function BeginCook
+  - function ReleaseThrow
+- `generated-scripts\pubg\training-ground-weapon-range.cs`
+  - class TargetDummy
+  - class AccuracyRunResult
+  - class TrainingGroundWeaponRange
+  - function EnterRange
+  - function ExitRange
+  - function RegisterShotFired
+  - _...1 more_
+- `generated-scripts\pubg\vehicle-system.cs`
+  - class VehicleSystem
+  - function SetThrottle
+  - function SetSteer
+  - function AddFuel
+  - function HonkHorn
+- `generated-scripts\pubg\wall-breach-charge-sonic-zone.cs`
+  - class WallBreachChargeSonicZone
+  - interface IBreachable
+  - interface IDamageable
+  - function PlaceCharge
+  - function ActivateSonicZone
+  - function DeactivateSonicZone
+- `generated-scripts\pubg\weapon-handling.cs`
+  - enum PlayerStance
+  - enum AttachmentSlot
+  - class WeaponAttachment
+  - class RecoilPatternPoint
+  - class WeaponHandling
+  - function FireShot
+  - _...3 more_
+- `generated-scripts\pubg\weapon-skin-crate-unlock-system.cs`
+  - enum SkinRarity
+  - class WeaponSkinDefinition
+  - class RarityWeight
+  - class WeaponSkinCrateUnlockSystem
+  - function OpenCrate
+  - function IsUnlocked
+- `generated-scripts\pubg\zone-collapse-system.cs`
+  - class ZonePhase
+  - class ZoneCollapseSystem
+  - function TryGetDamage
+- `generated-scripts\valorant\ability-combo-detector-highlight.cs`
+  - enum SetupAbilityCategory
+  - class SetupEvent
+  - class KillEvent
+  - class DetectedCombo
+  - class AbilityComboDetectorHighlight
+  - function NotifySetupLanded
+  - _...1 more_
+- `generated-scripts\valorant\ability-cooldowns.cs`
+  - enum AbilityAcquisitionType
+  - class AbilityDefinition
+  - class AbilityChargeSystem
+  - function TryPurchase
+  - function AddUltimatePoints
+  - function TryConsumeCharge
+  - _...2 more_
+- `generated-scripts\valorant\ability-hit-detection.cs`
+  - enum StatusEffectType
+  - class StatusEffectSpec
+  - class AbilityHitDetector
+  - class StatusEffectReceiver
+  - function ApplyEffect
+  - function HasEffect
+  - _...2 more_
+- `generated-scripts\valorant\agent-contract-unlock-tree.cs`
+  - enum ContractRewardType
+  - class ContractTierReward
+  - class AgentContract
+  - class AgentContractUnlockTree
+  - function SetActiveContract
+  - function GrantMatchXp
+  - _...2 more_
+- `generated-scripts\valorant\agent-role-system.cs`
+  - enum AgentRole
+  - enum AbilitySlot
+  - class AbilityKitEntry
+  - class AgentDefinition
+  - class AgentRoleProfile
+  - class RoleTraits
+  - _...3 more_
+- `generated-scripts\valorant\agent-select-lock-in.cs`
+  - class CharacterDefinition
+  - class AgentSelectLockIn
+  - function RegisterPlayer
+  - function TrySelect
+  - function ClearSelection
+  - function TryLockIn
+  - _...2 more_
+- `generated-scripts\valorant\anti-cheat-hitbox-sync.cs`
+  - class HitboxSnapshot
+  - class ClientHitClaim
+  - class ValidatedHitResult
+  - class ServerHitValidator
+  - function RecordSnapshot
+  - function ValidateHit
+- `generated-scripts\valorant\buy-phase-manager.cs`
+  - enum RoundResult
+  - class Loadout
+  - class BuyPhaseManager
+  - function BeginRound
+  - function TryPurchase
+  - function AddCredits
+  - _...6 more_
+- `generated-scripts\valorant\competitive-act-rank-rewards.cs`
+  - enum ActRankTier
+  - class ActRewardDefinition
+  - class ActResetResult
+  - class CompetitiveActRankRewards
+  - function SetCurrentTier
+  - function ResolveActReset
+- `generated-scripts\valorant\leaver-penalty-queue-restriction.cs`
+  - class PlayerPenaltyRecord
+  - class LeaverPenaltyQueueRestriction
+  - function NotifyPlayerJoinedMatch
+  - function NotifyPlayerLeftMatchCleanly
+  - function NotifyPlayerAbandoned
+  - function IsQueueRestricted
+- `generated-scripts\valorant\minimap-callout-marker.cs`
+  - class CalloutZone
+  - class MapPing
+  - class MinimapCalloutMarker
+  - function WorldToMinimapLocalPosition
+  - function GetCalloutForWorldPosition
+  - function PlacePing
+- `generated-scripts\valorant\party-queue-rank-restriction.cs`
+  - enum RankTier
+  - class PartyMember
+  - class QueueEligibilityResult
+  - class PartyQueueRankRestriction
+  - function CheckEligibility
+  - function FindOutlierPlayerIds
+- `generated-scripts\valorant\practice-range-bot-drill-system.cs`
+  - enum DrillPatternType
+  - class DrillPatternConfig
+  - class DrillResult
+  - class PracticeRangeBotDrillSystem
+  - function StartSession
+  - function StopSession
+  - _...1 more_
+- `generated-scripts\valorant\ranked-rating-progression.cs`
+  - enum RankTier
+  - class RankState
+  - class RankedRatingProgression
+  - function ApplyMatchResult
+- `generated-scripts\valorant\replication-mode-ability-cooldown-reset.cs`
+  - class ReplicationModeSettings
+  - class ReplicationModeAbilityCooldownReset
+  - function NotifyAbilityCast
+  - function IsAbilityReady
+  - function GetRemainingCooldown
+  - function ForceReady
+  - _...1 more_
+- `generated-scripts\valorant\round-timer-controller.cs`
+  - enum RoundPhase
+  - class RoundTimerController
+  - function BeginRound
+  - function NotifyDevicePlanted
+  - function UpdateDefuseInteraction
+- `generated-scripts\valorant\scoreboard-round-stats.cs`
+  - class PlayerStatLine
+  - class ScoreboardManager
+  - function RegisterPlayer
+  - function OnRoundStart
+  - function RegisterKill
+  - function RegisterDamage
+  - _...3 more_
+- `generated-scripts\valorant\smoke-wall-ability-collision.cs`
+  - class SmokeWallAbilityCollision
+  - enum BlockerShape
+  - class LineOfSightBlockerRegistry
+  - function BlocksSegment
+  - function Register
+  - function Unregister
+  - _...1 more_
+- `generated-scripts\valorant\spatial-audio-caller.cs`
+  - enum SoundCategory
+  - class AudibleEvent
+  - class PositionalSoundEmitter
+  - class AutoCalloutListener
+  - function PlayFootstep
+  - function PlayAbilityCast
+- `generated-scripts\valorant\spike-carrier-priority-callout.cs`
+  - enum CalloutReason
+  - class SpikeCarrierCalloutEvent
+  - class SpikeCarrierPriorityCallout
+  - interface IDamageable
+  - function SetSpikeCarrier
+  - function SetLivingTeammates
+- `generated-scripts\valorant\spike-plant-defuse-sequence.cs`
+  - enum BombSiteState
+  - class SpikePlantDefuseSequence
+  - function HoldInteract
+  - function ReleaseInteract
+  - function NotifyActorDamaged
+- `generated-scripts\valorant\tournament-bracket-match-scheduling.cs`
+  - enum BracketFormat
+  - enum BracketSide
+  - class TournamentMatch
+  - class TournamentBracketMatchScheduling
+  - function GenerateBracket
+  - function ReportResult
+- `generated-scripts\valorant\ultimate-orb-pickup-charge.cs` — interface IUltimateChargeReceiver, class UltimateOrbPickup
+- `generated-scripts\valorant\weapon-inspect-skin-display.cs`
+  - class WeaponSkinData
+  - class WeaponInspectSkinDisplay
+  - function TryBeginInspect
+  - function CancelInspect
+- `generated-scripts\valorant\weapon-recoil-system.cs`
+  - class WeaponRecoilSystem
+  - function RegisterShot
+  - function GetPatternProgress01
+  - function ResetPattern

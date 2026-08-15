@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy policy for the ScripForge Discord bot, including verification, moderation, and support ticket data handling.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80">
+    <title>Discord Bot Privacy Policy | ScripForge</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="../js/theme.js"></script>
+    <script src="../js/error-reporter.js"></script>
+    <style>
+        .privacy-content {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+        .privacy-content h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent-cyan);
+        }
+        .privacy-content p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body data-root-prefix="../">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg class="logo-icon" viewBox="0 0 40 40">
+                    <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                    <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                    <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                    <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                </svg>
+                ScripForge
+            </a>
+            <div class="nav-menu" id="navMenu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="games.html" class="nav-link">Games</a>
+                <a href="catalog.html" class="nav-link">Catalog</a>
+                <a href="https://discord.com" target="_blank" rel="noreferrer" class="nav-link">Discord</a>
+            </div>
+            <div class="nav-actions">
+                <span id="authControl" class="auth-control"></span>
+                <a href="checkout.html" class="cart-btn" aria-label="View basket">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container breadcrumbs" aria-label="Breadcrumb">
+        <a href="../index.html">Home</a> / <a href="privacy.html">Privacy</a> / <span>Discord Bot Privacy</span>
+    </div>
+
+    <div class="privacy-content">
+        <h1>Discord Bot Privacy Policy</h1>
+        <p><em>Last updated: August 2026</em></p>
+
+        <p>This page applies specifically to the ScripForge Discord bot and is intentionally not listed in the main navigation. It is only accessible through the main Privacy Policy.</p>
+
+        <h2>1. What data the bot may process</h2>
+        <p>The bot may process Discord account identifiers, usernames, and tags, server IDs, moderation records, support ticket metadata, and support transcript text files. When a user links their Discord account to a ScripForge account, we store the Discord ID and tag alongside the site account reference so the bot can verify ownership and sync a Verified Customer role.</p>
+        <p>Moderation actions such as warn, timeout, kick, ban, and unban are logged locally with the target member ID/tag and moderator ID/tag. Support tickets capture the opener's Discord ID/tag, ticket thread ID, and optional order context. Transcript files may be saved locally for staff review.</p>
+
+        <h2>2. Data handling</h2>
+        <p>We use the Discord account data to verify customers, assign access roles, maintain moderation history, and operate customer support threads. The bot does not sell user data and does not use Discord data for advertising or unrelated profiling.</p>
+        <p>Temporary AI support conversation memory is kept in memory only while the bot is running. It is not persisted to disk and is not treated as a permanent record. Ticket transcripts are stored locally as plain text files so staff can review the conversation and close tickets.</p>
+
+        <h2>3. OAuth and verification</h2>
+        <p>For website-driven Discord linking, the app requests only the Discord `identify` scope and uses the returned user data to create the account link. The OAuth access token is not stored for later reuse. The bot does not collect or retain broad profile data beyond the Discord user ID and tag needed for verification and role syncing.</p>
+
+        <h2>4. Data retention</h2>
+        <p>We keep moderation logs and support records for as long as they remain necessary for operation, moderation, or support. Support transcript files are retained locally until they are no longer needed for the ticket workflow or are manually removed by the operator. Account links may be removed when a user unlinks their Discord account.</p>
+
+        <h2>5. Access and sharing</h2>
+        <p>Only authorized staff or bot operators with the required server access should be able to view moderation data, transcript files, or account-link records. We do not share this data with unrelated third parties. The bot uses Discord and, where relevant, the local ScripForge store data to support the features it provides.</p>
+
+        <h2>6. Contact</h2>
+        <p>For privacy questions about the bot or its data handling, contact the operator of the ScripForge installation or the staff contact for the Discord server running the bot.</p>
+
+        <p style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+            <a href="privacy.html" style="color: var(--accent-cyan);">← Back to main Privacy Policy</a>
+        </p>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="../index.html" class="footer-logo">
+                    <svg class="logo-icon" viewBox="0 0 40 40">
+                        <rect x="5" y="5" width="12" height="12" fill="#00d9ff"/>
+                        <rect x="23" y="5" width="12" height="12" fill="#a855f7"/>
+                        <rect x="5" y="23" width="12" height="12" fill="#a855f7"/>
+                        <rect x="23" y="23" width="12" height="12" fill="#00d9ff"/>
+                    </svg>
+                    ScripForge
+                </a>
+                <p>Premium, production-ready game systems for developers, indies, and studios.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <a href="privacy.html">Privacy policy</a>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; <span id="footerYear"></span> ScripForge. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -163,11 +163,26 @@
     }
   }
 
+  function bindLogout(id) {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      try {
+        await logout();
+      } catch (err) {
+        if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
+      }
+    });
+  }
+
   function renderAuthControl() {
     renderHeroCta();
     const container = document.getElementById('authControl');
     if (!container) return;
     const prefix = pathPrefix();
+    const navMenu = document.getElementById('navMenu');
+    const existingMobileSection = navMenu ? navMenu.querySelector('.nav-menu-account') : null;
+    if (existingMobileSection) existingMobileSection.remove();
 
     if (!currentUser) {
       container.innerHTML = `<a href="${prefix}pages/login.html" class="auth-btn auth-btn-outline">Sign In</a>`;
@@ -186,16 +201,22 @@
         <button type="button" class="auth-btn auth-btn-outline" id="logoutBtn">Log out</button>
       </div>
     `;
+    bindLogout('logoutBtn');
 
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        try {
-          await logout();
-        } catch (err) {
-          if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
-        }
-      });
+    // The account-menu above is hidden below 768px (too wide for the top
+    // bar next to the cart icon and hamburger), so mirror the same links
+    // into the collapsible mobile nav-menu dropdown instead.
+    if (navMenu) {
+      const mobileSection = document.createElement('div');
+      mobileSection.className = 'nav-menu-account';
+      mobileSection.innerHTML = `
+        <a href="${prefix}pages/account.html" class="nav-link">Hi, ${escapeHtml(currentUser.username)}</a>
+        <a href="${prefix}pages/downloads.html" class="nav-link">Downloads</a>
+        ${adminLink}
+        <button type="button" class="nav-link nav-link-button" id="logoutBtnMobile">Log out</button>
+      `;
+      navMenu.appendChild(mobileSection);
+      bindLogout('logoutBtnMobile');
     }
   }
 

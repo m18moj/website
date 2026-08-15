@@ -40,6 +40,8 @@
 
 html {
     scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -47,6 +49,8 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .container {
@@ -275,6 +279,12 @@ a,
     display: flex;
     align-items: center;
     gap: 0.9rem;
+}
+
+/* Mirrors the account-menu links into the mobile hamburger dropdown; see
+   js/auth.js renderAuthControl(). Hidden on desktop, shown at 768px. */
+.nav-menu-account {
+    display: none;
 }
 
 .account-name {
@@ -1460,7 +1470,7 @@ a,
     }
 
     .nav-menu.active {
-        max-height: 400px;
+        max-height: 600px;
         padding: 1rem;
         opacity: 1;
         transform: translateY(0);
@@ -1469,6 +1479,31 @@ a,
 
     .nav-menu .nav-link {
         padding: 0.75rem;
+    }
+
+    /* The signed-in "Hi, name / Downloads / Admin / Log out" cluster is too
+       wide for the top bar on narrow screens, so it's hidden here and mirrored
+       into the collapsible .nav-menu dropdown instead (see js/auth.js). */
+    .nav-actions .account-menu {
+        display: none;
+    }
+
+    .nav-menu-account {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid var(--border-color);
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+    }
+
+    .nav-menu-account .nav-link-button {
+        background: none;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font: inherit;
+        cursor: pointer;
+        color: var(--text-secondary);
     }
 
     .mobile-toggle {

@@ -28,7 +28,12 @@ async function structured({ system, prompt, schema, maxTokens = 1500 }) {
   const response = await client.messages.create({
     model: config.ANTHROPIC_MODEL,
     max_tokens: maxTokens,
-    system,
+    // Every agent's SYSTEM string is a fixed constant reused across every
+    // job it runs — marking it cacheable means repeat calls to the same
+    // agent (e.g. one per campaign) read from cache instead of paying full
+    // price for the same instructions each time. No-ops harmlessly below
+    // the model's minimum cacheable prefix length.
+    system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
     messages: [{ role: 'user', content: prompt }],
     tools: [{ name: 'submit_result', description: 'Submit the final structured result for this step.', input_schema: schema }],
     tool_choice: { type: 'tool', name: 'submit_result' }

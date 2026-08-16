@@ -447,6 +447,45 @@
     });
   }
 
+  function setupDeleteAccountForm() {
+    const toggleBtn = document.getElementById('toggleDeleteAccountForm');
+    const form = document.getElementById('deleteAccountForm');
+    const errorBox = document.getElementById('deleteAccountError');
+
+    toggleBtn.addEventListener('click', () => {
+      form.hidden = !form.hidden;
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorBox.hidden = true;
+
+      const password = document.getElementById('deleteAccountPassword').value;
+      const confirmText = document.getElementById('deleteAccountConfirmText').value;
+
+      if (confirmText.trim().toUpperCase() !== 'DELETE') {
+        errorBox.textContent = 'Type DELETE (in capitals) to confirm.';
+        errorBox.hidden = false;
+        return;
+      }
+
+      if (!window.confirm('This permanently deletes your account and all order history. This cannot be undone. Continue?')) {
+        return;
+      }
+
+      try {
+        await window.ScripForgeAuth.apiFetch('/api/account/delete', {
+          method: 'POST',
+          body: { password }
+        });
+        window.location.href = 'index';
+      } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.hidden = false;
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       await window.ScripForgeAuth.refreshCsrfToken();
@@ -465,6 +504,7 @@
       setupPasswordForm();
       setupTotp(user);
       setupDiscordLink();
+      setupDeleteAccountForm();
 
       document.getElementById('accountLogoutBtn').addEventListener('click', async () => {
         try {

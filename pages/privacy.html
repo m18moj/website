@@ -73,19 +73,19 @@
         <p><em>Last updated: 2026</em></p>
 
         <h2>1. Information We Collect</h2>
-        <p>We collect information you provide directly, such as email, name, and billing country during checkout. This is a demo application storing data locally in your browser—no information is sent to external servers.</p>
+        <p>We collect information you provide directly: your username, email address (optional), and order/payment details when you check out. Payment card details are never seen or stored by us — card payments are handled entirely by Stripe, and crypto payments by NOWPayments; we only receive confirmation that a payment succeeded. Your basket and a few display preferences (like currency and theme) are kept in your browser's localStorage, but your account, orders, and license data are stored on our server.</p>
 
         <h2>2. How We Use Your Information</h2>
-        <p>Your information is used solely for processing orders and maintaining your account. We do not share data with third parties. In this prototype, all data is stored locally in localStorage.</p>
+        <p>Your information is used to process orders, maintain your account, deliver purchased scripts/licenses, and respond to support requests. We do not sell your data or share it with third parties beyond the payment processors (Stripe, NOWPayments) needed to complete a transaction.</p>
 
         <h2>3. Data Security</h2>
-        <p>This is a demonstration prototype. Passwords are hashed locally using a simple algorithm (not production-grade). For real applications, use proper encryption and secure servers.</p>
+        <p>Passwords are hashed with bcrypt before storage — we never store or have access to your plain-text password. The site enforces HTTPS, and admin accounts support optional two-factor authentication. Every admin action is recorded in an internal audit log.</p>
 
         <h2>4. Cookies and Tracking</h2>
-        <p>We do not use cookies or tracking. This app uses browser localStorage for basket and session management.</p>
+        <p>We use one strictly-necessary cookie (<code>sf.sid</code>) to keep you signed in — it's httpOnly, sent only over HTTPS in production, and contains no tracking data. Because it's strictly necessary for the site to function (you can't stay signed in without it), it doesn't require a cookie-consent banner under UK/EU rules. We do not use analytics or advertising cookies. Your basket contents and display preferences (currency, theme) are kept in your browser's localStorage, not in a cookie.</p>
 
         <h2>5. Your Rights</h2>
-        <p>You can delete your basket and account data at any time by clearing your browser's localStorage or using your browser's dev tools to manage stored data.</p>
+        <p>You can view your order history at any time from your account page. To permanently delete your account and associated data (orders, licenses, wishlist, reviews), go to your account page's Security section and use "Delete account" — this is instant and irreversible. If you'd like a copy of your data instead, or have any other request, contact us using the details below.</p>
 
         <h2>6. Contact</h2>
         <p>For questions about privacy, open a ticket on the discord server with the tag "privacy".</p>

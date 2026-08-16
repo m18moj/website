@@ -540,6 +540,11 @@ db.exec(`
     platform_url TEXT,
     title TEXT,
     description TEXT,
+    -- For admin-approved posts (Video Studio → "Approve & schedule"), the
+    -- rendered video lives directly on the publication row instead of a
+    -- video_jobs contract row; publish_due_posts falls back to this path
+    -- when no video_jobs.output_path exists for the campaign.
+    output_path TEXT,
     scheduled_at TEXT,
     published_at TEXT,
     status TEXT NOT NULL DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'publishing', 'published', 'failed')),
@@ -617,6 +622,10 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_video_admin_jobs_status ON video_admin_jobs(status);
   CREATE INDEX IF NOT EXISTS idx_video_admin_jobs_created_at ON video_admin_jobs(created_at);
 `);
+
+// Existing databases (created before output_path existed) gain the column on
+// boot without a destructive migration — see ensureColumn above.
+ensureColumn('social_publications', 'output_path', 'TEXT');
 
 // First-boot only: if the catalog tables are empty, load the original
 // hand-authored packs/scripts (server/seedCatalog.js) so existing installs

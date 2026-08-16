@@ -19,6 +19,29 @@
     color: transparent;
 }
 
+.video-version-badge {
+    margin-left: 0.5rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    vertical-align: middle;
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+}
+
+.video-version-badge.ready { background: rgba(16, 185, 129, 0.18); color: #10b981; }
+.video-version-badge.offline { background: rgba(239, 68, 68, 0.18); color: #ef4444; }
+
+.video-subheading {
+    margin: 0.9rem 0 0.4rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted, #8b8fa3);
+}
+
 .video-status-pill {
     padding: 4px 12px;
     border-radius: 999px;
@@ -348,6 +371,61 @@
     font-size: 0.72rem;
     color: var(--text-secondary, #b0b0b0);
     margin-top: 2px;
+}
+
+/* --- Approve & schedule (admin → social upload) --------------------------- */
+
+.video-approve-btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.6rem;
+    padding: 0.42rem 0;
+    border: 1px solid var(--accent-cyan, #00d9ff);
+    background: transparent;
+    color: var(--accent-cyan, #00d9ff);
+    border-radius: 8px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition, 0.3s ease);
+}
+
+.video-approve-btn:hover {
+    background: var(--accent-cyan, #00d9ff);
+    color: #04101f;
+}
+
+.video-scheduled-badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.78);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    font-size: 0.66rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 999px;
+}
+
+.video-scheduled-badge.status-failed { color: #ef4444; border-color: rgba(239, 68, 68, 0.5); }
+
+.video-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+#approveForm .form-group { margin-bottom: 1rem; }
+#approveForm select, #approveForm textarea, #approveForm input[type="text"], #approveForm input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2a2a3e);
+    background: var(--bg-tertiary, #16213e);
+    color: var(--text-primary, #eaeaea);
+    font-size: 0.85rem;
 }
 
 /* --- Modal (log detail / preview player) --------------------------------- */

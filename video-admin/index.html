@@ -13,7 +13,7 @@
         <nav class="admin-nav video-admin-nav">
             <div class="admin-logo">
                 <a href="../admin/admin">← Store Admin</a>
-                <span class="video-admin-title">🎬 Video Studio</span>
+                <span class="video-admin-title">🎬 Video Studio <span id="videoVersionBadge" class="video-version-badge">v…</span></span>
             </div>
             <div class="admin-user-info">
                 <span id="videoReadinessPill" class="video-status-pill">checking…</span>
@@ -39,6 +39,14 @@
             <main class="admin-content">
                 <!-- Overview -->
                 <div class="admin-tab active" id="overview">
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h2>Deployment &amp; server</h2>
+                            <span id="deployVersionBadge" class="video-status-pill">checking…</span>
+                        </div>
+                        <div id="deployStatusContainer">Loading…</div>
+                    </div>
+
                     <div class="section-header"><h1>Pipeline Readiness</h1></div>
 
                     <div class="stats-grid" id="readinessGrid"></div>
@@ -63,6 +71,16 @@
                     <div class="dashboard-section video-glass-panel">
                         <h2>Smoke tests</h2>
                         <div id="smokeTestsContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h2>Test render</h2>
+                            <div class="section-header-actions">
+                                <button type="button" class="btn btn-primary" id="renderTestBtn">🎬 Render test video</button>
+                            </div>
+                        </div>
+                        <p class="empty-state">One-click end-to-end check: renders the first catalog pack as a YouTube Short — ad copy (Claude), voiceover, music, render, and QA. Needs the Anthropic key (above) and ffmpeg. The finished video appears in the Output Gallery.</p>
                     </div>
                 </div>
 
@@ -134,6 +152,47 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="approveModal" class="video-modal" hidden>
+                        <div class="video-modal-backdrop" id="approveModalBackdrop"></div>
+                        <div class="video-modal-content video-modal-content-wide">
+                            <div class="video-modal-header">
+                                <h3 id="approveModalTitle">Approve &amp; schedule</h3>
+                                <button type="button" class="btn-small" id="approveModalClose">Close</button>
+                            </div>
+                            <div class="video-modal-body">
+                                <video id="approveModalVideo" controls class="video-preview-player"></video>
+                                <p class="empty-state">Post this render to your social account. Fields are prefilled with a brand-safe draft — edit anything before confirming.</p>
+                                <form id="approveForm" novalidate>
+                                    <div class="form-group">
+                                        <label for="approvePlatform">Platform</label>
+                                        <select id="approvePlatform">
+                                            <option value="tiktok">TikTok</option>
+                                            <option value="youtube_shorts">YouTube Shorts</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="approveTitle">Title / caption</label>
+                                        <input id="approveTitle" type="text" maxlength="200">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="approveDescription">Description</label>
+                                        <textarea id="approveDescription" rows="5" maxlength="2000"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="approveScheduledAt">Schedule (local time, optional)</label>
+                                        <input id="approveScheduledAt" type="datetime-local">
+                                        <p class="empty-state">Leave blank for the next best posting slot. Requires the social process to be running and configured.</p>
+                                    </div>
+                                    <p id="approveError" class="form-error" role="alert" hidden></p>
+                                    <div class="video-modal-actions">
+                                        <button type="button" class="btn btn-secondary" id="approveCancelBtn">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" id="approveConfirmBtn">Approve &amp; schedule</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Social Hand-off -->
@@ -144,6 +203,11 @@
                     <div class="dashboard-section video-glass-panel">
                         <div id="socialQueueContainer">Loading…</div>
                     </div>
+                    <div class="section-header"><h2>Scheduled for upload (admin approvals)</h2></div>
+                    <p class="empty-state">Renders you approved from the Output Gallery. They upload automatically when due, if the social process is enabled.</p>
+                    <div class="dashboard-section video-glass-panel">
+                        <div id="scheduledPostsContainer">Loading…</div>
+                    </div>
                 </div>
 
                 <!-- Settings -->
@@ -151,8 +215,12 @@
                     <div class="section-header"><h1>Render Settings</h1></div>
                     <form id="videoSettingsForm" class="admin-inline-form" novalidate>
                         <div class="form-group">
-                            <label for="setTtsVoice">Preferred TTS voice</label>
+                            <label for="setTtsVoice">Preferred SAPI voice (offline fallback)</label>
                             <input id="setTtsVoice" type="text" placeholder="e.g. Microsoft Zira Desktop (blank = system default)">
+                        </div>
+                        <div class="form-group">
+                            <label for="setEdgeTtsVoice">Edge neural voice (free, human-sounding)</label>
+                            <input id="setEdgeTtsVoice" type="text" placeholder="e.g. en-US-EmmaMultilingualNeural">
                         </div>
                         <div class="form-group">
                             <label for="setTtsRate">TTS rate (-10 to 10)</label>

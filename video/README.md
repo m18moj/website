@@ -9,7 +9,7 @@ read-only access to the store's catalog data, no shared runtime with
 ```
 inputs (catalog DB + real script source)
   -> ad copy (Claude, grounded in real data)
-  -> voiceover (Windows SAPI, or ElevenLabs if configured)
+  -> voiceover (Microsoft Edge neural TTS, free + human-sounding — falls back to Windows SAPI, or ElevenLabs if configured)
   -> music + SFX (procedurally synthesized, mood-matched per pack)
   -> mix (sidechain ducking, loudness normalization)
   -> edit/animation (Remotion composition, captions synced to real VO timing)
@@ -21,12 +21,16 @@ inputs (catalog DB + real script source)
 
 ```
 npm run video:setup          # from repo root — installs video/node_modules
+npm run video:tts-setup      # installs the edge-tts Python package (free, human-sounding voiceover)
 ```
 
-Requires `ffmpeg`/`ffprobe` on PATH (used for audio mixing and QA) and,
-on Windows, no extra setup for voiceover (uses the built-in SAPI engine).
-On non-Windows, set `ELEVENLABS_API_KEY` in `video/.env` — see
-`video/.env.example`.
+Requires `ffmpeg`/`ffprobe` on PATH (used for audio mixing and QA).
+
+Voiceover needs zero configuration: the dispatcher (`pipeline/lib/tts.mjs`)
+uses Microsoft Edge's neural TTS by default (needs internet + `pip install
+edge-tts`, run via `npm run video:tts-setup`), falls back to Windows' built-in
+SAPI voices when Edge isn't available, and upgrades to ElevenLabs whenever
+`ELEVENLABS_API_KEY` is set in `video/.env` — see `video/.env.example`.
 
 Ad-copy generation reuses the `ANTHROPIC_API_KEY` already configured in
 `discord-bot/.env` — nothing else to set up there.
@@ -84,10 +88,12 @@ Opens the interactive Remotion Studio with the `SocialVertical` and
   `src/packThemes.ts`, ported 1:1 from the live site's CSS.
 - `pipeline/lib/` — the automation: `db.mjs` (read-only catalog access),
   `copywriter.mjs` (Claude-generated ad copy, grounded in real pack/script
-  data), `tts.mjs`/`tts-sapi.mjs`/`tts-elevenlabs.mjs` (voiceover with real
-  word timestamps), `music.mjs`/`sfx.mjs` (procedural audio synthesis, no
-  external audio APIs), `mix.mjs` (ffmpeg ducking/normalization), `qa.mjs`
-  (automated output validation), `render.mjs` (Remotion render driver).
+  data), `tts.mjs`/`tts-edge.mjs`/`tts-sapi.mjs`/`tts-elevenlabs.mjs`
+  (voiceover with real word timestamps: Edge neural free default, SAPI
+  offline fallback, ElevenLabs premium), `music.mjs`/`sfx.mjs` (procedural
+  audio synthesis, no external audio APIs), `mix.mjs` (ffmpeg
+  ducking/normalization), `qa.mjs` (automated output validation), `render.mjs`
+  (Remotion render driver).
 - `pipeline/config/` — `moods.mjs` (12 pack moods + website, driving music
   generation) and `platforms.mjs` (per-platform dimensions/fps/timing/TTS rate).
 - `pipeline/orchestrate.mjs` — the end-to-end CLI entry point.

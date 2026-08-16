@@ -1,7 +1,10 @@
 (function () {
   const KIND_LABELS = { tiktok: 'TikTok', shorts: 'YT Shorts', promo: 'Pack Promo', website: 'Website Promo' };
+  const PLATFORM_LABELS = { tiktok: 'TikTok', youtube_shorts: 'YT Shorts' };
+  const SCHEDULABLE_KINDS = ['tiktok', 'shorts', 'promo'];
   let jobsPollTimer = null;
   let currentModalJobId = null;
+  let currentApprovePath = null;
 
   function toast(message, type) {
     if (window.ScripForgeToast) window.ScripForgeToast.show(message, type);
@@ -27,11 +30,41 @@
     return `${val.toFixed(val >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
   }
 
+  function formatUptime(sec) {
+    if (sec === null || sec === undefined) return '—';
+    const d = Math.floor(sec / 86400), h = Math.floor((sec % 86400) / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    const parts = [];
+    if (d) parts.push(`${d}d`);
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    parts.push(`${s}s`);
+    return parts.join(' ');
+  }
+
   function showTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((el) => el.classList.remove('active'));
     document.querySelectorAll('.menu-item').forEach((el) => el.classList.remove('active'));
     document.getElementById(tab).classList.add('active');
     document.querySelector(`[data-admin-tab="${tab}"]`).classList.add('active');
+  }
+
+  function closeAllModals() {
+    ['jobLogModal', 'previewModal', 'approveModal'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    const video = document.getElementById('approveModalVideo');
+    if (video) { video.pause(); video.removeAttribute('src'); }
+    const previewVideo = document.getElementById('previewModalVideo');
+    if (previewVideo) { previewVideo.pause(); previewVideo.removeAttribute('src'); }
+    currentModalJobId = null;
+    currentApprovePath = null;
+  }
+
+  function setupModalKeyboard() {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeAllModals();
+    });
   }
 
   function setupTabs() {
@@ -76,6 +109,7 @@
     `;
 
     document.getElementById('ttsStatusContainer').innerHTML = `
+      <div class="video-status-row"><span><span class="video-dot ${data.tts.edge ? 'on' : 'off'}"></span>Edge neural (free)</span><span>${data.tts.edge ? 'Available' : 'Missing edge-tts'}</span></div>
       <div class="video-status-row"><span><span class="video-dot ${data.tts.sapi ? 'on' : 'off'}"></span>Windows SAPI (free)</span><span>${data.tts.sapi ? 'Available' : 'Not available'}</span></div>
       <div class="video-status-row"><span><span class="video-dot ${data.tts.elevenlabs ? 'on' : 'off'}"></span>ElevenLabs (premium)</span><span>${data.tts.elevenlabs ? 'Configured' : 'No API key set'}</span></div>
     `;
@@ -93,9 +127,63 @@
     return data;
   }
 
+  // --- Deployment & server status ----------------------------------------
+
+  async function loadDeployment() {
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
+    let ver = null;
+    try {
+      const resp = await fetch('/video-admin/version.json', { cache: 'no-store' });
+      if (resp.ok) ver = await resp.json();
+    } catch { /* static version file unavailable */ }
+
+    let status = null;
+    let statusError = null;
+    try {
+      status = await apiFetch('/api/video-admin/status');
+    } catch (err) {
+      statusError = err.message;
+    }
+
+    const fmt = (iso) => (iso ? new Date(iso).toLocaleString() : '—');
+    const serverOnline = !!status;
+    const versionText = ver ? `v${ver.version}` : 'no version';
+
+    const navBadge = document.getElementById('videoVersionBadge');
+    if (navBadge) {
+      navBadge.textContent = versionText;
+      navBadge.className = 'video-version-badge ' + (ver ? 'ready' : 'offline');
+    }
+    const badge = document.getElementById('deployVersionBadge');
+    if (badge) {
+      badge.textContent = versionText;
+      badge.className = 'video-status-pill ' + (ver ? 'ready' : 'offline');
+    }
+
+    const container = document.getElementById('deployStatusContainer');
+    if (!container) return;
+
+    const latestRows = status && status.latestFiles && status.latestFiles.length
+      ? status.latestFiles.map((f) => `
+          <div class="video-status-row"><span>${escapeHtml(f.name)}</span><span>${fmt(f.modified)}</span></div>
+        `).join('')
+      : '<div class="video-status-row"><span>No rendered outputs yet</span><span>—</span></div>';
+
+    container.innerHTML = `
+      <div class="video-status-row"><span><span class="video-dot ${serverOnline ? 'on' : 'off'}"></span>API server</span><span>${serverOnline ? `online · pid ${status.server.pid}` : statusError ? escapeHtml(statusError) : 'offline'}</span></div>
+      <div class="video-status-row"><span>Server started (last restart)</span><span>${serverOnline ? fmt(status.server.startedAt) : '—'}</span></div>
+      <div class="video-status-row"><span>Server uptime</span><span>${serverOnline ? formatUptime(status.server.uptimeSec) : '—'}</span></div>
+      <div class="video-status-row"><span>Node runtime</span><span>${serverOnline ? `${escapeHtml(status.server.node)} · ${escapeHtml(status.server.platform)}` : '—'}</span></div>
+      <div class="video-status-row"><span>Last render added</span><span>${status && status.lastRenderAt ? fmt(status.lastRenderAt) : '—'}</span></div>
+      <div class="video-status-row"><span>Last deployed</span><span>${ver ? fmt(ver.builtAt) + (ver.commit ? ` · ${escapeHtml(ver.commit)}` : '') : '—'}</span></div>
+      <h3 class="video-subheading">Latest files added</h3>
+      ${latestRows}
+    `;
+  }
+
   // --- Pack renders --------------------------------------------------------
 
-  async function triggerRender(kind, packId, button) {
+  async function triggerRender(kind, packId, button, resetLabel) {
     const { apiFetch } = window.ScripForgeAuth;
     if (button) { button.disabled = true; button.textContent = 'Queuing…'; }
     try {
@@ -110,8 +198,29 @@
       await loadPacks();
     } catch (err) {
       toast(err.message, 'error');
-      if (button) { button.disabled = false; button.textContent = `Render ${KIND_LABELS[kind] || kind}`; }
+      if (button) { button.disabled = false; button.textContent = resetLabel || `Render ${KIND_LABELS[kind] || kind}`; }
     }
+  }
+
+  async function setupTestRender() {
+    const { apiFetch } = window.ScripForgeAuth;
+    const btn = document.getElementById('renderTestBtn');
+    if (!btn) return;
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Queuing…';
+      try {
+        const { packs } = await apiFetch('/api/video-admin/packs');
+        const target = packs.find((p) => p.packId);
+        if (!target) throw new Error('No packs in the catalog to render.');
+        await triggerRender('shorts', target.packId, btn, '🎬 Render test video');
+        toast(`Test render queued — ${target.packName} as a YouTube Short.`, 'success');
+      } catch (err) {
+        toast(err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '🎬 Render test video';
+      }
+    });
   }
 
   async function loadPacks() {
@@ -262,6 +371,7 @@
       const { job } = await apiFetch(`/api/video-admin/jobs/${id}`);
       renderJobModal(job);
     } catch (err) {
+      closeJobModal();
       toast(err.message, 'error');
     }
   }
@@ -293,16 +403,19 @@
 
     container.innerHTML = items.map((o) => {
       const vertical = o.height && o.width && o.height > o.width;
+      const schedulable = SCHEDULABLE_KINDS.includes(o.kind) && !o.approval;
       return `
         <div class="video-gallery-card" data-path="${escapeHtml(o.relPath)}" data-name="${escapeHtml(o.name)}">
           <div class="video-gallery-thumb-wrap ${vertical ? 'vertical' : ''}">
             <img loading="lazy" src="/api/video-admin/outputs/thumbnail?path=${encodeURIComponent(o.relPath)}" alt="">
             <div class="video-gallery-play">▶</div>
             ${o.durationSec ? `<div class="video-gallery-duration">${formatDuration(o.durationSec)}</div>` : ''}
+            ${o.approval ? `<div class="video-scheduled-badge status-${escapeHtml(o.approval.status)}">✓ Scheduled · ${escapeHtml(PLATFORM_LABELS[o.approval.platform] || o.approval.platform)}</div>` : ''}
           </div>
           <div class="video-gallery-card-body">
             <div class="name">${escapeHtml(o.name)}</div>
             <div class="sub">${o.kind ? escapeHtml(KIND_LABELS[o.kind] || o.kind) + ' · ' : ''}${o.width || '?'}×${o.height || '?'} · ${formatBytes(o.sizeBytes)}</div>
+            ${schedulable ? `<button type="button" class="video-approve-btn" data-path="${escapeHtml(o.relPath)}">Approve &amp; schedule</button>` : ''}
           </div>
         </div>
       `;
@@ -310,6 +423,12 @@
 
     container.querySelectorAll('.video-gallery-card').forEach((card) => {
       card.addEventListener('click', () => openPreview(card.dataset.path, card.dataset.name));
+    });
+    container.querySelectorAll('.video-approve-btn').forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        openApproveModal(btn.dataset.path);
+      });
     });
   }
 
@@ -343,6 +462,122 @@
     document.getElementById('previewModalBackdrop').addEventListener('click', closePreview);
   }
 
+  // --- Approve & schedule (admin → social upload) ------------------------
+
+  // Default platform per render kind; the modal restricts the selector to
+  // the kinds the backend actually allows.
+  function platformForKind(kind) {
+    if (kind === 'shorts') return 'youtube_shorts';
+    return 'tiktok';
+  }
+
+  function allowedPlatformsForKind(kind) {
+    if (kind === 'shorts') return ['youtube_shorts'];
+    if (kind === 'tiktok') return ['tiktok'];
+    return ['tiktok', 'youtube_shorts'];
+  }
+
+  function restrictPlatformOptions(kind) {
+    const allowed = allowedPlatformsForKind(kind);
+    const select = document.getElementById('approvePlatform');
+    Array.from(select.options).forEach((opt) => {
+      opt.hidden = !allowed.includes(opt.value);
+      if (!allowed.includes(opt.value) && opt.selected) opt.selected = false;
+    });
+    if (!allowed.includes(select.value)) select.value = allowed[0];
+  }
+
+  // Backend returns 'YYYY-MM-DD HH:MM:SS' UTC — convert to the local
+  // datetime-local value the input expects.
+  function toLocalInputValue(utcDateTime) {
+    if (!utcDateTime) return '';
+    const date = new Date(utcDateTime.replace(' ', 'T') + 'Z');
+    if (Number.isNaN(date.getTime())) return '';
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
+  async function openApproveModal(relPath) {
+    const { apiFetch } = window.ScripForgeAuth;
+    currentApprovePath = relPath;
+    const item = galleryCache.find((o) => o.relPath === relPath);
+    const kind = item && item.kind;
+    restrictPlatformOptions(kind);
+
+    document.getElementById('approveModalTitle').textContent = `Approve & schedule — ${item ? item.name : relPath}`;
+    const video = document.getElementById('approveModalVideo');
+    video.src = `/api/video-admin/outputs/media?path=${encodeURIComponent(relPath)}`;
+    const errorBox = document.getElementById('approveError');
+    errorBox.hidden = true;
+    document.getElementById('approveModal').hidden = false;
+    document.getElementById('approveConfirmBtn').disabled = true;
+
+    try {
+      const platform = document.getElementById('approvePlatform').value;
+      const { draft } = await apiFetch(`/api/video-admin/outputs/approval-draft?path=${encodeURIComponent(relPath)}&platform=${platform}`);
+      document.getElementById('approveTitle').value = draft.title;
+      document.getElementById('approveDescription').value = draft.description;
+      document.getElementById('approveScheduledAt').value = toLocalInputValue(draft.scheduledAt);
+    } catch (err) {
+      errorBox.textContent = err.message;
+      errorBox.hidden = false;
+    } finally {
+      document.getElementById('approveConfirmBtn').disabled = false;
+    }
+  }
+
+  function closeApproveModal() {
+    document.getElementById('approveModal').hidden = true;
+    const video = document.getElementById('approveModalVideo');
+    video.pause();
+    video.removeAttribute('src');
+    video.load();
+    currentApprovePath = null;
+  }
+
+  async function submitApproveForm() {
+    const { apiFetch } = window.ScripForgeAuth;
+    const errorBox = document.getElementById('approveError');
+    errorBox.hidden = true;
+    const btn = document.getElementById('approveConfirmBtn');
+    btn.disabled = true;
+    try {
+      const platform = document.getElementById('approvePlatform').value;
+      const body = {
+        path: currentApprovePath,
+        platform,
+        title: document.getElementById('approveTitle').value.trim(),
+        description: document.getElementById('approveDescription').value.trim()
+      };
+      const scheduledAt = document.getElementById('approveScheduledAt').value;
+      if (scheduledAt) body.scheduledAt = new Date(scheduledAt).toISOString();
+
+      const result = await apiFetch('/api/video-admin/outputs/approve', { method: 'POST', body });
+      toast(
+        result.alreadyScheduled
+          ? 'Video already scheduled — no duplicate created.'
+          : `Scheduled for ${PLATFORM_LABELS[platform] || platform}. It will upload when due.`,
+        'success'
+      );
+      closeApproveModal();
+      await Promise.all([loadGallery(), loadScheduledPosts()]);
+    } catch (err) {
+      errorBox.textContent = err.message;
+      errorBox.hidden = false;
+      btn.disabled = false;
+    }
+  }
+
+  function setupApproveModal() {
+    document.getElementById('approveModalClose').addEventListener('click', closeApproveModal);
+    document.getElementById('approveModalBackdrop').addEventListener('click', closeApproveModal);
+    document.getElementById('approveCancelBtn').addEventListener('click', closeApproveModal);
+    document.getElementById('approveForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      submitApproveForm();
+    });
+  }
+
   // --- Social hand-off queue --------------------------------------------
 
   async function loadSocialQueue() {
@@ -370,12 +605,41 @@
     `).join('');
   }
 
+  // --- Scheduled for upload (admin approvals) ---------------------------
+
+  async function loadScheduledPosts() {
+    const { apiFetch, escapeHtml } = window.ScripForgeAuth;
+    const { publications } = await apiFetch('/api/video-admin/approvals');
+    const container = document.getElementById('scheduledPostsContainer');
+
+    if (!publications.length) {
+      container.innerHTML = '<p class="empty-state">No admin-approved posts scheduled yet — approve a render from the Output Gallery.</p>';
+      return;
+    }
+
+    container.innerHTML = publications.map((p) => `
+      <div class="bot-list-row">
+        <div class="bot-list-row-header">
+          <strong>${escapeHtml(p.title)}</strong>
+          <span class="video-job-status-tag status-${p.status === 'published' ? 'completed' : p.status === 'failed' ? 'failed' : p.status === 'publishing' ? 'running' : 'queued'}">${escapeHtml(p.status)}</span>
+        </div>
+        <div class="empty-state">
+          ${escapeHtml(PLATFORM_LABELS[p.platform] || p.platform)} · scheduled ${formatDate(p.scheduledAt)}${p.videoPath ? ` · ${escapeHtml(p.videoPath)}` : ''}
+          ${p.publishedAt ? ` · posted ${formatDate(p.publishedAt)}` : ''}
+          ${p.platformUrl ? ` · <a href="${escapeHtml(p.platformUrl)}" target="_blank" rel="noopener">view post</a>` : ''}
+          ${p.error ? ` · <span style="color:#ef4444">${escapeHtml(p.error)}</span>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
   // --- Settings ------------------------------------------------------------
 
   async function loadSettings() {
     const { apiFetch } = window.ScripForgeAuth;
     const { settings } = await apiFetch('/api/video-admin/settings');
     document.getElementById('setTtsVoice').value = settings.ttsVoice || '';
+    document.getElementById('setEdgeTtsVoice').value = settings.edgeTtsVoice || '';
     document.getElementById('setTtsRate').value = settings.ttsRate || 0;
     document.getElementById('setPreferGpu').checked = settings.preferGpu !== false;
   }
@@ -391,6 +655,7 @@
           method: 'PUT',
           body: {
             ttsVoice: document.getElementById('setTtsVoice').value.trim(),
+            edgeTtsVoice: document.getElementById('setEdgeTtsVoice').value.trim(),
             ttsRate: Number(document.getElementById('setTtsRate').value),
             preferGpu: document.getElementById('setPreferGpu').checked
           }
@@ -428,14 +693,13 @@
       window.location.href = '/';
     });
 
-    setupTabs();
-    setupPackActions();
-    setupJobModal();
-    setupGallery();
-    setupSettingsForm();
+    setupModalKeyboard();
+    [setupTabs, setupPackActions, setupTestRender, setupJobModal, setupGallery, setupApproveModal, setupSettingsForm].forEach((fn) => {
+      try { fn(); } catch (err) { console.error(`video-admin: ${fn.name} failed:`, err); }
+    });
 
     try {
-      await Promise.all([loadStatus(), loadPacks(), loadJobs(), loadGallery(), loadSocialQueue(), loadSettings()]);
+      await Promise.all([loadStatus(), loadPacks(), loadJobs(), loadGallery(), loadSocialQueue(), loadScheduledPosts(), loadSettings(), loadDeployment()]);
     } catch (err) {
       console.error('Failed to load video admin data:', err);
       toast('Could not load some Video Studio data. See console for details.', 'error');

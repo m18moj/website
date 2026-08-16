@@ -164,6 +164,34 @@ async function schedulePublish(campaignId) {
   });
 }
 
+// Admin-approved path (Video Studio → "Approve & schedule"): takes a render
+// the admin already reviewed and creates a 'manual' campaign + publication
+// row directly, bypassing the strategy/script/creative/video stages entirely.
+// The rendered video path lives on the publication itself (output_path) since
+// there's no video_jobs contract row for it — publishOne falls back to it.
+function scheduleAdminApproved({ platform, packId, videoPath, title, description, scheduledAt }) {
+  if (!PLATFORMS.includes(platform)) throw new Error(`Unsupported platform "${platform}".`);
+  if (!videoPath) throw new Error('A rendered video path is required.');
+
+  const existing = publicationsModel.findByOutputPath(videoPath);
+  if (existing && ['scheduled', 'publishing', 'published'].includes(existing.status)) {
+    return { campaign: campaignsModel.findById(existing.campaignId), publication: existing, alreadyScheduled: true };
+  }
+
+  const campaign = startCampaign({ triggerType: 'manual', packId, platform });
+  const at = scheduledAt || publishingAgent.pickScheduledAt({ platform, packId, campaignId: campaign.id });
+  const updated = campaignsModel.setMetadata(campaign.id, { title, description, scheduledAt: at, source: 'admin_approval' }, 'scheduled');
+  const publication = publicationsModel.create({
+    campaignId: campaign.id,
+    platform,
+    title,
+    description,
+    scheduledAt: at,
+    outputPath: videoPath
+  });
+  return { campaign: updated, publication, alreadyScheduled: false };
+}
+
 // --- Recurring triggers ---
 
 function detectNewProducts() {
@@ -226,20 +254,24 @@ function handlePublishFailure(pub, reason) {
 async function publishOne(pub) {
   publicationsModel.markPublishing(pub.id);
   const videoJob = videoJobsModel.findByCampaignId(pub.campaignId);
-  if (!videoJob || !videoJob.outputPath) {
+  // Admin-approved publications carry the rendered video path on the row
+  // itself (no video_jobs entry exists for them) — prefer the contract row
+  // when present, fall back to the publication's own path.
+  const filePath = (videoJob && videoJob.outputPath) || pub.outputPath;
+  if (!filePath) {
     handlePublishFailure(pub, 'No rendered video output found at publish time.');
     return;
   }
 
   if (config.DRY_RUN) {
-    console.log(`[social] DRY RUN — would publish campaign ${pub.campaignId} to ${pub.platform}: "${pub.title}" (video: ${videoJob.outputPath})`);
+    console.log(`[social] DRY RUN — would publish campaign ${pub.campaignId} to ${pub.platform}: "${pub.title}" (video: ${filePath})`);
     publicationsModel.markPublished(pub.id, { platformPostId: 'dry-run', platformUrl: null });
     campaignsModel.setStatus(pub.campaignId, 'published');
     return;
   }
 
   if (pub.platform === 'youtube_shorts') {
-    const result = await youtube.uploadVideo({ filePath: videoJob.outputPath, title: pub.title, description: pub.description });
+    const result = await youtube.uploadVideo({ filePath, title: pub.title, description: pub.description });
     if (result.ok) {
       publicationsModel.markPublished(pub.id, { platformPostId: result.videoId, platformUrl: result.url });
       campaignsModel.setStatus(pub.campaignId, 'published');
@@ -250,7 +282,7 @@ async function publishOne(pub) {
   }
 
   if (pub.platform === 'tiktok') {
-    const result = await tiktok.publishVideo({ filePath: videoJob.outputPath, title: pub.title });
+    const result = await tiktok.publishVideo({ filePath, title: pub.title });
     if (result.ok) {
       // Post accepted — the real, publicly-usable post id/url resolves
       // asynchronously (see resolvePendingTiktokPosts below). Marking
@@ -317,4 +349,4 @@ const handlers = {
   cleanup_jobs: () => cleanupJobs()
 };
 
-module.exports = { handlers, startCampaign, detectNewProducts, evergreenTick };
+module.exports = { handlers, startCampaign, detectNewProducts, evergreenTick, scheduleAdminApproved };

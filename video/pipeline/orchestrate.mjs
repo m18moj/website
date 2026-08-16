@@ -50,6 +50,15 @@ function log(...args) {
   console.log("[video]", ...args);
 }
 
+// Nudges edge-tts pitch a few Hz based on the pack's music mood energy, so
+// hype/aggressive packs read slightly brighter and tense/cinematic packs
+// read slightly lower instead of every pack sounding identically flat.
+function moodPitchHint(mood) {
+  const energy = typeof mood?.energy === "number" ? mood.energy : 0.55;
+  const hz = Math.max(-4, Math.min(5, Math.round((energy - 0.55) * 12)));
+  return `${hz >= 0 ? "+" : ""}${hz}Hz`;
+}
+
 async function buildPackJob(packId, platformId) {
   const jobId = `${packId}-${platformId}`;
   log(`=== ${jobId} ===`);
@@ -75,7 +84,14 @@ async function buildPackJob(packId, platformId) {
   const narrationText = narrationParts.join(" ");
 
   // 3) voice
-  const vo = await synthesizeVoiceover({ text: narrationText, outDir: buildDir, jobId, rate: platform.ttsRate ?? 0 });
+  const moodId = PACK_MOOD[packId] ?? "clean-tech";
+  const vo = await synthesizeVoiceover({
+    text: narrationText,
+    outDir: buildDir,
+    jobId,
+    rate: platform.ttsRate ?? 0,
+    pitch: moodPitchHint(moodFor(moodId)),
+  });
   log(`voiceover via ${vo.provider}, ${vo.cues.length} words`);
 
   const voDurationMs = vo.cues.length ? vo.cues[vo.cues.length - 1].endMs : 4000;
@@ -89,7 +105,6 @@ async function buildPackJob(packId, platformId) {
   const captions = vo.cues.map((c) => ({ text: c.text, startMs: c.startMs + leadInMs, endMs: c.endMs + leadInMs }));
 
   // 4) music + sfx + mix
-  const moodId = PACK_MOOD[packId] ?? "clean-tech";
   const musicPath = join(buildDir, "music.wav");
   generateMusicBed({ moodId, mood: moodFor(moodId), durationSeconds: totalDurationMs / 1000, outPath: musicPath });
 
@@ -189,7 +204,13 @@ async function buildWebsiteJob() {
     generated.cta.narration,
   ].filter(Boolean).join(" ");
 
-  const vo = await synthesizeVoiceover({ text: narrationText, outDir: buildDir, jobId, rate: platform.ttsRate ?? 0 });
+  const vo = await synthesizeVoiceover({
+    text: narrationText,
+    outDir: buildDir,
+    jobId,
+    rate: platform.ttsRate ?? 0,
+    pitch: moodPitchHint(moodFor("website")),
+  });
   log(`voiceover via ${vo.provider}, ${vo.cues.length} words`);
 
   const voDurationMs = vo.cues.length ? vo.cues[vo.cues.length - 1].endMs : 6000;

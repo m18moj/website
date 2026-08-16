@@ -14,3 +14,4 @@ generated-clients
 package.json
 package-lock.json
 wrangler.jsonc
+obsidian

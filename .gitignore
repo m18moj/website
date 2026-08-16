@@ -19,3 +19,5 @@ video/output/
 video/build/
 # Standalone cloned repo (github.com/haidrrrry/claude-remotion-skill), not part of this project
 claude-remotion-skill/
+# Personal Obsidian vault — accessed separately via MCP, not part of this project
+obsidian/

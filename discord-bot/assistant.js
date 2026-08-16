@@ -52,8 +52,16 @@ function buildUserSummary(userContext) {
   return `Signed in as ${userContext.username}. Their own paid orders (never mention other users' data):\n${lines.join('\n')}`;
 }
 
+// Split into a stable block (catalog + FAQ + instructions — identical across
+// every request until the catalog changes) and a per-user tail. Marking only
+// the stable block cacheable means every chat turn from every visitor reads
+// the same cache entry instead of paying full price for the catalog dump
+// every time.
 function buildSystemPrompt(userContext) {
-  return `You are the ScripForge support assistant for scripforge.net, a game-script marketplace. Be concise, friendly, and accurate.
+  return [
+    {
+      type: 'text',
+      text: `You are the ScripForge support assistant for scripforge.net, a game-script marketplace. Be concise, friendly, and accurate.
 
 Only answer using the catalog, FAQ, and (if present) the signed-in user's own order data below. Never invent scripts, prices, or policies that aren't listed. If you don't know something, say so and suggest opening a support ticket.
 
@@ -63,10 +71,14 @@ Never reveal, guess at, or discuss any user's account/order/license data other t
 ${buildCatalogSummary()}
 
 ## FAQ
-${FAQ}
-
-## Current user
-${buildUserSummary(userContext)}`;
+${FAQ}`,
+      cache_control: { type: 'ephemeral' }
+    },
+    {
+      type: 'text',
+      text: `## Current user\n${buildUserSummary(userContext)}`
+    }
+  ];
 }
 
 // history: [{ role: 'user'|'assistant', content: string }, ...] already

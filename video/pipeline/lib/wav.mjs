@@ -2,6 +2,7 @@
 // procedural music/SFX synths (pattern from claude-remotion-skill's
 // examples/scripts/gen-*.mjs).
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 
 export const SR = 44100;
 
@@ -74,6 +75,20 @@ export function readWavDurationMs(filePath) {
     offset += 8 + chunkSize + (chunkSize % 2);
   }
   throw new Error(`No "data" chunk found in WAV file: ${filePath}`);
+}
+
+// Duration of any audio file the pipeline produces: WAVs from their own
+// header (readWavDurationMs above), everything else (MP3 voiceover from
+// edge-tts) via ffprobe — the pipeline requires ffmpeg/ffprobe on PATH
+// anyway for mixing and QA.
+export async function readAudioDurationMs(filePath) {
+  if (filePath.toLowerCase().endsWith(".wav")) return readWavDurationMs(filePath);
+  const out = execFileSync(
+    "ffprobe",
+    ["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filePath],
+    { encoding: "utf8", maxBuffer: 1024 * 1024, windowsHide: true }
+  );
+  return Math.round(parseFloat(out.trim()) * 1000);
 }
 
 // Rescales raw word cues (startMs/endMs may be on a different clock than

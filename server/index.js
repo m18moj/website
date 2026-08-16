@@ -5,7 +5,10 @@ const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 
+const cron = require('node-cron');
+
 const db = require('./db');
+const { runBackup } = require('./scripts/backup-db');
 const SqliteSessionStore = require('./sessionStore');
 const stripeWebhookHandler = require('./webhook');
 const nowpaymentsWebhookHandler = require('./webhookNowpayments');
@@ -240,3 +243,19 @@ function shutdown() {
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
+
+// Daily consistent snapshot of data/scripforge.db (the single file everything
+// lives in — see README). Off by default only if explicitly disabled; see
+// server/scripts/backup-db.js for how the snapshot is taken and pruned, and
+// BACKUP_DIR/BACKUP_KEEP in .env.example to point it elsewhere or change
+// retention.
+if (process.env.BACKUP_ENABLED !== 'false') {
+  cron.schedule('30 3 * * *', () => {
+    try {
+      const { dest, removed } = runBackup();
+      console.log(`[backup] Wrote ${dest}${removed.length ? `, pruned ${removed.length} old` : ''}`);
+    } catch (err) {
+      console.error('[backup] Scheduled backup failed:', err.message);
+    }
+  });
+}

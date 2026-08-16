@@ -168,6 +168,55 @@ router.post(
   }
 );
 
+// Self-service account deletion (GDPR right to erasure). Requires the current
+// password as confirmation, same bar as disabling 2FA. Deleting the row
+// cascades to orders, wishlist, reviews, licenses, etc. via the ON DELETE
+// CASCADE foreign keys in server/db.js — the same effect admin-initiated
+// deletes have in server/routes/admin.js, just self-triggered here.
+router.post(
+  '/delete',
+  requireAuth,
+  verifyCsrfToken,
+  securityActionLimiter,
+  [body('password').isString().notEmpty().withMessage('Enter your password to confirm.')],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ error: errors.array()[0].msg });
+
+      const user = usersModel.findById(req.session.userId);
+      if (!user) return res.status(401).json({ error: 'Sign in required.' });
+
+      const valid = await bcrypt.compare(req.body.password, user.password_hash);
+      if (!valid) return res.status(401).json({ error: 'Password is incorrect.' });
+
+      // Never let this leave the store with zero admins — same guardrail the
+      // admin dashboard's user-delete route effectively provides by blocking
+      // an admin from deleting themselves there at all.
+      if (user.role === 'admin' && usersModel.countAdmins() <= 1) {
+        return res
+          .status(400)
+          .json({ error: "You're the only admin account. Promote another admin before deleting this account." });
+      }
+
+      // Record the audit entry before the row disappears. audit_log.actor_id
+      // is ON DELETE SET NULL, so the entry (with target username) survives
+      // the user row being deleted right after.
+      auditLog.record({ actor: user, action: 'user.self_delete', target: user.username });
+
+      usersModel.deleteUser(user.id);
+
+      req.session.destroy((err) => {
+        if (err) return next(err);
+        res.clearCookie('sf.sid');
+        res.json({ ok: true });
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 router.post(
   '/nickname',
   requireAuth,

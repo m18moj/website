@@ -113,6 +113,17 @@ The Discord bot (`discord-bot/`) shares the same SQLite database as the website 
 
 **What's real vs. what Discord doesn't support:** every dashboard feature calls the real Discord API — nothing is simulated. A few things Discord's API genuinely doesn't expose (e.g. a bot-side equivalent to Discord's own raid-detection systems) are approximated with the closest real mechanism available (temporarily raising the server's verification level) rather than faked.
 
+## AI/Social automation
+
+`social/` is a third standalone process (alongside the web server and the Discord bot) that turns catalog activity into TikTok + YouTube Shorts posts autonomously: strategy → script → creative brief → a hand-off to a separate video-rendering pipeline → QA → scheduling → publishing → analytics → learning, looping back into the next campaign's strategy. It shares the same SQLite database over WAL, same as the Discord bot — no separate setup or migrations. Full architecture, the eight agents, and the job queue/scheduler design are documented in `social/README.md`; the exact hand-off contract with the video pipeline is in `social/VIDEO_JOB_CONTRACT.md`.
+
+1. Copy `social/.env.example` to `social/.env` and set `ANTHROPIC_API_KEY` at minimum — every agent needs it. Everything else (YouTube/TikTok credentials) is optional; the pipeline runs end-to-end and campaigns simply queue without them.
+2. For YouTube: create a Google Cloud project with the YouTube Data API v3 enabled, an OAuth client (Web application type), and an API key for trend lookups. Set `YOUTUBE_CLIENT_ID`/`CLIENT_SECRET`/`API_KEY` in `social/.env`, then run `npm run social:youtube-auth` once to mint `YOUTUBE_REFRESH_TOKEN`.
+3. For TikTok: create a TikTok for Developers app with the Content Posting API added (approved for `video.publish`/`video.list`), set `TIKTOK_CLIENT_KEY`/`CLIENT_SECRET`/`TIKTOK_OAUTH_REDIRECT_URI` (must be HTTPS — TikTok doesn't allow localhost here) in `social/.env`, then run `npm run social:tiktok-auth` once to mint `TIKTOK_REFRESH_TOKEN`.
+4. `SOCIAL_ENABLED` defaults to unset/false and `SOCIAL_DRY_RUN` defaults to true — the whole pipeline (including real LLM calls) runs and campaigns reach "scheduled", but nothing is ever actually posted to a live account until you explicitly set `SOCIAL_ENABLED=true` in `social/.env`.
+5. Run `npm run social` (or `npm run social:dev` for auto-restart) to start the worker. It detects new (non-hidden) catalog packs automatically, runs an evergreen rotation through the rest of the catalog (`SOCIAL_EVERGREEN_PER_DAY`), and refreshes trends/analytics/insights on its own schedule — no manual triggering needed.
+6. `GET /api/social/status` and `GET /api/social/campaigns` (admin-only, same auth as everything else) give visibility into the pipeline; `POST /api/social/campaigns/:packId/promote` manually kicks off a campaign for testing.
+
 ## Security notes
 
 This app includes a working set of defenses appropriate for a small local store — worth knowing about if you extend it:

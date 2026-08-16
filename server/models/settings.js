@@ -7,7 +7,11 @@ const DEFAULTS = {
   maintenanceMode: false,
   announcementBanner: { enabled: false, text: '' },
   wishlist: true,
-  newBadges: true
+  newBadges: true,
+  // Admin-only config for the Video Studio tab (TTS voice/rate, GPU
+  // preference) — read by server/routes/videoAdmin.js and passed through to
+  // the video pipeline's scripts as env vars when a render job is spawned.
+  videoAdminConfig: { ttsVoice: '', ttsRate: 0, preferGpu: true }
 };
 
 // Flags exposed to anyone, signed in or not — used to decide what to render

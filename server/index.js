@@ -24,6 +24,8 @@ const errorsRoutes = require('./routes/errors');
 const chatRoutes = require('./routes/chat');
 const discordLinkRoutes = require('./routes/discordLink');
 const botAdminRoutes = require('./routes/botAdmin');
+const socialRoutes = require('./routes/social');
+const videoAdminRoutes = require('./routes/videoAdmin');
 const settingsModel = require('./models/settings');
 const errorLogModel = require('./models/errorLog');
 
@@ -140,7 +142,7 @@ app.use('/api', apiLimiter);
 // covers them with a maintenance overlay for anyone who isn't an admin.
 app.use('/api', (req, res, next) => {
   if (!settingsModel.get('maintenanceMode')) return next();
-  const allowedPrefixes = ['/auth', '/admin', '/settings', '/bot-admin'];
+  const allowedPrefixes = ['/auth', '/admin', '/settings', '/bot-admin', '/social', '/video-admin'];
   if (allowedPrefixes.some((prefix) => req.path.startsWith(prefix))) return next();
   res.status(503).json({ error: 'The site is temporarily down for maintenance. Please check back soon.', maintenanceMode: true });
 });
@@ -157,6 +159,8 @@ app.use('/api/errors', errorsRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/discord', discordLinkRoutes);
 app.use('/api/bot-admin', botAdminRoutes);
+app.use('/api/social', socialRoutes);
+app.use('/api/video-admin', videoAdminRoutes);
 
 // Explicit allowlist of static directories/files — deliberately NOT a single
 // express.static(ROOT), which would also serve server/, data/*.db, and .env.
@@ -176,6 +180,11 @@ app.use('/admin', express.static(path.join(ROOT, 'admin'), HTML_EXT));
 // pattern as everywhere else; its API is entirely under /api/bot-admin,
 // gated by the same requireAdmin as the rest of the site.
 app.use('/bot-admin', express.static(path.join(ROOT, 'bot-admin'), HTML_EXT));
+// The Video Studio dashboard — same standalone-page pattern as bot-admin
+// above. Its API (/api/video-admin) never touches video/pipeline/'s files;
+// it only shells out to that project's own npm scripts and reads its output
+// directory, so the two systems stay isolated from each other on disk.
+app.use('/video-admin', express.static(path.join(ROOT, 'video-admin'), HTML_EXT));
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 app.get('/robots.txt', (req, res) => res.sendFile(path.join(ROOT, 'robots.txt')));
 app.get('/sitemap.xml', (req, res) => res.sendFile(path.join(ROOT, 'sitemap.xml')));

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScripForge | Video Studio</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/video-admin.css">
+</head>
+<body data-root-prefix="../">
+    <div class="admin-container video-admin-container">
+        <nav class="admin-nav video-admin-nav">
+            <div class="admin-logo">
+                <a href="../admin/admin">← Store Admin</a>
+                <span class="video-admin-title">🎬 Video Studio</span>
+            </div>
+            <div class="admin-user-info">
+                <span id="videoReadinessPill" class="video-status-pill">checking…</span>
+                <span id="adminEmail"></span>
+                <button id="adminLogoutBtn" type="button">Logout</button>
+            </div>
+        </nav>
+
+        <div id="adminGate" class="admin-gate" hidden></div>
+
+        <div class="admin-layout" id="adminLayout" hidden>
+            <aside class="admin-sidebar">
+                <nav class="admin-menu">
+                    <a href="#" class="menu-item active" data-admin-tab="overview">📊 Overview</a>
+                    <a href="#" class="menu-item" data-admin-tab="packs">🎮 Pack Renders</a>
+                    <a href="#" class="menu-item" data-admin-tab="queue">🎞️ Render Queue</a>
+                    <a href="#" class="menu-item" data-admin-tab="gallery">🖼️ Output Gallery</a>
+                    <a href="#" class="menu-item" data-admin-tab="social">📱 Social Hand-off</a>
+                    <a href="#" class="menu-item" data-admin-tab="settings">⚙️ Settings</a>
+                </nav>
+            </aside>
+
+            <main class="admin-content">
+                <!-- Overview -->
+                <div class="admin-tab active" id="overview">
+                    <div class="section-header"><h1>Pipeline Readiness</h1></div>
+
+                    <div class="stats-grid" id="readinessGrid"></div>
+
+                    <div class="video-panel-grid">
+                        <div class="dashboard-section video-glass-panel">
+                            <h2>Render tools</h2>
+                            <div id="toolsStatusContainer">Loading…</div>
+                        </div>
+                        <div class="dashboard-section video-glass-panel">
+                            <h2>Voice engines</h2>
+                            <div id="ttsStatusContainer">Loading…</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <h2>Pipeline scripts &amp; libraries</h2>
+                        <p class="empty-state">Built by the video pipeline project — this panel reflects its real, current state, no admin-side changes needed as it comes online.</p>
+                        <div class="video-script-grid" id="scriptsStatusContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <h2>Smoke tests</h2>
+                        <div id="smokeTestsContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Pack Renders -->
+                <div class="admin-tab" id="packs">
+                    <div class="section-header">
+                        <h1>Pack Renders</h1>
+                        <div class="section-header-actions">
+                            <button type="button" class="btn btn-primary" id="renderWebsiteBtn">🌐 Render Website Promo</button>
+                        </div>
+                    </div>
+                    <p class="empty-state">Real catalog data — trigger a render for any platform per pack. A running/queued job disables its button until it finishes.</p>
+                    <div id="packsGridContainer">Loading…</div>
+                </div>
+
+                <!-- Render Queue -->
+                <div class="admin-tab" id="queue">
+                    <div class="section-header">
+                        <h1>Render Queue</h1>
+                        <div class="section-header-actions">
+                            <span class="empty-state" id="queueCountsSummary"></span>
+                        </div>
+                    </div>
+                    <div id="jobsListContainer">Loading…</div>
+
+                    <div id="jobLogModal" class="video-modal" hidden>
+                        <div class="video-modal-backdrop" id="jobLogModalBackdrop"></div>
+                        <div class="video-modal-content">
+                            <div class="video-modal-header">
+                                <h3 id="jobLogModalTitle">Job log</h3>
+                                <button type="button" class="btn-small" id="jobLogModalClose">Close</button>
+                            </div>
+                            <div class="video-modal-body">
+                                <div id="jobLogModalMeta" class="video-job-meta"></div>
+                                <pre id="jobLogModalLog" class="video-log-console"></pre>
+                                <div id="jobLogModalQa" class="video-qa-checks"></div>
+                                <div id="jobLogModalPlayer"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Gallery -->
+                <div class="admin-tab" id="gallery">
+                    <div class="section-header">
+                        <h1>Output Gallery</h1>
+                        <div class="section-header-actions">
+                            <select id="galleryKindFilter">
+                                <option value="">All platforms</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="shorts">YouTube Shorts</option>
+                                <option value="promo">Pack Promo</option>
+                                <option value="website">Website Promo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="video-gallery-grid" id="galleryGridContainer">Loading…</div>
+
+                    <div id="previewModal" class="video-modal" hidden>
+                        <div class="video-modal-backdrop" id="previewModalBackdrop"></div>
+                        <div class="video-modal-content video-modal-content-wide">
+                            <div class="video-modal-header">
+                                <h3 id="previewModalTitle">Preview</h3>
+                                <button type="button" class="btn-small" id="previewModalClose">Close</button>
+                            </div>
+                            <div class="video-modal-body">
+                                <video id="previewModalVideo" controls class="video-preview-player"></video>
+                                <div id="previewModalMeta" class="video-job-meta"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Hand-off -->
+                <div class="admin-tab" id="social">
+                    <div class="section-header"><h1>Social Automation Hand-off</h1></div>
+                    <p class="empty-state">Read-only view of <code>video_jobs</code> — the queue the social automation system uses to request renders. This panel never writes to it.</p>
+                    <div class="stats-grid" id="socialQueueCountsGrid"></div>
+                    <div class="dashboard-section video-glass-panel">
+                        <div id="socialQueueContainer">Loading…</div>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="admin-tab" id="settings">
+                    <div class="section-header"><h1>Render Settings</h1></div>
+                    <form id="videoSettingsForm" class="admin-inline-form" novalidate>
+                        <div class="form-group">
+                            <label for="setTtsVoice">Preferred TTS voice</label>
+                            <input id="setTtsVoice" type="text" placeholder="e.g. Microsoft Zira Desktop (blank = system default)">
+                        </div>
+                        <div class="form-group">
+                            <label for="setTtsRate">TTS rate (-10 to 10)</label>
+                            <input id="setTtsRate" type="number" min="-10" max="10" value="0">
+                        </div>
+                        <label class="checkbox-row"><input type="checkbox" id="setPreferGpu"> Prefer GPU (NVENC) encoding when available</label>
+                        <p id="videoSettingsError" class="form-error" role="alert" hidden></p>
+                        <button class="btn btn-primary" type="submit">Save settings</button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="../js/site.js"></script>
+    <script src="../js/theme.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/video-admin.js"></script>
+</body>
+</html>

@@ -312,6 +312,19 @@ a,
     color: var(--text-primary);
 }
 
+/* Marker placed at the top of pages that show prices (see js/currency.js
+   renderSwitcher) — the switcher no longer lives in the navbar, so it only
+   ever appears right above the priced content it actually affects. */
+.currency-switcher-slot {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.currency-switcher-slot:empty {
+    display: none;
+}
+
 .auth-btn-outline {
     padding: 8px 16px;
     font-size: 0.9rem;
@@ -1736,9 +1749,9 @@ a,
         padding: 0.75rem;
     }
 
-    /* The signed-in "Hi, name / Downloads / Admin / Log out" cluster is too
-       wide for the top bar on narrow screens, so it's hidden here and mirrored
-       into the collapsible .nav-menu dropdown instead (see js/auth.js). */
+    /* The signed-in account chip / Downloads / Admin cluster is too wide for
+       the top bar on narrow screens, so it's hidden here and mirrored into
+       the collapsible .nav-menu dropdown instead (see js/auth.js). */
     .nav-actions .account-menu {
         display: none;
     }

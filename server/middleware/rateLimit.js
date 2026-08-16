@@ -98,6 +98,17 @@ const discordLinkLimiter = rateLimit({
   message: { error: 'Too many Discord linking attempts. Please wait a few minutes and try again.' }
 });
 
+// Each render spawns a real Chromium + ffmpeg process tree, so this exists
+// to stop accidental double-clicks/spam from piling up concurrent renders
+// rather than to guard a security-sensitive action.
+const videoRenderLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many render jobs triggered. Please wait a few minutes and try again.' }
+});
+
 module.exports = {
   apiLimiter,
   loginLimiter,
@@ -107,5 +118,6 @@ module.exports = {
   downloadLimiter,
   zipDownloadLimiter,
   chatLimiter,
-  discordLinkLimiter
+  discordLinkLimiter,
+  videoRenderLimiter
 };

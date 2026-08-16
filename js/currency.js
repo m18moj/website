@@ -42,15 +42,20 @@
     });
   }
 
+  // Only rendered into #currencySwitcherSlot — a marker element placed at
+  // the top of pages that actually display prices (catalog, game packs,
+  // services, checkout, account order history, etc). Pages without that
+  // slot don't show prices, so there's nothing to switch the currency of.
   function renderSwitcher() {
+    const slot = document.getElementById('currencySwitcherSlot');
+    if (!slot) return;
+
     let container = document.getElementById('currencySwitcher');
     if (!container) {
-      const navActions = document.querySelector('.nav-actions');
-      if (!navActions) return;
       container = document.createElement('div');
       container.id = 'currencySwitcher';
       container.className = 'currency-switcher';
-      navActions.insertBefore(container, navActions.firstChild);
+      slot.appendChild(container);
     }
 
     const current = getCurrency();

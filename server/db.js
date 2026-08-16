@@ -448,6 +448,176 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_bot_audit_log_guild ON bot_audit_log(guild_id);
 `);
 
+// AI/Social automation (social/) — a separate long-running process, same DB
+// file over SQLite WAL as everything else (same pattern discord-bot/ already
+// uses), that turns catalog activity into TikTok/YouTube Shorts posts. See
+// social/README.md for the full pipeline; these tables are the persistence
+// layer only.
+db.exec(`
+  -- Generic persistent job queue: every recurring trigger and every pipeline
+  -- stage is a row here, not an in-memory timer, so a process restart never
+  -- loses or silently re-runs work. dedup_key plus the partial unique index
+  -- below is the duplicate-protection mechanism — enqueuing the same
+  -- dedup_key while a prior job with that key is still pending/running is a
+  -- no-op (see social/jobQueue.js).
+  CREATE TABLE IF NOT EXISTS social_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_type TEXT NOT NULL,
+    dedup_key TEXT,
+    payload_json TEXT NOT NULL DEFAULT '{}',
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'running', 'done', 'failed', 'cancelled')),
+    run_at TEXT NOT NULL DEFAULT (datetime('now')),
+    attempts INTEGER NOT NULL DEFAULT 0,
+    max_attempts INTEGER NOT NULL DEFAULT 5,
+    last_error TEXT,
+    locked_by TEXT,
+    locked_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_social_jobs_dedup_active ON social_jobs(dedup_key) WHERE dedup_key IS NOT NULL AND status IN ('pending', 'running');
+  CREATE INDEX IF NOT EXISTS idx_social_jobs_status_run_at ON social_jobs(status, run_at);
+
+  -- One row per piece of content moving through the strategy -> script ->
+  -- creative -> video -> QA -> schedule -> publish pipeline (see
+  -- social/orchestrator.js). pack_id is nullable because a campaign can be
+  -- trend-driven rather than tied to one specific product.
+  CREATE TABLE IF NOT EXISTS social_campaigns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    trigger_type TEXT NOT NULL CHECK (trigger_type IN ('new_pack', 'trend', 'evergreen', 'manual')),
+    pack_id TEXT REFERENCES packs(id) ON DELETE SET NULL,
+    platform TEXT NOT NULL CHECK (platform IN ('tiktok', 'youtube_shorts')),
+    status TEXT NOT NULL DEFAULT 'strategy' CHECK (status IN (
+      'strategy', 'scripting', 'creative', 'video_queued', 'video_rendering',
+      'qa', 'qa_failed', 'scheduled', 'publishing', 'published', 'failed', 'cancelled'
+    )),
+    strategy_json TEXT,
+    script_json TEXT,
+    creative_json TEXT,
+    metadata_json TEXT,
+    qa_json TEXT,
+    retry_count INTEGER NOT NULL DEFAULT 0,
+    error TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_campaigns_status ON social_campaigns(status);
+  CREATE INDEX IF NOT EXISTS idx_social_campaigns_pack_id ON social_campaigns(pack_id);
+
+  -- The hand-off contract with the separate video-generation pipeline (a
+  -- different process/session entirely — see social/VIDEO_JOB_CONTRACT.md):
+  -- this system writes a row with the full creative spec in input_json and
+  -- status 'pending'; the video pipeline claims it, renders, and writes
+  -- output_path + status='completed' (or 'failed' + error). Nothing in this
+  -- codebase's video-generation code is touched — this table is the entire
+  -- interface between the two systems.
+  CREATE TABLE IF NOT EXISTS video_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id INTEGER NOT NULL REFERENCES social_campaigns(id) ON DELETE CASCADE,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'claimed', 'rendering', 'completed', 'failed')),
+    input_json TEXT NOT NULL,
+    output_path TEXT,
+    output_meta_json TEXT,
+    claimed_by TEXT,
+    claimed_at TEXT,
+    error TEXT,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    priority INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_video_jobs_status ON video_jobs(status);
+  CREATE INDEX IF NOT EXISTS idx_video_jobs_campaign_id ON video_jobs(campaign_id);
+
+  -- One row per actual post made to a platform. UNIQUE(campaign_id, platform)
+  -- is the duplicate-publish guard — a retried/duplicate schedule_publish run
+  -- can never create a second live post for the same campaign.
+  CREATE TABLE IF NOT EXISTS social_publications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    campaign_id INTEGER NOT NULL REFERENCES social_campaigns(id) ON DELETE CASCADE,
+    platform TEXT NOT NULL CHECK (platform IN ('tiktok', 'youtube_shorts')),
+    platform_post_id TEXT,
+    platform_url TEXT,
+    title TEXT,
+    description TEXT,
+    scheduled_at TEXT,
+    published_at TEXT,
+    status TEXT NOT NULL DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'publishing', 'published', 'failed')),
+    attempts INTEGER NOT NULL DEFAULT 0,
+    error TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+    UNIQUE (campaign_id, platform)
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_publications_status_scheduled_at ON social_publications(status, scheduled_at);
+
+  -- Periodic stat pulls per publication (views/likes/etc) — the raw material
+  -- social/agents/analyticsLearningAgent.js turns into social_insights below.
+  CREATE TABLE IF NOT EXISTS social_analytics_snapshots (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    publication_id INTEGER NOT NULL REFERENCES social_publications(id) ON DELETE CASCADE,
+    views INTEGER NOT NULL DEFAULT 0,
+    likes INTEGER NOT NULL DEFAULT 0,
+    comments INTEGER NOT NULL DEFAULT 0,
+    shares INTEGER NOT NULL DEFAULT 0,
+    saves INTEGER NOT NULL DEFAULT 0,
+    watch_time_seconds INTEGER,
+    raw_json TEXT,
+    captured_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_analytics_snapshots_publication_id ON social_analytics_snapshots(publication_id);
+
+  -- Distilled, reusable findings the learning half of analyticsLearningAgent
+  -- writes (e.g. "hook style X outperforms Y for TikTok") and strategyAgent
+  -- reads back before planning the next campaign — the optimization feedback
+  -- loop the whole system is built around.
+  CREATE TABLE IF NOT EXISTS social_insights (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    scope TEXT NOT NULL,
+    insight TEXT NOT NULL,
+    confidence REAL NOT NULL DEFAULT 0.5,
+    supporting_data_json TEXT,
+    active INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_insights_scope ON social_insights(scope);
+
+  -- trendsAgent's findings, refreshed on a cron (see social/scheduler.js) and
+  -- read by strategyAgent when planning trend-driven campaigns.
+  CREATE TABLE IF NOT EXISTS social_trends (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source TEXT NOT NULL,
+    topic TEXT NOT NULL,
+    score REAL NOT NULL DEFAULT 0,
+    raw_json TEXT,
+    captured_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_trends_captured_at ON social_trends(captured_at);
+
+  -- Admin-triggered video renders (Video Studio tab, /video-admin) — separate
+  -- from video_jobs above, which is the AI/social hand-off queue. This table
+  -- belongs entirely to the admin-panel integration layer: it just shells out
+  -- to the video pipeline's own npm scripts and records what happened, never
+  -- touching that pipeline's internals.
+  CREATE TABLE IF NOT EXISTS video_admin_jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kind TEXT NOT NULL CHECK (kind IN ('tiktok', 'shorts', 'promo', 'website')),
+    pack_id TEXT,
+    status TEXT NOT NULL DEFAULT 'queued' CHECK (status IN ('queued', 'running', 'completed', 'failed', 'cancelled')),
+    command TEXT NOT NULL,
+    log TEXT NOT NULL DEFAULT '',
+    output_path TEXT,
+    qa_json TEXT,
+    error TEXT,
+    pid INTEGER,
+    triggered_by TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_video_admin_jobs_status ON video_admin_jobs(status);
+  CREATE INDEX IF NOT EXISTS idx_video_admin_jobs_created_at ON video_admin_jobs(created_at);
+`);
+
 // First-boot only: if the catalog tables are empty, load the original
 // hand-authored packs/scripts (server/seedCatalog.js) so existing installs
 // don't lose their storefront when this database-backed catalog replaces the

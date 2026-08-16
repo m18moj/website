@@ -1,0 +1,34 @@
+{
+  "name": "scripforge-video",
+  "version": "1.0.0",
+  "description": "Automated video-generation pipeline for ScripForge — TikTok, YouTube Shorts, pack promos, and the premium website promo. Isolated from the main store app: its own package.json/node_modules, no shared runtime.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts",
+    "still": "remotion still src/index.ts",
+    "gen:sfx": "node pipeline/scripts/gen-sfx.mjs",
+    "gen:copy": "node pipeline/scripts/gen-copy.mjs",
+    "gen:audio": "node pipeline/scripts/gen-audio.mjs",
+    "render:one": "node pipeline/scripts/render-one.mjs",
+    "qa:one": "node pipeline/scripts/qa-one.mjs",
+    "generate": "node pipeline/orchestrate.mjs",
+    "list:packs": "node pipeline/scripts/list-packs.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "@remotion/captions": "^4.0.290",
+    "@remotion/cli": "^4.0.290",
+    "@remotion/google-fonts": "^4.0.290",
+    "@remotion/transitions": "^4.0.290",
+    "dotenv": "^17.4.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.290"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "typescript": "^5.7.2"
+  }
+}

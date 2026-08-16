@@ -34,6 +34,9 @@
   let csrfToken = null;
   let currentUser = null;
   let impersonating = null;
+  let discordStatus = { checked: false, configured: false, linked: false };
+
+  const DISCORD_ICON_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.927 1.793 8.18 1.793 12.061 0a.073.073 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128c-.598.35-1.22.645-1.873.892a.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.057c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>';
 
   function escapeHtml(value) {
     return String(value)
@@ -108,6 +111,25 @@
     return currentUser;
   }
 
+  // Drives the navbar's "Connect Discord" affordance (see renderAuthControl)
+  // — signed-in users who haven't linked a Discord account yet get a
+  // brand-colored CTA in place of nothing; everyone else (signed out,
+  // already linked, or linking not configured on this server) gets no
+  // button at all. Swallows failures into "unchecked" so a network hiccup
+  // just hides the button rather than showing a broken one.
+  async function refreshDiscordStatus() {
+    if (!currentUser) {
+      discordStatus = { checked: false, configured: false, linked: false };
+      return;
+    }
+    try {
+      const data = await apiFetch('/api/discord/status');
+      discordStatus = { checked: true, configured: Boolean(data.configured), linked: Boolean(data.linked) };
+    } catch (err) {
+      discordStatus = { checked: false, configured: false, linked: false };
+    }
+  }
+
   // Ends an admin's "view as" session (see js/admin.js's per-user Impersonate
   // button) and restores their own identity — the CSRF token stays valid
   // across the switch since it's tied to the session, not to which user id
@@ -180,18 +202,6 @@
     }
   }
 
-  function bindLogout(id) {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.addEventListener('click', async () => {
-      try {
-        await logout();
-      } catch (err) {
-        if (window.ScripForgeToast) window.ScripForgeToast.show(err.message, 'error');
-      }
-    });
-  }
-
   function bindExitImpersonation(id) {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -241,6 +251,10 @@
       ? `<a href="${prefix}admin/admin" class="nav-link admin-link">Admin</a>`
       : '';
 
+    const discordConnectBtn = (discordStatus.checked && discordStatus.configured && !discordStatus.linked)
+      ? `<a href="/api/discord/start" class="btn btn-discord btn-small">${DISCORD_ICON_SVG}Connect Discord</a>`
+      : '';
+
     // Nicknames are capped at 8 characters (server-enforced) specifically so
     // this never breaks the navbar's width the way a long username could —
     // the display name shown here is always short by construction. The
@@ -255,6 +269,7 @@
         ${impersonationNotice}
         <a href="${prefix}pages/downloads" class="nav-link">Downloads</a>
         ${adminLink}
+        ${discordConnectBtn}
         <a href="${prefix}pages/account" class="account-chip" title="Account settings">
           <span class="account-chip-avatar" aria-hidden="true">${escapeHtml(initial)}</span>
           <span class="account-chip-name">${escapeHtml(displayName)}</span>
@@ -277,10 +292,9 @@
         </a>
         <a href="${prefix}pages/downloads" class="nav-link">Downloads</a>
         ${adminLink}
-        <button type="button" class="nav-link nav-link-button" id="logoutBtnMobile">Log out</button>
+        ${discordConnectBtn}
       `;
       navMenu.appendChild(mobileSection);
-      bindLogout('logoutBtnMobile');
       bindExitImpersonation('exitImpersonateBtnMobile');
     }
   }
@@ -289,6 +303,7 @@
     try {
       await refreshCsrfToken();
       await loadCurrentUser();
+      await refreshDiscordStatus();
     } catch (err) {
       // Not signed in / server unreachable — nav just shows "Sign In".
     }

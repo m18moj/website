@@ -17,6 +17,7 @@ import { lengthFor, WORDS_PER_SECOND } from "./config/length.mjs";
 import { angleFor } from "./config/angles.mjs";
 import { speedFor } from "./config/speed.mjs";
 import { animationFor } from "./config/animation.mjs";
+import { captionStyleFor } from "./config/captions.mjs";
 import { generatePackCopy, generateWebsiteCopy } from "./lib/copywriter.mjs";
 import { synthesizeVoiceover } from "./lib/tts.mjs";
 import { generateMusicBed } from "./lib/music.mjs";
@@ -66,7 +67,7 @@ function moodPitchHint(mood) {
   return `${hz >= 0 ? "+" : ""}${hz}Hz`;
 }
 
-async function buildPackJob(
+export async function buildPackJob(
   packId,
   platformId,
   quality = qualityFor("standard"),
@@ -82,13 +83,14 @@ async function buildPackJob(
     beatMatch = false,
     speed = speedFor("normal"),
     animation = animationFor("moderate"),
+    captionStyle = captionStyleFor("boldPop"),
   } = options;
   if (!ttsEnabled && !musicEnabled) {
     throw new Error("Cannot render with both voiceover and music disabled — a silent, musicless video isn't supported.");
   }
 
   const jobId = `${packId}-${platformId}`;
-  log(`=== ${jobId} === (quality: ${quality.id}, pacing: ${pacing.id}, length: ${length.id}, angle: ${angle.id}, speed: ${speed.id}, animation: ${animation.id}, captions: ${captionsEnabled}, tts: ${ttsEnabled}, music: ${musicEnabled}, beatMatch: ${beatMatch})`);
+  log(`=== ${jobId} === (quality: ${quality.id}, pacing: ${pacing.id}, length: ${length.id}, angle: ${angle.id}, speed: ${speed.id}, animation: ${animation.id}, captionStyle: ${captionStyle.id}, captions: ${captionsEnabled}, tts: ${ttsEnabled}, music: ${musicEnabled}, beatMatch: ${beatMatch})`);
   const platform = platformFor(platformId);
   const buildDir = join(BUILD_DIR, jobId);
   mkdirSync(buildDir, { recursive: true });
@@ -202,6 +204,15 @@ async function buildPackJob(
       ctaSub: generated.cta.sub,
     },
     captions,
+    captionStyle: {
+      strokeWidth: captionStyle.strokeWidth,
+      strokeOpacity: captionStyle.strokeOpacity,
+      shadow: captionStyle.shadow,
+      activeMode: captionStyle.activeMode,
+      fontWeight: captionStyle.fontWeight,
+      letterSpacing: captionStyle.letterSpacing,
+      uppercase: captionStyle.uppercase,
+    },
     audioSrc: publicAudioRel.replace(/\\/g, "/"),
     fps: platform.fps,
     width: platform.width,
@@ -238,7 +249,7 @@ async function buildPackJob(
   return { jobId, outPath, report };
 }
 
-async function buildWebsiteJob(quality = qualityFor("standard"), pacing = pacingFor("normal"), length = lengthFor("auto"), options = {}) {
+export async function buildWebsiteJob(quality = qualityFor("standard"), pacing = pacingFor("normal"), length = lengthFor("auto"), options = {}) {
   const {
     captionsEnabled = true,
     ttsEnabled = true,
@@ -246,13 +257,14 @@ async function buildWebsiteJob(quality = qualityFor("standard"), pacing = pacing
     beatMatch = false,
     speed = speedFor("normal"),
     animation = animationFor("moderate"),
+    captionStyle = captionStyleFor("boldPop"),
   } = options;
   if (!ttsEnabled && !musicEnabled) {
     throw new Error("Cannot render with both voiceover and music disabled — a silent, musicless video isn't supported.");
   }
 
   const jobId = "website-premium";
-  log(`=== ${jobId} === (quality: ${quality.id}, pacing: ${pacing.id}, length: ${length.id}, speed: ${speed.id}, animation: ${animation.id}, captions: ${captionsEnabled}, tts: ${ttsEnabled}, music: ${musicEnabled}, beatMatch: ${beatMatch})`);
+  log(`=== ${jobId} === (quality: ${quality.id}, pacing: ${pacing.id}, length: ${length.id}, speed: ${speed.id}, animation: ${animation.id}, captionStyle: ${captionStyle.id}, captions: ${captionsEnabled}, tts: ${ttsEnabled}, music: ${musicEnabled}, beatMatch: ${beatMatch})`);
   const platform = platformFor("website");
   const buildDir = join(BUILD_DIR, jobId);
   mkdirSync(buildDir, { recursive: true });
@@ -331,6 +343,15 @@ async function buildWebsiteJob(quality = qualityFor("standard"), pacing = pacing
       ctaSub: "scripforge.net",
     },
     captions,
+    captionStyle: {
+      strokeWidth: captionStyle.strokeWidth,
+      strokeOpacity: captionStyle.strokeOpacity,
+      shadow: captionStyle.shadow,
+      activeMode: captionStyle.activeMode,
+      fontWeight: captionStyle.fontWeight,
+      letterSpacing: captionStyle.letterSpacing,
+      uppercase: captionStyle.uppercase,
+    },
     audioSrc: publicAudioRel.replace(/\\/g, "/"),
     fps: platform.fps,
     width: platform.width,
@@ -389,6 +410,7 @@ async function main() {
   const angle = angleFor(get("--angle") || process.env.VIDEO_ANGLE || "auto");
   const speed = speedFor(get("--speed") || process.env.VIDEO_SPEECH_SPEED);
   const animation = animationFor(get("--animation") || process.env.VIDEO_ANIMATION);
+  const captionStyle = captionStyleFor(get("--captionStyle") || process.env.VIDEO_CAPTION_STYLE || "boldPop");
 
   // Boolean toggles (captions/TTS/music/beat-match) — same flag > env >
   // default precedence as the tiers above, coerced from "true"/"false"/"1"/"0".
@@ -401,7 +423,7 @@ async function main() {
   const ttsEnabled = boolFlag(get("--tts"), process.env.VIDEO_TTS_ENABLED, true);
   const musicEnabled = boolFlag(get("--music"), process.env.VIDEO_MUSIC, true);
   const beatMatch = boolFlag(get("--beatmatch"), process.env.VIDEO_BEATMATCH, false);
-  const options = { captionsEnabled, ttsEnabled, musicEnabled, beatMatch, speed, animation };
+  const options = { captionsEnabled, ttsEnabled, musicEnabled, beatMatch, speed, animation, captionStyle };
 
   const results = [];
 
@@ -422,7 +444,7 @@ async function main() {
       console.error(
         "Usage: node pipeline/orchestrate.mjs --pack <id> --platform <tiktok|shorts|promo> | --website | --all [--website] " +
           "[--quality draft|standard|high|ultra] [--pacing contemplative|relaxed|gentle|normal|brisk|fast|rapid|hyper|flash|strobe] [--length auto|micro|blink|short|compact|medium|standard|long|extended|deep|marathon] [--angle auto|product_showcase|tutorial_snippet|before_after|social_proof|behind_the_scenes|competitive_comparison|meme_style|feature_spotlight|problem_solution] " +
-          "[--speed slow|normal|fast|rapid] [--animation subtle|moderate|flashy|maximal] [--captions true|false] [--tts true|false] [--music true|false] [--beatmatch true|false]"
+          "[--speed slow|normal|fast|rapid] [--animation subtle|moderate|flashy|maximal] [--captionStyle boldPop|cleanMinimal|creatorBubble|neonGlow|editorialCaps] [--captions true|false] [--tts true|false] [--music true|false] [--beatmatch true|false]"
       );
       process.exit(1);
     }
@@ -434,7 +456,12 @@ async function main() {
   if (results.some((r) => !r.report.pass)) process.exitCode = 1;
 }
 
-main().catch((err) => {
-  console.error("[video] FAILED:", err.message);
-  process.exitCode = 1;
-});
+// Only auto-run when executed directly (`node pipeline/orchestrate.mjs ...`)
+// — buildPackJob/buildWebsiteJob are also imported by pipeline/worker.mjs,
+// and that import must not trigger a second CLI run off worker.mjs's argv.
+if (fileURLToPath(import.meta.url) === process.argv[1]) {
+  main().catch((err) => {
+    console.error("[video] FAILED:", err.message);
+    process.exitCode = 1;
+  });
+}

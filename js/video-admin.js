@@ -13,6 +13,7 @@
   let currentAngle = 'auto';
   let currentSpeed = 'normal';
   let currentAnimation = 'moderate';
+  let currentCaptionStyle = 'boldPop';
   let currentCaptionsEnabled = true;
   let currentTtsEnabled = true;
   let currentMusicEnabled = true;
@@ -207,7 +208,7 @@
   // Overview test render — instead of duplicating pickers per surface.
   // Persisted defaults live in the Settings tab and are mirrored here.
 
-  let renderPresetsCache = { quality: [], pacing: [], length: [], angle: [], speed: [], animation: [] };
+  let renderPresetsCache = { quality: [], pacing: [], length: [], angle: [], speed: [], animation: [], captionStyle: [] };
 
   function applyQualityToUI(id) {
     currentQuality = id;
@@ -228,9 +229,9 @@
   // companion text/textarea input appears for a custom value (numeric
   // multiplier/second count, or free-form creative direction for video type).
   // Both the Pack Renders and Settings panels use the same presets.
-  function populatePresetOptions(selectEl, presets) {
+  function populatePresetOptions(selectEl, presets, allowCustom = true) {
     if (!selectEl) return;
-    selectEl.innerHTML = presets.map((p) => `<option value="${p.id}">${p.label}</option>`).join('') + '<option value="__other__">Other</option>';
+    selectEl.innerHTML = presets.map((p) => `<option value="${p.id}">${p.label}</option>`).join('') + (allowCustom ? '<option value="__other__">Other</option>' : '');
   }
 
   const CUSTOM_SELECT_ID = '__other__';
@@ -257,7 +258,7 @@
   }
 
   function currentValueFor(kind) {
-    return { pacing: currentPacing, length: currentLength, angle: currentAngle, speed: currentSpeed, animation: currentAnimation }[kind];
+    return { pacing: currentPacing, length: currentLength, angle: currentAngle, speed: currentSpeed, animation: currentAnimation, captionStyle: currentCaptionStyle }[kind];
   }
 
   function setCurrentValueFor(kind, value) {
@@ -266,14 +267,15 @@
     if (kind === 'angle') currentAngle = value;
     if (kind === 'speed') currentSpeed = value;
     if (kind === 'animation') currentAnimation = value;
+    if (kind === 'captionStyle') currentCaptionStyle = value;
   }
 
   function applyPresetToUI(kind, value) {
-    const selectId = { pacing: 'pacingSelect', length: 'lengthSelect', angle: 'angleSelect', speed: 'speedSelect', animation: 'animationSelect' }[kind];
+    const selectId = { pacing: 'pacingSelect', length: 'lengthSelect', angle: 'angleSelect', speed: 'speedSelect', animation: 'animationSelect', captionStyle: 'captionStyleSelect' }[kind];
     const customInputId = { pacing: 'pacingSelectCustom', length: 'lengthSelectCustom', angle: 'angleSelectCustom', speed: 'speedSelectCustom', animation: 'animationSelectCustom' }[kind];
-    const settingsSelectId = { pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation' }[kind];
+    const settingsSelectId = { pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation', captionStyle: 'setCaptionStyle' }[kind];
     const settingsCustomInputId = { pacing: 'setPacingCustom', length: 'setLengthCustom', angle: 'setAngleCustom', speed: 'setSpeedCustom', animation: 'setAnimationCustom' }[kind];
-    const descId = { pacing: 'pacingSelectDesc', length: 'lengthSelectDesc', angle: 'angleSelectDesc', speed: 'speedSelectDesc', animation: 'animationSelectDesc' }[kind];
+    const descId = { pacing: 'pacingSelectDesc', length: 'lengthSelectDesc', angle: 'angleSelectDesc', speed: 'speedSelectDesc', animation: 'animationSelectDesc', captionStyle: 'captionStyleSelectDesc' }[kind];
 
     const select = document.getElementById(selectId);
     const customInput = document.getElementById(customInputId);
@@ -314,7 +316,7 @@
       renderPresetsCache = await apiFetch('/api/video-admin/render-presets');
     } catch (err) {
       console.error('[video-admin] Failed to load render presets:', err);
-      renderPresetsCache = { quality: [], pacing: [], length: [], angle: [], speed: [], animation: [] };
+      renderPresetsCache = { quality: [], pacing: [], length: [], angle: [], speed: [], animation: [], captionStyle: [] };
     }
 
     const slider = document.getElementById('qualitySlider');
@@ -328,10 +330,11 @@
       length: { select: 'lengthSelect', custom: 'lengthSelectCustom', settingsSelect: 'setLength', settingsCustom: 'setLengthCustom' },
       angle: { select: 'angleSelect', custom: 'angleSelectCustom', settingsSelect: 'setAngle', settingsCustom: 'setAngleCustom' },
       speed: { select: 'speedSelect', custom: 'speedSelectCustom', settingsSelect: 'setSpeed', settingsCustom: 'setSpeedCustom' },
-      animation: { select: 'animationSelect', custom: 'animationSelectCustom', settingsSelect: 'setAnimation', settingsCustom: 'setAnimationCustom' }
+      animation: { select: 'animationSelect', custom: 'animationSelectCustom', settingsSelect: 'setAnimation', settingsCustom: 'setAnimationCustom' },
+      captionStyle: { select: 'captionStyleSelect', custom: null, settingsSelect: 'setCaptionStyle', settingsCustom: null }
     };
 
-    ['pacing', 'length', 'angle', 'speed', 'animation'].forEach((kind) => {
+    ['pacing', 'length', 'angle', 'speed', 'animation', 'captionStyle'].forEach((kind) => {
       // Each kind is wired independently — a bad element lookup or preset
       // shape for one dropdown must never abort the loop and leave the
       // remaining dropdowns (later in this array) completely unpopulated.
@@ -343,8 +346,9 @@
         const settingsSelectEl = document.getElementById(ids.settingsSelect);
         const settingsCustomEl = document.getElementById(ids.settingsCustom);
 
-        populatePresetOptions(selectEl, presets);
-        populatePresetOptions(settingsSelectEl, presets);
+        const allowCustom = kind !== 'captionStyle';
+        populatePresetOptions(selectEl, presets, allowCustom);
+        populatePresetOptions(settingsSelectEl, presets, allowCustom);
         applyPresetToUI(kind, currentValueFor(kind));
 
         const onValueChange = (val) => {
@@ -473,7 +477,7 @@
         method: 'POST',
         body: {
           kind, packId: packId || undefined, quality: currentQuality, pacing: currentPacing, length: currentLength, angle: currentAngle,
-          speed: currentSpeed, animation: currentAnimation,
+          speed: currentSpeed, animation: currentAnimation, captionStyle: currentCaptionStyle,
           captionsEnabled: currentCaptionsEnabled, ttsEnabled: currentTtsEnabled, musicEnabled: currentMusicEnabled, beatMatch: currentBeatMatch
         }
       });
@@ -642,7 +646,15 @@
 
     const playerContainer = document.getElementById('jobLogModalPlayer');
     if (job.status === 'completed' && job.outputPath) {
-      playerContainer.innerHTML = `<video controls class="video-preview-player" src="/api/video-admin/jobs/${job.id}/media"></video>`;
+      // Polling re-renders this modal every 3.5s while it's open; only touch
+      // the DOM when the video actually needs to change, otherwise a fresh
+      // <video> keeps replacing the old one and playback (and audio) never
+      // gets past its opening frame.
+      const expectedSrc = `/api/video-admin/jobs/${job.id}/media`;
+      const existingVideo = playerContainer.querySelector('video.video-preview-player');
+      if (!existingVideo || !existingVideo.src.endsWith(expectedSrc)) {
+        playerContainer.innerHTML = `<video controls class="video-preview-player" src="${expectedSrc}"></video>`;
+      }
     } else if (jobHasMotion(job)) {
       const actionsHtml = `<button type="button" class="btn btn-secondary" id="jobCancelBtn">Cancel job</button>`;
       playerContainer.innerHTML = actionsHtml;
@@ -974,7 +986,7 @@
     applyToggleToUI('beatMatch', currentToggleFor('beatMatch'));
 
     const selectIdFor = {
-      pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation'
+      pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation', captionStyle: 'setCaptionStyle'
     };
     const customIdFor = {
       pacing: 'setPacingCustom', length: 'setLengthCustom', angle: 'setAngleCustom', speed: 'setSpeedCustom', animation: 'setAnimationCustom'
@@ -984,7 +996,8 @@
       { kind: 'length', raw: settings.length, fallback: 'auto' },
       { kind: 'angle', raw: settings.angle, fallback: 'auto' },
       { kind: 'speed', raw: settings.speed, fallback: 'normal' },
-      { kind: 'animation', raw: settings.animation, fallback: 'moderate' }
+      { kind: 'animation', raw: settings.animation, fallback: 'moderate' },
+      { kind: 'captionStyle', raw: settings.captionStyle, fallback: 'boldPop' }
     ];
     fields.forEach(({ kind, raw, fallback }) => {
       const trimmed = (raw || '').trim();
@@ -1002,7 +1015,7 @@
       }
     });
 
-    ['pacing', 'length', 'angle', 'speed', 'animation'].forEach((kind) => {
+    ['pacing', 'length', 'angle', 'speed', 'animation', 'captionStyle'].forEach((kind) => {
       const current = currentValueFor(kind);
       applyPresetToUI(kind, current);
     });
@@ -1038,6 +1051,7 @@
             angle: resolveField('setAngle', 'setAngleCustom'),
             speed: resolveField('setSpeed', 'setSpeedCustom'),
             animation: resolveField('setAnimation', 'setAnimationCustom'),
+            captionStyle: document.getElementById('setCaptionStyle').value,
             captionsEnabled: document.getElementById('setCaptionsEnabled').checked,
             ttsEnabled,
             musicEnabled,
@@ -1045,11 +1059,13 @@
           }
         });
         applyQualityToUI(document.getElementById('setQuality').value);
-        ['pacing', 'length', 'angle', 'speed', 'animation'].forEach((kind) => {
-          const resolved = resolveField(
-            { pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation' }[kind],
-            { pacing: 'setPacingCustom', length: 'setLengthCustom', angle: 'setAngleCustom', speed: 'setSpeedCustom', animation: 'setAnimationCustom' }[kind]
-          );
+        ['pacing', 'length', 'angle', 'speed', 'animation', 'captionStyle'].forEach((kind) => {
+          const resolved = kind === 'captionStyle'
+            ? document.getElementById('setCaptionStyle').value
+            : resolveField(
+                { pacing: 'setPacing', length: 'setLength', angle: 'setAngle', speed: 'setSpeed', animation: 'setAnimation' }[kind],
+                { pacing: 'setPacingCustom', length: 'setLengthCustom', angle: 'setAngleCustom', speed: 'setSpeedCustom', animation: 'setAnimationCustom' }[kind]
+              );
           setCurrentValueFor(kind, resolved);
           applyPresetToUI(kind, resolved);
         });

@@ -9,7 +9,7 @@ import { SceneStack } from "../components/Layers";
 import { WordReveal, BodyText, Counter } from "../components/Text";
 import { BrandLockup } from "../components/Logo";
 import { Spark } from "../components/Spark";
-import { useExit } from "../components/Motion";
+import { useExit, useBreathe } from "../components/Motion";
 import { packThemes, type PackVisualId } from "../packThemes";
 
 export const OpenScene: React.FC<{ tagline: string; heroWord?: string; durationInFrames: number }> = ({
@@ -18,6 +18,7 @@ export const OpenScene: React.FC<{ tagline: string; heroWord?: string; durationI
   durationInFrames,
 }) => {
   const exit = useExit(durationInFrames, 14);
+  const { float } = useBreathe();
   return (
     <AbsoluteFill style={exit}>
       <SceneStack gradeStrength={0.22} vignetteStrength={0.3}>
@@ -36,6 +37,7 @@ export const OpenScene: React.FC<{ tagline: string; heroWord?: string; durationI
             display: "flex",
             flexDirection: "column",
             gap: 30,
+            transform: `translateY(${float}px)`,
           }}
         >
           <BrandLockup scale={1.3} delay={2} />
@@ -150,6 +152,7 @@ export const StatsRowScene: React.FC<{
   durationInFrames: number;
 }> = ({ stats, durationInFrames }) => {
   const exit = useExit(durationInFrames, 12);
+  const { float } = useBreathe();
   return (
     <AbsoluteFill style={exit}>
       <SceneStack gradeStrength={0.2}>
@@ -159,6 +162,7 @@ export const StatsRowScene: React.FC<{
             justifyContent: "center",
             display: "flex",
             gap: 90,
+            transform: `translateY(${float}px)`,
           }}
         >
           {stats.map((s, i) => (

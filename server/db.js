@@ -718,6 +718,7 @@ ensureColumn('video_admin_jobs', 'angle', 'TEXT');
 // default when displaying history.
 ensureColumn('video_admin_jobs', 'speed', 'TEXT');
 ensureColumn('video_admin_jobs', 'animation_intensity', 'TEXT');
+ensureColumn('video_admin_jobs', 'caption_style', 'TEXT');
 ensureColumn('video_admin_jobs', 'captions_enabled', 'INTEGER');
 ensureColumn('video_admin_jobs', 'tts_enabled', 'INTEGER');
 ensureColumn('video_admin_jobs', 'music_enabled', 'INTEGER');

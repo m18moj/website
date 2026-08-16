@@ -14,6 +14,29 @@ export interface CaptionCue {
   endMs: number;
 }
 
+// Visual style for the caption track — see pipeline/config/captions.mjs for
+// the preset definitions this shape mirrors. Kept optional/defaulted so old
+// props.json files without a captionStyle still render the original look.
+export interface CaptionStyle {
+  strokeWidth: number;
+  strokeOpacity: number;
+  shadow: "soft" | "glow" | "none";
+  activeMode: "color" | "pill" | "underline";
+  fontWeight: number;
+  letterSpacing: string;
+  uppercase: boolean;
+}
+
+const DEFAULT_CAPTION_STYLE: CaptionStyle = {
+  strokeWidth: 3,
+  strokeOpacity: 0.45,
+  shadow: "soft",
+  activeMode: "color",
+  fontWeight: 800,
+  letterSpacing: "-0.01em",
+  uppercase: false,
+};
+
 const msToFrame = (ms: number, fps: number) => Math.round((ms / 1000) * fps);
 
 export const CaptionTrack: React.FC<{
@@ -21,7 +44,9 @@ export const CaptionTrack: React.FC<{
   accent?: string;
   bottomSafe?: number; // fraction of height reserved as bottom safe zone
   fontSize?: number;
-}> = ({ cues, accent = theme.colors.primary, bottomSafe = 0.16, fontSize = 46 }) => {
+  style?: Partial<CaptionStyle>;
+}> = ({ cues, accent = theme.colors.primary, bottomSafe = 0.16, fontSize = 46, style }) => {
+  const captionStyle: CaptionStyle = { ...DEFAULT_CAPTION_STYLE, ...style };
   const { fps, height, durationInFrames } = useVideoConfig();
   if (!cues || cues.length === 0) return null;
 
@@ -64,7 +89,7 @@ export const CaptionTrack: React.FC<{
         if (from >= durationInFrames || duration <= 0) return null;
         return (
           <Sequence key={i} from={from} durationInFrames={duration} layout="none">
-            <CaptionPage page={page} accent={accent} bottomSafe={bottomSafe} fontSize={fontSize} height={height} />
+            <CaptionPage page={page} accent={accent} bottomSafe={bottomSafe} fontSize={fontSize} height={height} style={captionStyle} />
           </Sequence>
         );
       })}
@@ -78,11 +103,20 @@ const CaptionPage: React.FC<{
   bottomSafe: number;
   fontSize: number;
   height: number;
-}> = ({ page, accent, bottomSafe, fontSize }) => {
+  style: CaptionStyle;
+}> = ({ page, accent, bottomSafe, fontSize, style }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const nowMs = page.startMs + (frame / fps) * 1000;
   const pop = Math.min(1, (frame / fps) * 1000 < 90 ? (frame / fps) * 1000 / 90 : 1);
+
+  const textShadowFor = (active: boolean) => {
+    if (style.shadow === "none") return "none";
+    if (style.shadow === "glow") {
+      return active ? `0 4px 20px rgba(0,0,0,0.6), 0 0 26px ${accent}, 0 0 46px ${accent}99` : "0 4px 16px rgba(0,0,0,0.6)";
+    }
+    return active ? `0 4px 24px rgba(0,0,0,0.65), 0 0 30px ${accent}aa` : "0 4px 18px rgba(0,0,0,0.65)";
+  };
 
   return (
     <div
@@ -101,30 +135,37 @@ const CaptionPage: React.FC<{
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
+          alignItems: "center",
           gap: "0.28em",
           fontFamily: fontFamilies.display,
-          fontWeight: 800,
+          fontWeight: style.fontWeight,
           fontSize,
-          letterSpacing: "-0.01em",
+          letterSpacing: style.letterSpacing,
+          textTransform: style.uppercase ? "uppercase" : "none",
           textAlign: "center",
           transform: `scale(${0.9 + pop * 0.1})`,
         }}
       >
         {page.tokens.map((token, i) => {
           const active = nowMs >= token.fromMs && nowMs <= token.toMs;
+          const isPill = style.activeMode === "pill" && active;
           return (
             <span
               key={i}
               style={{
-                color: active ? accent : "#ffffff",
-                WebkitTextStroke: "8px rgba(0,0,0,0.55)",
+                color: isPill ? "#0a0a0a" : active && style.activeMode === "color" ? accent : "#ffffff",
+                WebkitTextStroke: style.strokeWidth > 0 ? `${style.strokeWidth}px rgba(0,0,0,${style.strokeOpacity})` : undefined,
                 paintOrder: "stroke fill",
-                textShadow: active
-                  ? `0 4px 24px rgba(0,0,0,0.65), 0 0 30px ${accent}aa`
-                  : "0 4px 18px rgba(0,0,0,0.65)",
-                transform: active ? "translateY(-4px) scale(1.06)" : "none",
+                textShadow: isPill ? "none" : textShadowFor(active),
+                backgroundColor: isPill ? accent : "transparent",
+                borderRadius: isPill ? "0.3em" : 0,
+                padding: isPill ? "0.02em 0.22em" : 0,
+                boxShadow: isPill ? `0 4px 18px ${accent}77` : "none",
+                borderBottom: style.activeMode === "underline" && active ? `0.08em solid ${accent}` : "0.08em solid transparent",
+                transform: active && !isPill ? "translateY(-4px) scale(1.06)" : "none",
                 transition: "none",
                 display: "inline-block",
+                lineHeight: 1.3,
               }}
             >
               {token.text}

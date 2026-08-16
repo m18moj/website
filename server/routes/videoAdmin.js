@@ -81,7 +81,8 @@ const PIPELINE_LIB = {
   length: 'pipeline/config/length.mjs',
   angles: 'pipeline/config/angles.mjs',
   speed: 'pipeline/config/speed.mjs',
-  animation: 'pipeline/config/animation.mjs'
+  animation: 'pipeline/config/animation.mjs',
+  captions: 'pipeline/config/captions.mjs'
 };
 
 // Mirrors each pipeline config module's own preset ids — kept as plain
@@ -95,6 +96,7 @@ const LENGTH_TIERS = ['auto', 'micro', 'blink', 'short', 'compact', 'medium', 's
 const ANGLE_TIERS = ['auto', 'product_showcase', 'tutorial_snippet', 'before_after', 'social_proof', 'behind_the_scenes', 'competitive_comparison', 'meme_style', 'feature_spotlight', 'problem_solution'];
 const SPEED_TIERS = ['glacial', 'slow', 'relaxed', 'normal', 'brisk', 'fast', 'quick', 'rapid', 'hyper', 'turbo'];
 const ANIMATION_TIERS = ['minimal', 'subtle', 'gentle', 'moderate', 'lively', 'energetic', 'flashy', 'bold', 'maximal', 'chaotic'];
+const CAPTION_STYLE_TIERS = ['boldPop', 'cleanMinimal', 'creatorBubble', 'neonGlow', 'editorialCaps'];
 
 const KINDS = ['tiktok', 'shorts', 'promo', 'website'];
 
@@ -422,18 +424,23 @@ router.get('/animation-presets', async (req, res) => {
   res.json({ presets: await presetsFor('animation', 'ANIMATION_PRESETS', 'ANIMATION_ORDER', ANIMATION_TIERS) });
 });
 
+router.get('/caption-style-presets', async (req, res) => {
+  res.json({ presets: await presetsFor('captions', 'CAPTION_STYLE_PRESETS', 'CAPTION_STYLE_ORDER', CAPTION_STYLE_TIERS) });
+});
+
 // Combined fetch for the dashboard's render-controls panel — one round
 // trip instead of six on every page load.
 router.get('/render-presets', async (req, res) => {
-  const [quality, pacing, length, angle, speed, animation] = await Promise.all([
+  const [quality, pacing, length, angle, speed, animation, captionStyle] = await Promise.all([
     presetsFor('quality', 'QUALITY_PRESETS', 'QUALITY_ORDER', QUALITY_TIERS),
     presetsFor('pacing', 'PACING_PRESETS', 'PACING_ORDER', PACING_TIERS),
     presetsFor('length', 'LENGTH_PRESETS', 'LENGTH_ORDER', LENGTH_TIERS),
     presetsFor('angles', 'ANGLE_PRESETS', 'ANGLE_ORDER', ANGLE_TIERS),
     presetsFor('speed', 'SPEED_PRESETS', 'SPEED_ORDER', SPEED_TIERS),
-    presetsFor('animation', 'ANIMATION_PRESETS', 'ANIMATION_ORDER', ANIMATION_TIERS)
+    presetsFor('animation', 'ANIMATION_PRESETS', 'ANIMATION_ORDER', ANIMATION_TIERS),
+    presetsFor('captions', 'CAPTION_STYLE_PRESETS', 'CAPTION_STYLE_ORDER', CAPTION_STYLE_TIERS)
   ]);
-  res.json({ quality, pacing, length, angle, speed, animation });
+  res.json({ quality, pacing, length, angle, speed, animation, captionStyle });
 });
 
 // --- Packs (real catalog data, never invented) ------------------------------
@@ -814,6 +821,7 @@ async function scoreAndMaybeRedoJob(jobId) {
     angle: pickDifferentAngle(job.angle),
     speed: job.speed || 'normal',
     animation: job.animationIntensity || 'moderate',
+    captionStyle: job.captionStyle || 'boldPop',
     captionsEnabled: job.captionsEnabled !== false,
     ttsEnabled: job.ttsEnabled !== false,
     musicEnabled: job.musicEnabled !== false,
@@ -827,8 +835,9 @@ async function scoreAndMaybeRedoJob(jobId) {
 // video_admin_jobs row from queue to completion. Shared by the admin-facing
 // POST /jobs route and the automatic low-score redo above so there is
 // exactly one place that knows how to actually start a render.
-function spawnRenderJob({ kind, packId, quality, pacing, length, angle, speed, animation, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, triggeredBy, redoOf = null }) {
+function spawnRenderJob({ kind, packId, quality, pacing, length, angle, speed, animation, captionStyle, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, triggeredBy, redoOf = null }) {
   const cfg = settingsModel.get('videoAdminConfig') || {};
+  const resolvedCaptionStyle = captionStyle || 'boldPop';
 
   // orchestrate.mjs (npm run generate) is the full pipeline entry point —
   // copy, voice, music, render, and QA in one pass. render:one is a
@@ -836,7 +845,7 @@ function spawnRenderJob({ kind, packId, quality, pacing, length, angle, speed, a
   // props.json, so it can't be used to kick off a brand-new render.
   const renderFlags = [
     '--quality', quality, '--pacing', pacing, '--length', length, '--angle', angle,
-    '--speed', speed, '--animation', animation,
+    '--speed', speed, '--animation', animation, '--captionStyle', resolvedCaptionStyle,
     '--captions', String(captionsEnabled), '--tts', String(ttsEnabled), '--music', String(musicEnabled), '--beatmatch', String(beatMatch)
   ];
   const args = kind === 'website'
@@ -845,7 +854,7 @@ function spawnRenderJob({ kind, packId, quality, pacing, length, angle, speed, a
 
   const jobRow = jobsModel.create({
     kind, packId, command: `npm ${args.join(' ')}`, triggeredBy, quality, pacing, length, angle,
-    speed, animationIntensity: animation, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, redoOf
+    speed, animationIntensity: animation, captionStyle: resolvedCaptionStyle, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, redoOf
   });
 
   const env = {
@@ -859,6 +868,7 @@ function spawnRenderJob({ kind, packId, quality, pacing, length, angle, speed, a
     VIDEO_ANGLE: angle,
     VIDEO_SPEECH_SPEED: speed,
     VIDEO_ANIMATION: animation,
+    VIDEO_CAPTION_STYLE: resolvedCaptionStyle,
     VIDEO_CAPTIONS: String(captionsEnabled),
     VIDEO_TTS_ENABLED: String(ttsEnabled),
     VIDEO_MUSIC: String(musicEnabled),
@@ -968,6 +978,7 @@ router.post(
     body('angle').optional({ nullable: true }).isString().trim().isLength({ max: 400 }),
     body('speed').optional({ nullable: true }).isString().trim().isLength({ max: 20 }),
     body('animation').optional({ nullable: true }).isString().trim().isLength({ max: 20 }),
+    body('captionStyle').optional({ nullable: true }).isString().trim().isLength({ max: 40 }),
     body('captionsEnabled').optional({ nullable: true }).isBoolean(),
     body('ttsEnabled').optional({ nullable: true }).isBoolean(),
     body('musicEnabled').optional({ nullable: true }).isBoolean(),
@@ -1003,6 +1014,7 @@ router.post(
     const angle = req.body.angle || cfg.angle || 'auto';
     const speed = req.body.speed || cfg.speed || 'normal';
     const animation = req.body.animation || cfg.animation || 'moderate';
+    const captionStyle = req.body.captionStyle || cfg.captionStyle || 'boldPop';
     const captionsEnabled = req.body.captionsEnabled !== undefined ? !!req.body.captionsEnabled : cfg.captionsEnabled !== false;
     const ttsEnabled = req.body.ttsEnabled !== undefined ? !!req.body.ttsEnabled : cfg.ttsEnabled !== false;
     const musicEnabled = req.body.musicEnabled !== undefined ? !!req.body.musicEnabled : cfg.musicEnabled !== false;
@@ -1013,7 +1025,7 @@ router.post(
     }
 
     const jobRow = spawnRenderJob({
-      kind, packId, quality, pacing, length, angle, speed, animation,
+      kind, packId, quality, pacing, length, angle, speed, animation, captionStyle,
       captionsEnabled, ttsEnabled, musicEnabled, beatMatch,
       triggeredBy: req.currentUser.username
     });
@@ -1071,6 +1083,7 @@ router.put(
     body('angle').optional().isString().trim().isLength({ max: 400 }),
     body('speed').optional().isString().trim().isLength({ max: 20 }),
     body('animation').optional().isString().trim().isLength({ max: 20 }),
+    body('captionStyle').optional().isString().trim().isLength({ max: 40 }),
     body('captionsEnabled').optional().isBoolean(),
     body('ttsEnabled').optional().isBoolean(),
     body('musicEnabled').optional().isBoolean(),
@@ -1095,6 +1108,7 @@ router.put(
       angle: req.body.angle !== undefined ? req.body.angle : (current.angle || 'auto'),
       speed: req.body.speed !== undefined ? req.body.speed : (current.speed || 'normal'),
       animation: req.body.animation !== undefined ? req.body.animation : (current.animation || 'moderate'),
+      captionStyle: req.body.captionStyle !== undefined ? req.body.captionStyle : (current.captionStyle || 'boldPop'),
       captionsEnabled: req.body.captionsEnabled !== undefined ? req.body.captionsEnabled : current.captionsEnabled !== false,
       ttsEnabled,
       musicEnabled,

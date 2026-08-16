@@ -66,7 +66,7 @@ function beatMatchDurations(totalFrames: number, durations: number[], transition
   return next;
 }
 
-export const WebsitePremium: React.FC<WebsitePromoProps> = ({ copy, captions, audioSrc, durationInFrames, transitionFrames, animationIntensity, beatMatch, musicBpm, fps }) => {
+export const WebsitePremium: React.FC<WebsitePromoProps> = ({ copy, captions, audioSrc, durationInFrames, transitionFrames, animationIntensity, beatMatch, musicBpm, fps, captionStyle }) => {
   const TRANSITION_FRAMES = transitionFrames ?? DEFAULT_TRANSITION_FRAMES;
   const weights = [1.0, 1.6, 1.1, 1.3]; // open, showcase, stats, cta
   const rawDurations = splitDuration(durationInFrames, weights, TRANSITION_FRAMES);
@@ -102,7 +102,7 @@ export const WebsitePremium: React.FC<WebsitePromoProps> = ({ copy, captions, au
         </TransitionSeries.Sequence>
       </TransitionSeries>
 
-      <CaptionTrack cues={captions} accent={theme.colors.primary} bottomSafe={0.12} fontSize={38} />
+      <CaptionTrack cues={captions} accent={theme.colors.primary} bottomSafe={0.12} fontSize={38} style={captionStyle} />
       <MasterAudio src={audioSrc} />
     </AbsoluteFill>
     </AnimationIntensityContext.Provider>

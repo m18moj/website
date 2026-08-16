@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { SceneStack } from "../components/Layers";
 import { Counter, BodyText } from "../components/Text";
 import { Spark } from "../components/Spark";
-import { useExit } from "../components/Motion";
+import { useExit, useBreathe } from "../components/Motion";
 
 // The "result" beat — biggest single animation in the piece, per the
 // scene-architecture rule (payoff = biggest moment before the CTA).
@@ -17,6 +17,7 @@ export const PayoffScene: React.FC<{
   durationInFrames: number;
 }> = ({ label, value, prefix, suffix, decimals, accent, durationInFrames }) => {
   const exit = useExit(durationInFrames);
+  const { float } = useBreathe();
   return (
     <AbsoluteFill style={exit}>
       <SceneStack accent={accent} gradeStrength={0.2}>
@@ -27,6 +28,7 @@ export const PayoffScene: React.FC<{
             display: "flex",
             flexDirection: "column",
             padding: "0 64px",
+            transform: `translateY(${float}px)`,
           }}
         >
           {/* Spark sits ABOVE the number in normal flow, dimmed, as a

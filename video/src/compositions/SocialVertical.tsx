@@ -86,7 +86,7 @@ function beatMatchDurations(totalFrames: number, durations: number[], transition
 }
 
 export const SocialVertical: React.FC<PackVideoProps> = (props) => {
-  const { packId, gameTitle, genre, priceLabel, copy, captions, audioSrc, durationInFrames, platform, transitionFrames, animationIntensity, beatMatch, musicBpm, fps } = props;
+  const { packId, gameTitle, genre, priceLabel, copy, captions, audioSrc, durationInFrames, platform, transitionFrames, animationIntensity, beatMatch, musicBpm, fps, captionStyle } = props;
   const pack = themeForPack(packId);
   const accent = pack.accent;
   const accent2 = pack.accent2;
@@ -180,7 +180,7 @@ export const SocialVertical: React.FC<PackVideoProps> = (props) => {
         </TransitionSeries.Sequence>
       </TransitionSeries>
 
-      <CaptionTrack cues={captions} accent={accent} />
+      <CaptionTrack cues={captions} accent={accent} style={captionStyle} />
       <MasterAudio src={audioSrc} />
     </AbsoluteFill>
     </AnimationIntensityContext.Provider>

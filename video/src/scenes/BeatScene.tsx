@@ -3,7 +3,7 @@ import { AbsoluteFill } from "remotion";
 import { SceneStack } from "../components/Layers";
 import { WordReveal, BodyText } from "../components/Text";
 import { CodeCard } from "../components/CodeCard";
-import { useExit } from "../components/Motion";
+import { useExit, useBreathe } from "../components/Motion";
 import { PackSplash } from "../components/PackSplash";
 
 // Beats alternate between a "code proof" layout (even index) and a plain
@@ -20,6 +20,7 @@ export const BeatScene: React.FC<{
   codeSnippets?: { title: string; lines: string[] }[];
 }> = ({ heading, body, index, background, accent, accent2, durationInFrames, codeSnippets }) => {
   const exit = useExit(durationInFrames);
+  const { float } = useBreathe();
   const showCode = index % 2 === 0 && !!codeSnippets?.length;
   const codeSnippet = showCode ? codeSnippets![Math.floor(index / 2) % codeSnippets!.length] : undefined;
 
@@ -37,6 +38,7 @@ export const BeatScene: React.FC<{
             // paddingBottom keeps content clear of the caption safe zone
             // (CaptionTrack reserves the bottom ~16% of the frame).
             padding: showCode ? "0 60px 220px" : "0 70px 260px",
+            transform: `translateY(${float}px)`,
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: showCode ? 460 : 900 }}>

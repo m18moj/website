@@ -127,6 +127,11 @@
                                 <input type="text" id="animationSelectCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 1.3" hidden>
                                 <p class="empty-state" id="animationSelectDesc"></p>
                             </div>
+                            <div class="form-group">
+                                <label for="captionStyleSelect">Caption style</label>
+                                <select id="captionStyleSelect"></select>
+                                <p class="empty-state" id="captionStyleSelectDesc"></p>
+                            </div>
                         </div>
 
                         <p class="empty-state" style="margin-top:1rem">Toggle which layers a render includes.</p>
@@ -507,6 +512,10 @@
                             <label for="setAnimation">Default animation flashiness</label>
                             <select id="setAnimation"></select>
                             <input type="text" id="setAnimationCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 1.3" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="setCaptionStyle">Default caption style</label>
+                            <select id="setCaptionStyle"></select>
                         </div>
                         <label class="checkbox-row"><input type="checkbox" id="setPreferGpu"> Prefer GPU (NVENC) encoding when available</label>
                         <label class="checkbox-row"><input type="checkbox" id="setCaptionsEnabled" checked> Captions on by default</label>

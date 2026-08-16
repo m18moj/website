@@ -7,7 +7,7 @@ const db = require('../db');
 const columns = `
   id, kind, pack_id AS packId, status, command, log, output_path AS outputPath,
   qa_json AS qaJson, error, pid, triggered_by AS triggeredBy,
-  quality, pacing, length, angle, speed, animation_intensity AS animationIntensity,
+  quality, pacing, length, angle, speed, animation_intensity AS animationIntensity, caption_style AS captionStyle,
   captions_enabled AS captionsEnabled, tts_enabled AS ttsEnabled, music_enabled AS musicEnabled, beat_match AS beatMatch,
   predicted_score AS predictedScore, prediction_json AS predictionJson, redo_of AS redoOf,
   created_at AS createdAt, updated_at AS updatedAt
@@ -17,11 +17,11 @@ const statements = {
   insert: db.prepare(`
     INSERT INTO video_admin_jobs (
       kind, pack_id, command, triggered_by, quality, pacing, length, angle,
-      speed, animation_intensity, captions_enabled, tts_enabled, music_enabled, beat_match, redo_of
+      speed, animation_intensity, caption_style, captions_enabled, tts_enabled, music_enabled, beat_match, redo_of
     )
     VALUES (
       @kind, @packId, @command, @triggeredBy, @quality, @pacing, @length, @angle,
-      @speed, @animationIntensity, @captionsEnabled, @ttsEnabled, @musicEnabled, @beatMatch, @redoOf
+      @speed, @animationIntensity, @captionStyle, @captionsEnabled, @ttsEnabled, @musicEnabled, @beatMatch, @redoOf
     )
   `),
   findById: db.prepare(`SELECT ${columns} FROM video_admin_jobs WHERE id = ?`),
@@ -55,7 +55,7 @@ const statements = {
   countByStatus: db.prepare(`SELECT status, COUNT(*) AS count FROM video_admin_jobs GROUP BY status`)
 };
 
-function create({ kind, packId, command, triggeredBy, quality, pacing, length, angle, speed, animationIntensity, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, redoOf }) {
+function create({ kind, packId, command, triggeredBy, quality, pacing, length, angle, speed, animationIntensity, captionStyle, captionsEnabled, ttsEnabled, musicEnabled, beatMatch, redoOf }) {
   const result = statements.insert.run({
     kind,
     packId: packId || null,
@@ -67,6 +67,7 @@ function create({ kind, packId, command, triggeredBy, quality, pacing, length, a
     angle: angle || null,
     speed: speed || null,
     animationIntensity: animationIntensity || null,
+    captionStyle: captionStyle || null,
     captionsEnabled: captionsEnabled === undefined ? null : (captionsEnabled ? 1 : 0),
     ttsEnabled: ttsEnabled === undefined ? null : (ttsEnabled ? 1 : 0),
     musicEnabled: musicEnabled === undefined ? null : (musicEnabled ? 1 : 0),

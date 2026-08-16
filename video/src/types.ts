@@ -1,4 +1,4 @@
-import type { CaptionCue } from "./components/Captions";
+import type { CaptionCue, CaptionStyle } from "./components/Captions";
 import type { PackVisualId } from "./packThemes";
 
 export type Platform = "tiktok" | "shorts" | "promo";
@@ -27,6 +27,9 @@ export interface PackVideoProps {
   visual: PackVisualId;
   copy: PackCopy;
   captions: CaptionCue[];
+  // See pipeline/config/captions.mjs for the preset this is resolved from.
+  // Optional so old props.json files without it still render the original look.
+  captionStyle?: Partial<CaptionStyle>;
   audioSrc?: string;
   fps: number;
   width: number;
@@ -66,6 +69,7 @@ export interface WebsiteCopy {
 export interface WebsitePromoProps {
   copy: WebsiteCopy;
   captions: CaptionCue[];
+  captionStyle?: Partial<CaptionStyle>;
   audioSrc?: string;
   fps: number;
   width: number;

@@ -93,8 +93,8 @@ const QUALITY_TIERS = ['draft', 'standard', 'high', 'ultra'];
 const PACING_TIERS = ['contemplative', 'relaxed', 'gentle', 'normal', 'brisk', 'fast', 'rapid', 'hyper', 'flash', 'strobe'];
 const LENGTH_TIERS = ['auto', 'micro', 'blink', 'short', 'compact', 'medium', 'standard', 'long', 'extended', 'deep', 'marathon'];
 const ANGLE_TIERS = ['auto', 'product_showcase', 'tutorial_snippet', 'before_after', 'social_proof', 'behind_the_scenes', 'competitive_comparison', 'meme_style', 'feature_spotlight', 'problem_solution'];
-const SPEED_TIERS = ['slow', 'normal', 'fast', 'rapid'];
-const ANIMATION_TIERS = ['subtle', 'moderate', 'flashy', 'maximal'];
+const SPEED_TIERS = ['glacial', 'slow', 'relaxed', 'normal', 'brisk', 'fast', 'quick', 'rapid', 'hyper', 'turbo'];
+const ANIMATION_TIERS = ['minimal', 'subtle', 'gentle', 'moderate', 'lively', 'energetic', 'flashy', 'bold', 'maximal', 'chaotic'];
 
 const KINDS = ['tiktok', 'shorts', 'promo', 'website'];
 

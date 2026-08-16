@@ -4,13 +4,19 @@
 // use (see pipeline/lib/tts-sapi.mjs, tts-edge.mjs's sapiRateToPercent), so
 // switching TTS engines doesn't change what a given preset sounds like.
 export const SPEED_PRESETS = {
-  slow: { id: "slow", label: "Slow", description: "Deliberate, easy-to-follow narration pace.", rate: -4 },
+  glacial: { id: "glacial", label: "Glacial", description: "Extremely slow — maximum clarity, accessibility-focused.", rate: -9 },
+  slow: { id: "slow", label: "Slow", description: "Deliberate, easy-to-follow narration pace.", rate: -6 },
+  relaxed: { id: "relaxed", label: "Relaxed", description: "Slightly slower than natural — calm and clear.", rate: -3 },
   normal: { id: "normal", label: "Normal", description: "Natural conversational speaking pace.", rate: 0 },
+  brisk: { id: "brisk", label: "Brisk", description: "Slightly quicker than natural — engaged and lively.", rate: 2 },
   fast: { id: "fast", label: "Fast", description: "Energetic, quick-talking narration.", rate: 4 },
+  quick: { id: "quick", label: "Quick", description: "Snappy delivery — high-energy short-form pace.", rate: 6 },
   rapid: { id: "rapid", label: "Rapid", description: "Very fast — hype/meme-style delivery.", rate: 8 },
+  hyper: { id: "hyper", label: "Hyper", description: "Extremely fast — auctioneer-style intensity.", rate: 9 },
+  turbo: { id: "turbo", label: "Turbo", description: "Maximum speed — fastest possible narration.", rate: 10 },
 };
 
-export const SPEED_ORDER = ["slow", "normal", "fast", "rapid"];
+export const SPEED_ORDER = ["glacial", "slow", "relaxed", "normal", "brisk", "fast", "quick", "rapid", "hyper", "turbo"];
 
 // Accepts a preset id, a raw number on the -10..10 scale typed directly into
 // the admin's speed field, or nothing (falls back to normal).

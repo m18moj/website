@@ -312,7 +312,8 @@
     const { apiFetch } = window.ScripForgeAuth;
     try {
       renderPresetsCache = await apiFetch('/api/video-admin/render-presets');
-    } catch {
+    } catch (err) {
+      console.error('[video-admin] Failed to load render presets:', err);
       renderPresetsCache = { quality: [], pacing: [], length: [], angle: [], speed: [], animation: [] };
     }
 
@@ -331,45 +332,55 @@
     };
 
     ['pacing', 'length', 'angle', 'speed', 'animation'].forEach((kind) => {
-      const ids = selectMapping[kind];
-      const presets = renderPresetsCache[kind];
-      populatePresetOptions(document.getElementById(ids.select), presets);
-      populatePresetOptions(document.getElementById(ids.settingsSelect), presets);
-      applyPresetToUI(kind, currentValueFor(kind));
+      // Each kind is wired independently — a bad element lookup or preset
+      // shape for one dropdown must never abort the loop and leave the
+      // remaining dropdowns (later in this array) completely unpopulated.
+      try {
+        const ids = selectMapping[kind];
+        const presets = renderPresetsCache[kind] || [];
+        const selectEl = document.getElementById(ids.select);
+        const customEl = document.getElementById(ids.custom);
+        const settingsSelectEl = document.getElementById(ids.settingsSelect);
+        const settingsCustomEl = document.getElementById(ids.settingsCustom);
 
-      const onValueChange = (val) => {
-        setCurrentValueFor(kind, val);
-        applyPresetToUI(kind, val);
-      };
+        populatePresetOptions(selectEl, presets);
+        populatePresetOptions(settingsSelectEl, presets);
+        applyPresetToUI(kind, currentValueFor(kind));
 
-      document.getElementById(ids.select).addEventListener('change', (e) => {
-        const customInput = document.getElementById(ids.custom);
-        if (e.target.value === CUSTOM_SELECT_ID) {
-          customInput.hidden = false;
-          customInput.focus();
-          onValueChange(customInput.value);
-        } else {
-          customInput.hidden = true;
-          customInput.value = '';
-          onValueChange(e.target.value);
+        const onValueChange = (val) => {
+          setCurrentValueFor(kind, val);
+          applyPresetToUI(kind, val);
+        };
+
+        if (selectEl) {
+          selectEl.addEventListener('change', (e) => {
+            if (e.target.value === CUSTOM_SELECT_ID) {
+              if (customEl) { customEl.hidden = false; customEl.focus(); }
+              onValueChange(customEl ? customEl.value : '');
+            } else {
+              if (customEl) { customEl.hidden = true; customEl.value = ''; }
+              onValueChange(e.target.value);
+            }
+          });
         }
-      });
 
-      document.getElementById(ids.custom).addEventListener('input', (e) => {
-        onValueChange(e.target.value);
-      });
-
-      document.getElementById(ids.settingsSelect).addEventListener('change', (e) => {
-        const customInput = document.getElementById(ids.settingsCustom);
-        if (e.target.value === CUSTOM_SELECT_ID) {
-          customInput.hidden = false;
-          customInput.focus();
-        } else {
-          customInput.hidden = true;
-          customInput.value = '';
+        if (customEl) {
+          customEl.addEventListener('input', (e) => onValueChange(e.target.value));
         }
-      });
 
+        if (settingsSelectEl) {
+          settingsSelectEl.addEventListener('change', (e) => {
+            if (e.target.value === CUSTOM_SELECT_ID) {
+              if (settingsCustomEl) { settingsCustomEl.hidden = false; settingsCustomEl.focus(); }
+            } else if (settingsCustomEl) {
+              settingsCustomEl.hidden = true;
+              settingsCustomEl.value = '';
+            }
+          });
+        }
+      } catch (err) {
+        console.error(`[video-admin] Failed to set up render control "${kind}":`, err);
+      }
     });
 
     setupToggleControls();

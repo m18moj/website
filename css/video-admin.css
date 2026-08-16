@@ -618,8 +618,51 @@
 .video-render-controls-grid .form-group { margin-bottom: 0; }
 
 .video-render-controls-grid select,
-.video-render-controls-grid input[type="text"] {
+.video-render-controls-grid input[type="text"],
+.video-render-controls-grid textarea,
+#videoSettingsForm select,
+#videoSettingsForm input[type="text"],
+#videoSettingsForm textarea {
     width: 100%;
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #2a2a3e);
+    background: var(--bg-tertiary, #16213e);
+    color: var(--text-primary, #eaeaea);
+    font-size: 0.85rem;
+    font-family: inherit;
+}
+
+.video-render-controls-grid select,
+#videoSettingsForm select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%238b8fa3' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 0.65rem;
+    padding-right: 2rem;
+    cursor: pointer;
+}
+
+.video-render-controls-grid select:focus,
+.video-render-controls-grid input[type="text"]:focus,
+.video-render-controls-grid textarea:focus,
+#videoSettingsForm select:focus,
+#videoSettingsForm input[type="text"]:focus,
+#videoSettingsForm textarea:focus {
+    outline: none;
+    border-color: var(--accent-purple, #a855f7);
+}
+
+.video-render-controls-grid select option,
+#videoSettingsForm select option {
+    background: var(--bg-tertiary, #16213e);
+    color: var(--text-primary, #eaeaea);
+}
+
+.video-render-controls-grid textarea {
+    resize: vertical;
 }
 
 .video-render-controls-grid p.empty-state {

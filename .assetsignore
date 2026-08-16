@@ -1,5 +1,6 @@
 node_modules
 .git
+.vscode
 .wrangler
 .claude
 .env
@@ -15,3 +16,5 @@ package.json
 package-lock.json
 wrangler.jsonc
 obsidian
+social
+video

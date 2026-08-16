@@ -13,9 +13,10 @@ import { PayoffScene } from "../scenes/PayoffScene";
 import { CTAScene } from "../scenes/CTAScene";
 import { CaptionTrack } from "../components/Captions";
 import { MasterAudio } from "../components/Audio";
+import { AnimationIntensityContext } from "../animationContext";
 import type { PackVideoProps } from "../types";
 
-const TRANSITION_FRAMES = 8;
+const DEFAULT_TRANSITION_FRAMES = 8;
 
 const GENRE_LABEL: Record<string, string> = {
   shooter: "Shooter",
@@ -39,12 +40,59 @@ function splitDuration(total: number, weights: number[], transitionFrames: numbe
   return raw;
 }
 
+// Beat-matched editing: mirrors pipeline/lib/timeline.mjs's snapToBeatGrid()
+// exactly (same intro-offset formula, same tolerance window, same
+// preserve-total-frames-by-transferring-between-neighbors approach) so the
+// visual cuts land on the same frames as the whoosh/bass-hit SFX baked into
+// the audio mix (see that file's header comment on the lockstep-duplication
+// convention this project uses instead of plumbing a computed timeline
+// through Remotion's input props).
+function cutFramesFromDurations(durations: number[], transitionFrames: number) {
+  const cuts: number[] = [];
+  let cursor = 0;
+  for (let i = 0; i < durations.length; i++) {
+    if (i > 0) {
+      cursor -= transitionFrames;
+      cuts.push(cursor);
+    }
+    cursor += durations[i];
+  }
+  return cuts;
+}
+
+function beatMatchDurations(totalFrames: number, durations: number[], transitionFrames: number, fps: number, bpm?: number) {
+  if (!bpm || !fps) return durations;
+  const stepFrames = (60 / bpm) * fps;
+  if (!Number.isFinite(stepFrames) || stepFrames <= 0) return durations;
+  const offsetFrames = Math.min(2.2, (totalFrames / fps) * 0.14) * fps;
+  const minScene = transitionFrames * 3;
+  const cutFrames = cutFramesFromDurations(durations, transitionFrames);
+  const boundaries = cutFrames.map((c) => c + transitionFrames);
+  const snapped = boundaries.map((b) => {
+    const beatIndex = Math.round((b - offsetFrames) / stepFrames);
+    const candidate = Math.round(offsetFrames + beatIndex * stepFrames);
+    return Math.abs(candidate - b) <= stepFrames * 0.6 ? candidate : b;
+  });
+  const next = [...durations];
+  for (let i = 0; i < snapped.length; i++) {
+    const delta = snapped[i] - boundaries[i];
+    if (!delta) continue;
+    if (next[i] + delta >= minScene && next[i + 1] - delta >= minScene) {
+      next[i] += delta;
+      next[i + 1] -= delta;
+    }
+  }
+  return next;
+}
+
 export const SocialVertical: React.FC<PackVideoProps> = (props) => {
-  const { packId, gameTitle, genre, priceLabel, copy, captions, audioSrc, durationInFrames, platform } = props;
+  const { packId, gameTitle, genre, priceLabel, copy, captions, audioSrc, durationInFrames, platform, transitionFrames, animationIntensity, beatMatch, musicBpm, fps } = props;
   const pack = themeForPack(packId);
   const accent = pack.accent;
   const accent2 = pack.accent2;
   const background = pack.background;
+
+  const TRANSITION_FRAMES = transitionFrames ?? DEFAULT_TRANSITION_FRAMES;
 
   const beats = copy.beats.length > 0 ? copy.beats : [{ heading: copy.hook, body: "" }];
   const hasStat = !!copy.stat;
@@ -55,7 +103,8 @@ export const SocialVertical: React.FC<PackVideoProps> = (props) => {
     ...(hasStat ? [1.4] : []),
     1.7, // cta
   ];
-  const durations = splitDuration(durationInFrames, weights, TRANSITION_FRAMES);
+  const rawDurations = splitDuration(durationInFrames, weights, TRANSITION_FRAMES);
+  const durations = beatMatch ? beatMatchDurations(durationInFrames, rawDurations, TRANSITION_FRAMES, fps, musicBpm) : rawDurations;
   let d = 0;
   const hookD = durations[d++];
   const beatDs = beats.map(() => durations[d++]);
@@ -66,6 +115,7 @@ export const SocialVertical: React.FC<PackVideoProps> = (props) => {
   const fontScale = platform === "tiktok" ? 0.92 : 1;
 
   return (
+    <AnimationIntensityContext.Provider value={animationIntensity ?? 1}>
     <AbsoluteFill style={{ background: "#0f0f1e" }}>
       <TransitionSeries>
         <TransitionSeries.Sequence durationInFrames={hookD}>
@@ -133,5 +183,6 @@ export const SocialVertical: React.FC<PackVideoProps> = (props) => {
       <CaptionTrack cues={captions} accent={accent} />
       <MasterAudio src={audioSrc} />
     </AbsoluteFill>
+    </AnimationIntensityContext.Provider>
   );
 };

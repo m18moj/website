@@ -3,14 +3,16 @@
 import React from "react";
 import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { theme } from "../theme";
+import { useAnimationIntensity } from "../animationContext";
 
 export const BgMesh: React.FC<{ accent?: string; accent2?: string }> = ({
   accent = theme.colors.primary,
   accent2 = theme.colors.accent,
 }) => {
   const frame = useCurrentFrame();
-  const d1 = Math.sin(frame / 55) * 60;
-  const d2 = Math.cos(frame / 70) * 50;
+  const intensity = useAnimationIntensity();
+  const d1 = Math.sin(frame / 55) * 60 * intensity;
+  const d2 = Math.cos(frame / 70) * 50 * intensity;
   return (
     <AbsoluteFill style={{ background: theme.colors.bg }}>
       <div

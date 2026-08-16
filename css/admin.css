@@ -1013,3 +1013,41 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* --- Accessibility: focus-visible outlines for keyboard navigation --------- */
+
+.admin-container :focus-visible {
+    outline: 2px solid var(--accent-cyan, #00d9ff);
+    outline-offset: 2px;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+    outline: 2px solid var(--accent-cyan, #00d9ff);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15);
+}
+
+.menu-item:focus-visible {
+    outline: 2px solid var(--accent-cyan, #00d9ff);
+    outline-offset: -2px;
+}
+
+.admin-user-info button:focus-visible {
+    outline: 2px solid var(--accent-cyan, #00d9ff);
+    outline-offset: 2px;
+}
+
+/* --- Accessibility: screen-reader-only utility -------------------------------- */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

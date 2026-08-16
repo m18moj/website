@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const VIDEO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
-export async function renderComposition({ compositionId, props, outPath, propsFileName }) {
+export async function renderComposition({ compositionId, props, outPath, propsFileName, crf = 17 }) {
   mkdirSync(dirname(outPath), { recursive: true });
   const propsDir = join(VIDEO_ROOT, "build", "props");
   mkdirSync(propsDir, { recursive: true });
@@ -26,7 +26,7 @@ export async function renderComposition({ compositionId, props, outPath, propsFi
         "--codec",
         "h264",
         "--crf",
-        "17",
+        String(crf),
         "--overwrite",
       ],
       { cwd: VIDEO_ROOT, windowsHide: true, shell: true }

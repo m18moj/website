@@ -11,6 +11,7 @@ const statements = {
     SELECT * FROM social_insights WHERE active = 1 AND scope IN ('global', @platformScope, @packScope)
     ORDER BY created_at DESC LIMIT 15
   `),
+  activeRecent: db.prepare(`SELECT * FROM social_insights WHERE active = 1 ORDER BY created_at DESC LIMIT @limit`),
   deactivateOlderThan: db.prepare(`UPDATE social_insights SET active = 0 WHERE created_at < datetime('now', @cutoff)`)
 };
 
@@ -33,4 +34,12 @@ function retireStale(sqliteModifier = '-60 days') {
   statements.deactivateOlderThan.run({ cutoff: sqliteModifier });
 }
 
-module.exports = { record, relevantTo, retireStale };
+// All active insights regardless of scope, most recent first — the
+// Video Studio "Trend Intelligence" panel's read view (server/routes/videoAdmin.js),
+// as opposed to relevantTo() which strategyAgent uses to filter to one
+// platform/pack while planning a specific campaign.
+function activeRecent(limit = 20) {
+  return statements.activeRecent.all({ limit });
+}
+
+module.exports = { record, relevantTo, retireStale, activeRecent };

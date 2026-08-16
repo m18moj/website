@@ -599,11 +599,83 @@ db.exec(`
   );
   CREATE INDEX IF NOT EXISTS idx_social_trends_captured_at ON social_trends(captured_at);
 
+  -- social/agents/trendForecastAgent.js's predictions of what a given trend
+  -- source/topic will do over the next horizon_days days — the "what's going
+  -- to happen next" half of trend intelligence, as opposed to social_trends
+  -- (what IS happening) and momentum() (what's happening lately). Starts
+  -- 'pending' and is resolved once its horizon passes by comparing the
+  -- prediction against real momentum recomputed at resolution time; every
+  -- resolution also writes an ai_scorecard row so the outcome feeds back into
+  -- the next forecast prompt.
+  CREATE TABLE IF NOT EXISTS trend_forecasts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    source TEXT NOT NULL,
+    topic TEXT NOT NULL,
+    predicted_direction TEXT NOT NULL CHECK (predicted_direction IN ('rising', 'falling', 'flat')),
+    confidence REAL NOT NULL,
+    reasoning TEXT,
+    based_on TEXT,
+    horizon_days INTEGER NOT NULL DEFAULT 7,
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'correct', 'incorrect', 'inconclusive')),
+    actual_direction TEXT,
+    resolution_notes TEXT,
+    resolved_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_trend_forecasts_status ON trend_forecasts(status);
+
+  -- The reward/punish ledger: one row per resolved prediction (trend forecast
+  -- or video popularity prediction), regardless of which agent made it.
+  -- social/models/scorecard.js reads this back into both agents' prompts as
+  -- an explicit track record ("you were right X% of the time recently"),
+  -- which is what actually closes the "reward if correct, punish if not"
+  -- loop for an LLM-scored system — there's no gradient to update, so the
+  -- reinforcement has to happen in-context via what the agent is shown next.
+  CREATE TABLE IF NOT EXISTS ai_scorecard (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent TEXT NOT NULL CHECK (agent IN ('trend_forecast', 'popularity_prediction')),
+    subject_type TEXT NOT NULL,
+    subject_id INTEGER NOT NULL,
+    outcome TEXT NOT NULL CHECK (outcome IN ('correct', 'incorrect', 'inconclusive')),
+    predicted_value REAL,
+    actual_value REAL,
+    reward REAL NOT NULL,
+    notes TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_ai_scorecard_agent ON ai_scorecard(agent, created_at);
+
   -- Admin-triggered video renders (Video Studio tab, /video-admin) — separate
   -- from video_jobs above, which is the AI/social hand-off queue. This table
   -- belongs entirely to the admin-panel integration layer: it just shells out
   -- to the video pipeline's own npm scripts and records what happened, never
   -- touching that pipeline's internals.
+  -- One row per connected social account (a TikTok or YouTube channel the
+  -- automation is allowed to post to). Lets social/orchestrator.js fan a
+  -- single piece of promo content out across many accounts instead of the
+  -- one-account-per-platform env-var setup social/config.js still supports
+  -- as the zero-accounts-configured fallback. credentials_json holds
+  -- whatever platforms/tiktok.js or platforms/youtube.js needs to mint an
+  -- access token for this specific account (client id/secret, refresh
+  -- token, channel/open id) — same trust boundary as .env secrets already
+  -- had, just DB-backed so more than one set can coexist. last_used_at
+  -- drives round-robin/cadence selection across accounts of the same
+  -- platform (see social/models/accounts.js).
+  CREATE TABLE IF NOT EXISTS social_accounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    platform TEXT NOT NULL CHECK (platform IN ('tiktok', 'youtube_shorts')),
+    label TEXT NOT NULL,
+    enabled INTEGER NOT NULL DEFAULT 1,
+    -- Optional JSON array of pack ids this account should promote; NULL/empty
+    -- means "any pack" (the account participates in every trigger).
+    niche_pack_ids TEXT,
+    credentials_json TEXT NOT NULL DEFAULT '{}',
+    last_used_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_social_accounts_platform_enabled ON social_accounts(platform, enabled);
+
   CREATE TABLE IF NOT EXISTS video_admin_jobs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     kind TEXT NOT NULL CHECK (kind IN ('tiktok', 'shorts', 'promo', 'website')),
@@ -626,6 +698,62 @@ db.exec(`
 // Existing databases (created before output_path existed) gain the column on
 // boot without a destructive migration — see ensureColumn above.
 ensureColumn('social_publications', 'output_path', 'TEXT');
+// The creative-config an admin-triggered render actually used — nullable
+// (older rows predate these columns), and joined against
+// social_publications.output_path at read time (server/routes/videoAdmin.js
+// GET /intelligence) to correlate real post performance with the pacing/
+// length/video-type/quality choices that produced it, without adding any
+// coupling to the social/ subsystem's own tables.
+ensureColumn('video_admin_jobs', 'quality', 'TEXT');
+ensureColumn('video_admin_jobs', 'pacing', 'TEXT');
+ensureColumn('video_admin_jobs', 'length', 'TEXT');
+ensureColumn('video_admin_jobs', 'angle', 'TEXT');
+
+// Extra render customization — speech speed/animation "flashiness" tiers
+// (video/pipeline/config/speed.mjs, animation.mjs) plus the
+// captions/TTS/music on-off toggles and beat-matched-editing flag (see
+// video/pipeline/orchestrate.mjs). Nullable/boolean-as-INTEGER so older rows
+// (rendered before these options existed) just read back as "unknown" —
+// server/routes/videoAdmin.js treats a null the same as the tier/toggle's
+// default when displaying history.
+ensureColumn('video_admin_jobs', 'speed', 'TEXT');
+ensureColumn('video_admin_jobs', 'animation_intensity', 'TEXT');
+ensureColumn('video_admin_jobs', 'captions_enabled', 'INTEGER');
+ensureColumn('video_admin_jobs', 'tts_enabled', 'INTEGER');
+ensureColumn('video_admin_jobs', 'music_enabled', 'INTEGER');
+ensureColumn('video_admin_jobs', 'beat_match', 'INTEGER');
+
+// Popularity-prediction gate (social/agents/predictionAgent.js, called from
+// both social/orchestrator.js for AI-authored campaigns and
+// server/routes/videoAdmin.js for admin-triggered renders) — a predicted
+// 0-100 score plus the full structured reasoning, computed once a video is
+// ready but before it's scheduled/kept, so low scorers can be ranked and
+// automatically redone. redo_of chains a redo render back to the original
+// job it replaced (server/routes/videoAdmin.js only; AI-authored redoes are
+// tracked via social_campaigns.retry_count instead, since they reuse the
+// same campaign row rather than creating a new one).
+ensureColumn('social_campaigns', 'predicted_score', 'REAL');
+ensureColumn('social_campaigns', 'prediction_json', 'TEXT');
+ensureColumn('video_admin_jobs', 'predicted_score', 'REAL');
+ensureColumn('video_admin_jobs', 'prediction_json', 'TEXT');
+ensureColumn('video_admin_jobs', 'redo_of', 'INTEGER REFERENCES video_admin_jobs(id) ON DELETE SET NULL');
+// Which connected social_accounts row (if any) this campaign posts as —
+// NULL means the legacy single-account-via-env-vars path (social/config.js).
+ensureColumn('social_campaigns', 'account_id', 'INTEGER REFERENCES social_accounts(id) ON DELETE SET NULL');
+
+// The trend/momentum snapshot strategyAgent actually saw when it planned this
+// campaign (social/orchestrator.js runStrategy) — captured at decision time
+// rather than reconstructed later, since momentum() only ever answers "as of
+// now". This is what lets analyticsLearningAgent later ask "did campaigns
+// planned while a trend was rising actually outperform the ones planned
+// while it was flat/falling?" with real, verifiable data instead of a guess.
+ensureColumn('social_campaigns', 'trend_context_json', 'TEXT');
+// Set once a published campaign's real analytics have had time to settle
+// (see analyticsLearningAgent.resolvePredictions) — whether the popularity
+// prediction made before publishing turned out right, wrong, or
+// inconclusive (too little comparable history to judge). NULL means not yet
+// resolved (either unpublished, or published too recently).
+ensureColumn('social_campaigns', 'prediction_outcome', 'TEXT');
 
 // First-boot only: if the catalog tables are empty, load the original
 // hand-authored packs/scripts (server/seedCatalog.js) so existing installs
@@ -687,6 +815,52 @@ function transaction(fn) {
     }
   };
 }
+
+// Migration: ai_scorecard agent CHECK constraint needs 'ensemble_forecast'
+// added to support the ensemble forecast agent (social/agents/ensembleForecastAgent.js).
+// SQLite doesn't support ALTER TABLE to modify CHECK constraints, so this
+// recreates the table with the updated constraint and copies all existing data.
+// Idempotent: only runs if the current constraint doesn't include 'ensemble_forecast'.
+(function migrateScorecardConstraint() {
+  try {
+    // Test if the current constraint accepts 'ensemble_forecast' — if it does,
+    // no migration needed. We INSERT then immediately DELETE inside a transaction
+    // that gets rolled back, so no data is ever actually written.
+    db.exec("BEGIN");
+    try {
+      db.prepare("INSERT INTO ai_scorecard (agent, subject_type, subject_id, outcome, reward) VALUES ('ensemble_forecast', 'test', 0, 'inconclusive', 0)").run();
+      db.prepare("DELETE FROM ai_scorecard WHERE subject_type = 'test' AND subject_id = 0").run();
+      db.exec("ROLLBACK");
+      // Constraint already includes 'ensemble_forecast' — nothing to do
+    } catch (e) {
+      db.exec("ROLLBACK");
+      // Constraint doesn't include 'ensemble_forecast' — migrate the table
+      console.log('[db] Migrating ai_scorecard to add ensemble_forecast to agent CHECK constraint…');
+      db.exec(`
+        CREATE TABLE ai_scorecard_new (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          agent TEXT NOT NULL CHECK (agent IN ('trend_forecast', 'popularity_prediction', 'ensemble_forecast')),
+          subject_type TEXT NOT NULL,
+          subject_id INTEGER NOT NULL,
+          outcome TEXT NOT NULL CHECK (outcome IN ('correct', 'incorrect', 'inconclusive')),
+          predicted_value REAL,
+          actual_value REAL,
+          reward REAL NOT NULL,
+          notes TEXT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        INSERT INTO ai_scorecard_new (id, agent, subject_type, subject_id, outcome, predicted_value, actual_value, reward, notes, created_at)
+          SELECT id, agent, subject_type, subject_id, outcome, predicted_value, actual_value, reward, notes, created_at FROM ai_scorecard;
+        DROP TABLE ai_scorecard;
+        ALTER TABLE ai_scorecard_new RENAME TO ai_scorecard;
+        CREATE INDEX idx_ai_scorecard_agent ON ai_scorecard(agent, created_at);
+      `);
+      console.log('[db] ai_scorecard migration complete.');
+    }
+  } catch (err) {
+    console.error('[db] ai_scorecard migration check failed (non-fatal):', err.message);
+  }
+})();
 
 module.exports = db;
 module.exports.transaction = transaction;

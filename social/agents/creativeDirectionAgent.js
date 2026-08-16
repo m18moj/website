@@ -5,6 +5,7 @@
 // pipeline (see social/VIDEO_JOB_CONTRACT.md) — nothing here renders
 // anything itself.
 const { structured } = require('./llm');
+const contentPatternsModel = require('../models/contentPatterns');
 
 // Static reference, not a live read of css/styles.css — this system never
 // touches UI files, and the brand palette changes rarely enough that a
@@ -37,6 +38,17 @@ const SCHEMA = {
 const SYSTEM = `You are the Creative Direction agent for ScripForge's short-form video system. Translate a script into a concrete visual brief a video pipeline can execute mechanically — be specific, not abstract. Stay consistent with the brand: dark, tech/coding aesthetic, cyan (${BRAND.accentCyan}) and purple (${BRAND.accentPurple}) accents on a near-black background (${BRAND.background}). Output only via the submit_result tool.`;
 
 function buildPrompt({ script, strategy, pack }) {
+  // Content-DNA patterns: pacing, visual_style, and on_screen_text patterns
+  // mined from historically top-performing campaigns (see replicationAgent.js).
+  // Safe when no patterns exist yet — the section is simply omitted.
+  const pacingPatterns = contentPatternsModel.patternsFor({ platform: null, contentPillar: strategy.contentPillar, patternType: 'pacing', limit: 3 });
+  const visualPatterns = contentPatternsModel.patternsFor({ platform: null, contentPillar: strategy.contentPillar, patternType: 'visual_style', limit: 3 });
+  const textPatterns = contentPatternsModel.patternsFor({ platform: null, contentPillar: strategy.contentPillar, patternType: 'on_screen_text', limit: 3 });
+  const allPatterns = [...pacingPatterns, ...visualPatterns, ...textPatterns];
+  const patternsBlock = allPatterns.length
+    ? `\n\nKnown winning creative patterns from past campaigns:\n${allPatterns.map((p) => `- [${p.patternType}, confidence ${Math.round(p.confidence * 100)}%] ${p.patternDescription}`).join('\n')}`
+    : '';
+
   return `Strategy angle: ${strategy.angle} (pillar: ${strategy.contentPillar})
 ${pack ? `Featured pack: ${pack.packName} (${pack.gameTitle})` : 'No specific pack featured.'}
 
@@ -44,6 +56,7 @@ Script hook: ${script.hookLine}
 Beats:
 ${script.beats.map((b) => `- [${b.startSeconds}s] ${b.visual} — VO: "${b.voiceover}" / on-screen: "${b.onScreenText}"`).join('\n')}
 CTA: ${script.ctaLine}
+${patternsBlock}
 
 Produce the creative brief now.`;
 }

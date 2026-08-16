@@ -8,10 +8,26 @@ const DEFAULTS = {
   announcementBanner: { enabled: false, text: '' },
   wishlist: true,
   newBadges: true,
-  // Admin-only config for the Video Studio tab (TTS voice/rate, GPU
-  // preference) — read by server/routes/videoAdmin.js and passed through to
-  // the video pipeline's scripts as env vars when a render job is spawned.
-  videoAdminConfig: { ttsVoice: '', ttsRate: 0, preferGpu: true }
+  // Admin-only config for the Video Studio tab (TTS voice, GPU preference,
+  // default render quality/pacing/length/angle/speed/animation tiers, and
+  // the captions/TTS/music/beat-match toggles) — read by
+  // server/routes/videoAdmin.js and passed through to the video pipeline's
+  // scripts as env vars when a render job is spawned.
+  videoAdminConfig: {
+    ttsVoice: '',
+    edgeTtsVoice: '',
+    preferGpu: true,
+    quality: 'standard',
+    pacing: 'normal',
+    length: 'auto',
+    angle: 'auto',
+    speed: 'normal',
+    animation: 'moderate',
+    captionsEnabled: true,
+    ttsEnabled: true,
+    musicEnabled: true,
+    beatMatch: false
+  }
 };
 
 // Flags exposed to anyone, signed in or not — used to decide what to render

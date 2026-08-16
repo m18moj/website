@@ -12,6 +12,14 @@ const tiktok = require('../platforms/tiktok');
 const publicationsModel = require('../models/publications');
 const analyticsModel = require('../models/analytics');
 const insightsModel = require('../models/insights');
+const campaignsModel = require('../models/campaigns');
+const scorecardModel = require('../models/scorecard');
+
+// Same threshold predictionAgent's caller (social/orchestrator.js runQa)
+// gates on — duplicated here rather than imported to avoid a circular
+// require (orchestrator already requires this module), same convention as
+// MIN_POPULARITY_SCORE's existing duplication into server/routes/videoAdmin.js.
+const MIN_POPULARITY_SCORE = 60;
 
 async function collect() {
   const recent = publicationsModel.listPublishedSince('-14 days');
@@ -91,4 +99,89 @@ async function learn() {
   return { written: result.insights.length };
 }
 
-module.exports = { collect, learn };
+function pillarOf(strategyJson) {
+  try { return JSON.parse(strategyJson || '{}').contentPillar || 'unknown'; } catch { return 'unknown'; }
+}
+
+// Real views are a raw number with no fixed scale, but predictionAgent's
+// score is 0-100 relative to history — so grading a prediction means putting
+// the actual outcome on the same relative footing: 50 means "performed
+// exactly at this pillar's historical average", above/below scales from
+// there. Capped at 100 so one outlier viral post doesn't blow the scale out;
+// floored at 0 for symmetry.
+function actualScoreFor(views, baselineAvg) {
+  if (baselineAvg <= 0) return null;
+  return Math.max(0, Math.min(100, Math.round((views / baselineAvg) * 50)));
+}
+
+// Grades every published campaign's pre-publish popularity prediction against
+// what actually happened, once its analytics have had a few days to settle.
+// This is the reward/punish step: each resolution writes a scorecard row
+// that predictionAgent reads back into its own prompt on the next call (see
+// summarizeTrackRecord there), so a run of bad calls visibly lowers its
+// stated confidence before the next prediction rather than silently
+// repeating the same miscalibration forever.
+function resolvePredictions() {
+  const pending = campaignsModel.awaitingPredictionResolution('-3 days');
+  if (!pending.length) return { resolved: 0 };
+
+  const history = analyticsModel.sinceWithCampaignDetail('-180 days');
+  const byPillar = new Map();
+  for (const row of history) {
+    const pillar = pillarOf(row.strategyJson);
+    if (!byPillar.has(pillar)) byPillar.set(pillar, []);
+    byPillar.get(pillar).push(row);
+  }
+
+  let resolved = 0;
+  for (const campaign of pending) {
+    const prediction = JSON.parse(campaign.predictionJson);
+    const pub = publicationsModel.findByCampaignId(campaign.id);
+    const snapshot = pub ? analyticsModel.latestForPublication(pub.id) : null;
+
+    if (!snapshot) {
+      campaignsModel.setPredictionOutcome(campaign.id, 'inconclusive');
+      scorecardModel.record({ agent: 'popularity_prediction', subjectType: 'campaign', subjectId: campaign.id, outcome: 'inconclusive', predictedValue: prediction.score, actualValue: null, reward: 0, notes: 'Published but no analytics snapshot collected yet.' });
+      resolved += 1;
+      continue;
+    }
+
+    const pillar = pillarOf(campaign.strategyJson);
+    // Baseline excludes this campaign's own publication so it isn't
+    // compared against itself.
+    const comparableViews = (byPillar.get(pillar) || []).filter((r) => r.campaignId !== campaign.id).map((r) => r.views || 0);
+    const baselineAvg = comparableViews.length ? comparableViews.reduce((a, b) => a + b, 0) / comparableViews.length : 0;
+    const actualScore = actualScoreFor(snapshot.views, baselineAvg);
+
+    if (actualScore === null) {
+      campaignsModel.setPredictionOutcome(campaign.id, 'inconclusive');
+      scorecardModel.record({ agent: 'popularity_prediction', subjectType: 'campaign', subjectId: campaign.id, outcome: 'inconclusive', predictedValue: prediction.score, actualValue: null, reward: 0, notes: `No comparable published campaigns yet in content pillar "${pillar}" to baseline against.` });
+      resolved += 1;
+      continue;
+    }
+
+    const predictedPass = prediction.score >= MIN_POPULARITY_SCORE;
+    const actualPass = actualScore >= 50;
+    const correct = predictedPass === actualPass;
+    const confidence = typeof prediction.confidence === 'number' ? prediction.confidence : 0.5;
+    const outcome = correct ? 'correct' : 'incorrect';
+    const notes = `Predicted ${prediction.score}/100 (${predictedPass ? 'pass' : 'fail'}); actual ${snapshot.views.toLocaleString()} views vs. pillar "${pillar}" baseline ${Math.round(baselineAvg).toLocaleString()} -> normalized ${actualScore}/100 (${actualPass ? 'pass' : 'fail'}).`;
+
+    campaignsModel.setPredictionOutcome(campaign.id, outcome);
+    scorecardModel.record({
+      agent: 'popularity_prediction',
+      subjectType: 'campaign',
+      subjectId: campaign.id,
+      outcome,
+      predictedValue: prediction.score,
+      actualValue: actualScore,
+      reward: correct ? confidence : -confidence,
+      notes
+    });
+    resolved += 1;
+  }
+
+  return { resolved };
+}
+
+module.exports = { collect, learn, resolvePredictions };

@@ -37,17 +37,60 @@ function buildTimeline(totalFrames, weights, transitionFrames) {
   return { durations, cutFrames };
 }
 
-export function socialTimeline({ totalFrames, beatCount, hasStat }) {
+// "Beat-matched editing": nudges each scene-cut boundary onto the nearest
+// beat of the music's beat grid (see pipeline/lib/music.mjs's `introEnd`/
+// `FPB` math — the `Math.min(2.2, durationSeconds*0.14)` intro-offset here
+// mirrors that exactly, and is duplicated again in src/compositions/
+// SocialVertical.tsx + WebsitePremium.tsx per this file's existing
+// lockstep-duplication convention, see header comment). Only snaps within a
+// bounded tolerance window (0.6 of a beat) and never shrinks a scene below
+// the existing minimum floor, so a bad snap silently no-ops instead of
+// producing a broken timeline. Total frame count is always preserved exactly
+// — frames are only transferred between adjacent scene durations.
+function snapToBeatGrid(totalFrames, durations, cutFrames, transitionFrames, fps, bpm) {
+  if (!bpm || !fps) return { durations, cutFrames };
+  const stepFrames = (60 / bpm) * fps;
+  if (!Number.isFinite(stepFrames) || stepFrames <= 0) return { durations, cutFrames };
+  const offsetFrames = Math.min(2.2, (totalFrames / fps) * 0.14) * fps;
+  const minScene = transitionFrames * 3;
+  const boundaries = cutFrames.map((c) => c + transitionFrames);
+  const snapped = boundaries.map((b) => {
+    const beatIndex = Math.round((b - offsetFrames) / stepFrames);
+    const candidate = Math.round(offsetFrames + beatIndex * stepFrames);
+    return Math.abs(candidate - b) <= stepFrames * 0.6 ? candidate : b;
+  });
+  const newDurations = [...durations];
+  for (let i = 0; i < snapped.length; i++) {
+    const delta = snapped[i] - boundaries[i];
+    if (!delta) continue;
+    if (newDurations[i] + delta >= minScene && newDurations[i + 1] - delta >= minScene) {
+      newDurations[i] += delta;
+      newDurations[i + 1] -= delta;
+    } else {
+      snapped[i] = boundaries[i]; // revert if it would violate the minimum-scene floor
+    }
+  }
+  return { durations: newDurations, cutFrames: snapped.map((b) => b - transitionFrames) };
+}
+
+// transitionFrames: optional override (see pipeline/config/pacing.mjs) —
+// defaults to the original hardcoded constant so callers that don't pass a
+// pacing preset get exactly the prior behavior. beatMatch/bpm/fps: optional
+// — when beatMatch is true and a bpm+fps are given, cuts snap to the music's
+// beat grid (see snapToBeatGrid above).
+export function socialTimeline({ totalFrames, beatCount, hasStat, transitionFrames = SOCIAL_TRANSITION_FRAMES, beatMatch = false, bpm, fps }) {
   const weights = [
     1.1,
     ...Array.from({ length: beatCount }, () => 3.2 / beatCount),
     ...(hasStat ? [1.4] : []),
     1.7,
   ];
-  return buildTimeline(totalFrames, weights, SOCIAL_TRANSITION_FRAMES);
+  const base = buildTimeline(totalFrames, weights, transitionFrames);
+  return beatMatch ? snapToBeatGrid(totalFrames, base.durations, base.cutFrames, transitionFrames, fps, bpm) : base;
 }
 
-export function websiteTimeline({ totalFrames }) {
+export function websiteTimeline({ totalFrames, transitionFrames = WEBSITE_TRANSITION_FRAMES, beatMatch = false, bpm, fps }) {
   const weights = [1.0, 1.6, 1.1, 1.3];
-  return buildTimeline(totalFrames, weights, WEBSITE_TRANSITION_FRAMES);
+  const base = buildTimeline(totalFrames, weights, transitionFrames);
+  return beatMatch ? snapToBeatGrid(totalFrames, base.durations, base.cutFrames, transitionFrames, fps, bpm) : base;
 }

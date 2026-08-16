@@ -32,6 +32,19 @@ export interface PackVideoProps {
   width: number;
   height: number;
   durationInFrames: number;
+  // Frames per scene transition — lower is snappier. Optional so old
+  // props.json files without it (or the storyboard/sampleProps) still
+  // render with each composition's original default. See pipeline/config/pacing.mjs.
+  transitionFrames?: number;
+  // Motion amplitude/energy multiplier — see src/animationContext.ts and
+  // pipeline/config/animation.mjs. Optional, defaults to 1 (moderate).
+  animationIntensity?: number;
+  // When true, scene-cut boundaries were snapped to musicBpm's beat grid by
+  // pipeline/lib/timeline.mjs — the composition re-derives the same snap
+  // locally (see splitDuration usage) so the visual cuts land exactly where
+  // the audio mix's SFX cues do.
+  beatMatch?: boolean;
+  musicBpm?: number;
 }
 
 export interface WebsiteBeat {
@@ -58,4 +71,8 @@ export interface WebsitePromoProps {
   width: number;
   height: number;
   durationInFrames: number;
+  transitionFrames?: number;
+  animationIntensity?: number;
+  beatMatch?: boolean;
+  musicBpm?: number;
 }

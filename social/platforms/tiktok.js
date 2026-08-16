@@ -4,31 +4,54 @@
 // docs. Resolves to { ok:false, reason:'not_configured' } rather than
 // throwing when env vars are absent, same convention as platforms/youtube.js.
 //
+// Every exported function takes an optional trailing `account` argument —
+// { id, credentials: { clientKey, clientSecret, refreshToken } } — from
+// social/models/accounts.js, letting the same client post as any number of
+// connected accounts. Omitting it (every call site written before
+// multi-account support) falls back to the single legacy account configured
+// via social/config.js's TIKTOK env vars, so nothing already deployed breaks.
+//
 // Note: TikTok caps unaudited apps' posts to "private viewing mode" and
 // limits the init endpoint to 6 requests/minute per token — fine under this
 // system's cadence (publish_due_posts runs every 5 minutes), but worth
-// knowing if SOCIAL_EVERGREEN_PER_DAY is turned up a lot.
+// knowing if SOCIAL_EVERGREEN_PER_DAY or the number of connected accounts is
+// turned up a lot.
 const fs = require('fs');
 const config = require('../config');
 
 const BASE = 'https://open.tiktokapis.com/v2';
 
-function isConfigured() {
-  const { CLIENT_KEY, CLIENT_SECRET, REFRESH_TOKEN } = config.TIKTOK;
-  return Boolean(CLIENT_KEY && CLIENT_SECRET && REFRESH_TOKEN);
+// Resolves the credential triple for either a connected account or the
+// legacy env-var single account (account === undefined/null).
+function credsFor(account) {
+  if (account) {
+    const c = account.credentials || {};
+    return { clientKey: c.clientKey, clientSecret: c.clientSecret, refreshToken: c.refreshToken };
+  }
+  return { clientKey: config.TIKTOK.CLIENT_KEY, clientSecret: config.TIKTOK.CLIENT_SECRET, refreshToken: config.TIKTOK.REFRESH_TOKEN };
 }
 
-let cachedToken = null; // { accessToken, openId, expiresAt }
+function isConfigured(account) {
+  const { clientKey, clientSecret, refreshToken } = credsFor(account);
+  return Boolean(clientKey && clientSecret && refreshToken);
+}
 
-async function getAccessToken() {
-  if (cachedToken && cachedToken.expiresAt > Date.now() + 30_000) return cachedToken;
-  if (!isConfigured()) throw Object.assign(new Error('TikTok OAuth is not configured'), { code: 'not_configured' });
+// Keyed by account id (or 'legacy' for the env-var account) — each connected
+// account mints and caches its own token independently.
+const tokenCache = new Map();
 
+async function getAccessToken(account) {
+  const cacheKey = account ? `account:${account.id}` : 'legacy';
+  const cached = tokenCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now() + 30_000) return cached;
+  if (!isConfigured(account)) throw Object.assign(new Error('TikTok OAuth is not configured'), { code: 'not_configured' });
+
+  const { clientKey, clientSecret, refreshToken } = credsFor(account);
   const body = new URLSearchParams({
-    client_key: config.TIKTOK.CLIENT_KEY,
-    client_secret: config.TIKTOK.CLIENT_SECRET,
+    client_key: clientKey,
+    client_secret: clientSecret,
     grant_type: 'refresh_token',
-    refresh_token: config.TIKTOK.REFRESH_TOKEN
+    refresh_token: refreshToken
   });
   const res = await fetch(`${BASE}/oauth/token/`, {
     method: 'POST',
@@ -38,13 +61,14 @@ async function getAccessToken() {
   const data = await res.json();
   if (!res.ok || !data.access_token) throw new Error(`TikTok token refresh failed: ${data.error_description || data.error || res.status}`);
 
-  cachedToken = { accessToken: data.access_token, openId: data.open_id, expiresAt: Date.now() + data.expires_in * 1000 };
-  return cachedToken;
+  const token = { accessToken: data.access_token, openId: data.open_id, expiresAt: Date.now() + data.expires_in * 1000 };
+  tokenCache.set(cacheKey, token);
+  return token;
 }
 
-async function creatorInfo() {
-  if (!isConfigured()) return { ok: false, reason: 'not_configured' };
-  const { accessToken } = await getAccessToken();
+async function creatorInfo(account) {
+  if (!isConfigured(account)) return { ok: false, reason: 'not_configured' };
+  const { accessToken } = await getAccessToken(account);
   const res = await fetch(`${BASE}/post/publish/creator_info/query/`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json; charset=UTF-8' }
@@ -58,10 +82,10 @@ async function creatorInfo() {
 // file is PUT as a single chunk — vertical short-form clips are small enough
 // (well under TikTok's per-chunk cap) that multi-chunk splitting isn't
 // needed here.
-async function publishVideo({ filePath, title, privacyLevel = 'PUBLIC_TO_EVERYONE', disableComment = false, disableDuet = false, disableStitch = false }) {
-  if (!isConfigured()) return { ok: false, reason: 'not_configured' };
+async function publishVideo({ filePath, title, privacyLevel = 'PUBLIC_TO_EVERYONE', disableComment = false, disableDuet = false, disableStitch = false, account }) {
+  if (!isConfigured(account)) return { ok: false, reason: 'not_configured' };
 
-  const { accessToken } = await getAccessToken();
+  const { accessToken } = await getAccessToken(account);
   const fileBuffer = fs.readFileSync(filePath);
 
   const initRes = await fetch(`${BASE}/post/publish/video/init/`, {
@@ -106,9 +130,9 @@ async function publishVideo({ filePath, title, privacyLevel = 'PUBLIC_TO_EVERYON
 // caller (social/scheduler.js publish_due_posts, or a dedicated poll job) is
 // expected to call this on an interval rather than treating publishVideo's
 // return as final.
-async function fetchPublishStatus(publishId) {
-  if (!isConfigured()) return { ok: false, reason: 'not_configured' };
-  const { accessToken } = await getAccessToken();
+async function fetchPublishStatus(publishId, account) {
+  if (!isConfigured(account)) return { ok: false, reason: 'not_configured' };
+  const { accessToken } = await getAccessToken(account);
   const res = await fetch(`${BASE}/post/publish/status/fetch/`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json; charset=UTF-8' },
@@ -122,9 +146,9 @@ async function fetchPublishStatus(publishId) {
 // Stats for our own already-posted videos, via the Video Query API. Needs
 // the `video.list` scope in addition to `video.publish` on the token minted
 // by social/scripts/tiktok-oauth-setup.js — up to 20 ids per call.
-async function fetchVideoStats(videoIds) {
-  if (!isConfigured()) return { ok: false, reason: 'not_configured' };
-  const { accessToken } = await getAccessToken();
+async function fetchVideoStats(videoIds, account) {
+  if (!isConfigured(account)) return { ok: false, reason: 'not_configured' };
+  const { accessToken } = await getAccessToken(account);
   const res = await fetch(`${BASE}/video/query/?fields=id,like_count,comment_count,share_count,view_count`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json; charset=UTF-8' },

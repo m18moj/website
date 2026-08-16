@@ -8,9 +8,13 @@ import { writeFileSync } from "node:fs";
 const DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // "Rachel" — a standard premade ElevenLabs voice
 const API_BASE = "https://api.elevenlabs.io/v1";
 
-export async function synthesizeWithElevenLabs({ text, outAudioPath, apiKey, voiceId, modelId }) {
+export async function synthesizeWithElevenLabs({ text, outAudioPath, apiKey, voiceId, modelId, speed = 1 }) {
   const voice = voiceId || process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE_ID;
   const model = modelId || process.env.ELEVENLABS_MODEL_ID || "eleven_turbo_v2_5";
+  // ElevenLabs bounds voice_settings.speed to 0.7-1.2 — see
+  // pipeline/config/speed.mjs's speedToElevenLabsMultiplier(), which maps
+  // the shared -10..10 rate scale onto this range.
+  const clampedSpeed = Math.min(Math.max(speed, 0.7), 1.2);
 
   const res = await fetch(`${API_BASE}/text-to-speech/${voice}/with-timestamps`, {
     method: "POST",
@@ -22,7 +26,7 @@ export async function synthesizeWithElevenLabs({ text, outAudioPath, apiKey, voi
     body: JSON.stringify({
       text,
       model_id: model,
-      voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.35, use_speaker_boost: true },
+      voice_settings: { stability: 0.45, similarity_boost: 0.8, style: 0.35, use_speaker_boost: true, speed: clampedSpeed },
     }),
   });
 

@@ -18,6 +18,20 @@ const statements = {
     JOIN social_campaigns campaigns ON campaigns.id = publications.campaign_id
     WHERE snapshots.captured_at >= datetime('now', @since)
     ORDER BY snapshots.captured_at DESC
+  `),
+  // Same join as sinceWithCampaign plus strategy_json, so a caller can group
+  // real performance by content pillar/angle — the grounding
+  // social/agents/predictionAgent.js needs to judge a not-yet-published
+  // video against how similar past videos actually did, not just guess.
+  sinceWithCampaignDetail: db.prepare(`
+    SELECT snapshots.views, snapshots.likes, snapshots.comments, snapshots.shares, snapshots.captured_at AS capturedAt,
+      publications.campaign_id AS campaignId, publications.platform AS platform,
+      campaigns.pack_id AS packId, campaigns.strategy_json AS strategyJson
+    FROM social_analytics_snapshots snapshots
+    JOIN social_publications publications ON publications.id = snapshots.publication_id
+    JOIN social_campaigns campaigns ON campaigns.id = publications.campaign_id
+    WHERE snapshots.captured_at >= datetime('now', @since)
+    ORDER BY snapshots.captured_at DESC
   `)
 };
 
@@ -44,4 +58,8 @@ function sinceWithCampaign(sqliteModifier = '-30 days') {
   return statements.sinceWithCampaign.all({ since: sqliteModifier });
 }
 
-module.exports = { record, latestForPublication, sinceWithCampaign };
+function sinceWithCampaignDetail(sqliteModifier = '-90 days') {
+  return statements.sinceWithCampaignDetail.all({ since: sqliteModifier });
+}
+
+module.exports = { record, latestForPublication, sinceWithCampaign, sinceWithCampaignDetail };

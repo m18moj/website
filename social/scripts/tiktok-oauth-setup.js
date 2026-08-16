@@ -80,8 +80,15 @@ rl.question('Paste the redirect URL (or just the code param): ', async (answer) 
       console.error('\nToken exchange failed:', data.error_description || data.error || data);
       process.exit(1);
     }
-    console.log('\nSuccess. Add this to social/.env:\n');
-    console.log(`TIKTOK_REFRESH_TOKEN=${data.refresh_token}`);
+    console.log('\nSuccess.\n');
+    console.log('For the single default account, add this to social/.env:');
+    console.log(`  TIKTOK_REFRESH_TOKEN=${data.refresh_token}`);
+    console.log('\nTo connect this as an ADDITIONAL account (multi-account posting), instead open');
+    console.log('Video Studio -> Social Hand-off -> Connected accounts -> "+ Add account", pick');
+    console.log('TikTok, and paste in:');
+    console.log(`  Client key:     ${CLIENT_KEY}`);
+    console.log('  Client secret:  (the TIKTOK_CLIENT_SECRET from social/.env)');
+    console.log(`  Refresh token:  ${data.refresh_token}`);
     console.log(`\n(open_id: ${data.open_id} — access token expires in ${data.expires_in}s but the code above auto-refreshes it, this refresh token is what matters long-term; it itself expires in ${data.refresh_expires_in}s (~1 year), so re-run this script if it ever lapses.)`);
     process.exit(0);
   } catch (err) {

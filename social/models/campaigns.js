@@ -4,20 +4,40 @@
 const db = require('../db');
 
 const columns = `
-  id, trigger_type AS triggerType, pack_id AS packId, platform, status,
+  id, trigger_type AS triggerType, pack_id AS packId, platform, status, account_id AS accountId,
   strategy_json AS strategyJson, script_json AS scriptJson, creative_json AS creativeJson,
-  metadata_json AS metadataJson, qa_json AS qaJson, retry_count AS retryCount, error,
+  metadata_json AS metadataJson, qa_json AS qaJson, predicted_score AS predictedScore,
+  prediction_json AS predictionJson, trend_context_json AS trendContextJson,
+  prediction_outcome AS predictionOutcome, retry_count AS retryCount, error,
   created_at AS createdAt, updated_at AS updatedAt
 `;
 
 const statements = {
   insert: db.prepare(`
-    INSERT INTO social_campaigns (trigger_type, pack_id, platform)
-    VALUES (@triggerType, @packId, @platform)
+    INSERT INTO social_campaigns (trigger_type, pack_id, platform, account_id)
+    VALUES (@triggerType, @packId, @platform, @accountId)
   `),
   findById: db.prepare(`SELECT ${columns} FROM social_campaigns WHERE id = ?`),
   setJsonField: (field) => db.prepare(`
     UPDATE social_campaigns SET ${field} = @value, status = @status, updated_at = datetime('now') WHERE id = @id
+  `),
+  setPrediction: db.prepare(`
+    UPDATE social_campaigns SET predicted_score = @score, prediction_json = @data, status = @status, updated_at = datetime('now') WHERE id = @id
+  `),
+  setTrendContext: db.prepare(`UPDATE social_campaigns SET trend_context_json = @data, updated_at = datetime('now') WHERE id = @id`),
+  setPredictionOutcome: db.prepare(`UPDATE social_campaigns SET prediction_outcome = @outcome, updated_at = datetime('now') WHERE id = @id`),
+  // Published campaigns whose prediction hasn't been graded yet, once their
+  // analytics have had a few days to settle (a video's first hours are too
+  // noisy to judge a popularity call against) — the work list for
+  // analyticsLearningAgent.resolvePredictions().
+  awaitingPredictionResolution: db.prepare(`
+    SELECT ${columns} FROM social_campaigns campaigns
+    WHERE campaigns.prediction_json IS NOT NULL
+      AND campaigns.prediction_outcome IS NULL
+      AND EXISTS (
+        SELECT 1 FROM social_publications pub
+        WHERE pub.campaign_id = campaigns.id AND pub.status = 'published' AND pub.published_at <= datetime('now', @cutoff)
+      )
   `),
   setStatus: db.prepare(`UPDATE social_campaigns SET status = @status, error = @error, updated_at = datetime('now') WHERE id = @id`),
   bumpRetry: db.prepare(`UPDATE social_campaigns SET retry_count = retry_count + 1, updated_at = datetime('now') WHERE id = ?`),
@@ -42,8 +62,8 @@ const statements = {
   statusCounts: db.prepare(`SELECT status, COUNT(*) AS count FROM social_campaigns GROUP BY status`)
 };
 
-function create({ triggerType, packId = null, platform }) {
-  const result = statements.insert.run({ triggerType, packId, platform });
+function create({ triggerType, packId = null, platform, accountId = null }) {
+  const result = statements.insert.run({ triggerType, packId, platform, accountId });
   return findById(result.lastInsertRowid);
 }
 
@@ -61,6 +81,28 @@ const setScript = (id, data, status = 'creative') => setStage(id, 'script_json',
 const setCreative = (id, data, status = 'video_queued') => setStage(id, 'creative_json', data, status);
 const setMetadata = (id, data, status) => setStage(id, 'metadata_json', data, status);
 const setQa = (id, data, status) => setStage(id, 'qa_json', data, status);
+
+// Popularity prediction is a separate column pair (not another JSON stage
+// field), since it carries a numeric score that needs to be queried/sorted
+// on directly (ranking, "below threshold" checks) rather than only read back
+// as a JSON blob.
+function setPrediction(id, prediction, status) {
+  statements.setPrediction.run({ id, score: prediction.score, data: JSON.stringify(prediction), status });
+  return findById(id);
+}
+
+function setTrendContext(id, context) {
+  statements.setTrendContext.run({ id, data: JSON.stringify(context) });
+}
+
+function setPredictionOutcome(id, outcome) {
+  statements.setPredictionOutcome.run({ id, outcome });
+  return findById(id);
+}
+
+function awaitingPredictionResolution(sqliteModifier = '-3 days') {
+  return statements.awaitingPredictionResolution.all({ cutoff: sqliteModifier });
+}
 
 function setStatus(id, status, error = null) {
   statements.setStatus.run({ id, status, error });
@@ -100,6 +142,10 @@ module.exports = {
   setCreative,
   setMetadata,
   setQa,
+  setPrediction,
+  setTrendContext,
+  setPredictionOutcome,
+  awaitingPredictionResolution,
   setStatus,
   bumpRetry,
   list,

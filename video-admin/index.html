@@ -27,12 +27,13 @@
         <div class="admin-layout" id="adminLayout" hidden>
             <aside class="admin-sidebar">
                 <nav class="admin-menu">
-                    <a href="#" class="menu-item active" data-admin-tab="overview">📊 Overview</a>
-                    <a href="#" class="menu-item" data-admin-tab="packs">🎮 Pack Renders</a>
-                    <a href="#" class="menu-item" data-admin-tab="queue">🎞️ Render Queue</a>
-                    <a href="#" class="menu-item" data-admin-tab="gallery">🖼️ Output Gallery</a>
-                    <a href="#" class="menu-item" data-admin-tab="social">📱 Social Hand-off</a>
-                    <a href="#" class="menu-item" data-admin-tab="settings">⚙️ Settings</a>
+                    <a href="#" class="menu-item active" data-admin-tab="overview" role="button">📊 Overview</a>
+                    <a href="#" class="menu-item" data-admin-tab="packs" role="button">🎮 Pack Renders</a>
+                    <a href="#" class="menu-item" data-admin-tab="queue" role="button">🎞️ Render Queue</a>
+                    <a href="#" class="menu-item" data-admin-tab="gallery" role="button">🖼️ Output Gallery</a>
+                    <a href="#" class="menu-item" data-admin-tab="social" role="button">📱 Social Hand-off</a>
+                    <a href="#" class="menu-item" data-admin-tab="intelligence" role="button">🧠 Trend Intelligence</a>
+                    <a href="#" class="menu-item" data-admin-tab="settings" role="button">⚙️ Settings</a>
                 </nav>
             </aside>
 
@@ -73,15 +74,6 @@
                         <div id="smokeTestsContainer">Loading…</div>
                     </div>
 
-                    <div class="dashboard-section video-glass-panel">
-                        <div class="section-header">
-                            <h2>Test render</h2>
-                            <div class="section-header-actions">
-                                <button type="button" class="btn btn-primary" id="renderTestBtn">🎬 Render test video</button>
-                            </div>
-                        </div>
-                        <p class="empty-state">One-click end-to-end check: renders the first catalog pack as a YouTube Short — ad copy (Claude), voiceover, music, render, and QA. Needs the Anthropic key (above) and ffmpeg. The finished video appears in the Output Gallery.</p>
-                    </div>
                 </div>
 
                 <!-- Pack Renders -->
@@ -92,6 +84,79 @@
                             <button type="button" class="btn btn-primary" id="renderWebsiteBtn">🌐 Render Website Promo</button>
                         </div>
                     </div>
+                    <div class="dashboard-section video-glass-panel video-quality-panel">
+                        <div class="section-header"><h2 style="margin:0">Render controls</h2></div>
+                        <p class="empty-state">Applies to every render triggered below, the Website Promo button, and the test render. Saved as the default in Settings.</p>
+                        <div class="video-quality-row">
+                            <label for="qualitySlider">Quality / effort</label>
+                            <span id="qualitySliderValue" class="video-status-pill">Standard</span>
+                        </div>
+                        <input type="range" id="qualitySlider" min="0" max="3" step="1" value="1">
+                        <div class="video-quality-ticks"><span>Cheap &amp; fast</span><span>Best quality</span></div>
+                        <p class="empty-state" id="qualitySliderDesc"></p>
+
+                        <p class="empty-state">Pick a preset from the dropdown. Choose "Other" to enter a custom value. Leave a field on its default to use the saved Settings default automatically.</p>
+                        <div class="video-render-controls-grid">
+                            <div class="form-group">
+                                <label for="pacingSelect">Pacing (calm ↔ fast-paced)</label>
+                                <select id="pacingSelect"></select>
+                                <input type="text" id="pacingSelectCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 0.5" hidden>
+                                <p class="empty-state" id="pacingSelectDesc"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="lengthSelect">Rough length</label>
+                                <select id="lengthSelect"></select>
+                                <input type="text" id="lengthSelectCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 45s" hidden>
+                                <p class="empty-state" id="lengthSelectDesc"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="angleSelect">Video type</label>
+                                <select id="angleSelect"></select>
+                                <textarea id="angleSelectCustom" class="custom-value-input" rows="2" placeholder="e.g. customer testimonial" hidden></textarea>
+                                <p class="empty-state" id="angleSelectDesc"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="speedSelect">Speech speed</label>
+                                <select id="speedSelect"></select>
+                                <input type="text" id="speedSelectCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. -3" hidden>
+                                <p class="empty-state" id="speedSelectDesc"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="animationSelect">Animation flashiness</label>
+                                <select id="animationSelect"></select>
+                                <input type="text" id="animationSelectCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 1.3" hidden>
+                                <p class="empty-state" id="animationSelectDesc"></p>
+                            </div>
+                        </div>
+
+                        <p class="empty-state" style="margin-top:1rem">Toggle which layers a render includes.</p>
+                        <label class="checkbox-row"><input type="checkbox" id="renderCaptionsToggle" checked> Burned-in captions</label>
+                        <label class="checkbox-row"><input type="checkbox" id="renderTtsToggle" checked> Voiceover (TTS narration)</label>
+                        <label class="checkbox-row"><input type="checkbox" id="renderMusicToggle" checked> Background music</label>
+                        <label class="checkbox-row"><input type="checkbox" id="renderBeatMatchToggle"> Beat-matched editing (snap cuts to the music's beat, for a punchier ad feel)</label>
+                        <p class="form-error" id="renderControlsToggleError" role="alert" hidden></p>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header"><h2 style="margin:0">Test render</h2></div>
+                        <p class="empty-state">Full end-to-end check with real output: ad copy (Claude), voiceover, music, render, and QA — using the render controls above. Needs the Anthropic key (Overview tab) and ffmpeg. The finished video appears in the Output Gallery, same as any other render.</p>
+                        <form id="testRenderForm" class="admin-inline-form" novalidate>
+                            <div class="form-group">
+                                <label for="testRenderPack">Pack</label>
+                                <select id="testRenderPack"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="testRenderKind">Format</label>
+                                <select id="testRenderKind">
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="shorts" selected>YT Shorts</option>
+                                    <option value="promo">Pack Promo</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="renderTestBtn">🎬 Render test video</button>
+                        </form>
+                    </div>
+
                     <p class="empty-state">Real catalog data — trigger a render for any platform per pack. A running/queued job disables its button until it finishes.</p>
                     <div id="packsGridContainer">Loading…</div>
                 </div>
@@ -128,6 +193,7 @@
                     <div class="section-header">
                         <h1>Output Gallery</h1>
                         <div class="section-header-actions">
+                            <label for="galleryKindFilter" class="sr-only">Filter by platform</label>
                             <select id="galleryKindFilter">
                                 <option value="">All platforms</option>
                                 <option value="tiktok">TikTok</option>
@@ -144,7 +210,10 @@
                         <div class="video-modal-content video-modal-content-wide">
                             <div class="video-modal-header">
                                 <h3 id="previewModalTitle">Preview</h3>
-                                <button type="button" class="btn-small" id="previewModalClose">Close</button>
+                                <div class="video-modal-header-actions">
+                                    <button type="button" class="btn-small video-download-btn" id="previewDownloadBtn">⬇ Download</button>
+                                    <button type="button" class="btn-small" id="previewModalClose">Close</button>
+                                </div>
                             </div>
                             <div class="video-modal-body">
                                 <video id="previewModalVideo" controls class="video-preview-player"></video>
@@ -198,6 +267,57 @@
                 <!-- Social Hand-off -->
                 <div class="admin-tab" id="social">
                     <div class="section-header"><h1>Social Automation Hand-off</h1></div>
+
+                    <div class="section-header"><h2>Connected accounts</h2></div>
+                    <p class="empty-state">TikTok/YouTube accounts the automation can post to. Zero accounts connected still works — everything falls back to the single legacy account from <code>social/.env</code>. Add more to fan promo content out across multiple channels; each gets its own generated video and its own posting schedule, not a copy of the same upload.</p>
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Accounts</h3>
+                            <div class="section-header-actions">
+                                <button type="button" class="btn btn-primary" id="addAccountBtn">+ Add account</button>
+                            </div>
+                        </div>
+                        <div id="accountsGridContainer">Loading…</div>
+                    </div>
+
+                    <div id="accountModal" class="video-modal" hidden>
+                        <div class="video-modal-backdrop" id="accountModalBackdrop"></div>
+                        <div class="video-modal-content">
+                            <div class="video-modal-header">
+                                <h3 id="accountModalTitle">Add account</h3>
+                                <button type="button" class="btn-small" id="accountModalClose">Close</button>
+                            </div>
+                            <div class="video-modal-body">
+                                <p class="empty-state">Mint the credentials first: run <code>npm run social:tiktok-auth</code> or <code>npm run social:youtube-auth</code> in a terminal, logged into the target account's browser session, then paste the results below.</p>
+                                <form id="accountForm" novalidate>
+                                    <div class="form-group">
+                                        <label for="accountPlatform">Platform</label>
+                                        <select id="accountPlatform">
+                                            <option value="tiktok">TikTok</option>
+                                            <option value="youtube_shorts">YouTube</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="accountLabel">Label</label>
+                                        <input id="accountLabel" type="text" maxlength="100" placeholder="e.g. Main TikTok, Minecraft channel">
+                                    </div>
+                                    <div id="accountCredFields"></div>
+                                    <div class="form-group">
+                                        <label for="accountNiche">Pack focus (optional, comma-separated pack ids — blank = promotes everything)</label>
+                                        <input id="accountNiche" type="text" placeholder="e.g. minecraft, roblox">
+                                    </div>
+                                    <p id="accountFormError" class="form-error" role="alert" hidden></p>
+                                    <div class="video-modal-actions">
+                                        <button type="button" class="btn btn-secondary" id="accountCancelBtn">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" id="accountSaveBtn">Save account</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="empty-state">Looking for the trend/performance data that steers what gets made? That moved to its own <a href="#" data-admin-tab="intelligence">🧠 Trend Intelligence</a> tab.</p>
+
                     <p class="empty-state">Read-only view of <code>video_jobs</code> — the queue the social automation system uses to request renders. This panel never writes to it.</p>
                     <div class="stats-grid" id="socialQueueCountsGrid"></div>
                     <div class="dashboard-section video-glass-panel">
@@ -208,6 +328,138 @@
                     <div class="dashboard-section video-glass-panel">
                         <div id="scheduledPostsContainer">Loading…</div>
                     </div>
+                </div>
+
+                <!-- Trend Intelligence -->
+                <div class="admin-tab" id="intelligence">
+                    <div class="section-header">
+                        <h1>Trend Intelligence</h1>
+                        <div class="section-header-actions">
+                            <label for="intelligenceDays" class="sr-only">Time period</label>
+                            <select id="intelligenceDays">
+                                <option value="7">Last 7 days</option>
+                                <option value="30" selected>Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                            <button type="button" class="btn btn-secondary" id="refreshIntelligenceBtn">🔄 Refresh now</button>
+                        </div>
+                    </div>
+                    <p class="empty-state">Runs automatically in the background — trend signal from YouTube, Roblox-specific search, and Reddit every hour, performance stats every 6h, learned insights + trend forecasts + reward/punish grading nightly (see <code>social/scheduler.js</code>) — and feeds straight back into how future campaigns are planned. The breakdown below is the same signal, applied to the render controls on Pack Renders: it's the difference between guessing at a video type and knowing which one actually performs.</p>
+
+                    <div class="video-panel-grid">
+                        <div class="dashboard-section video-glass-panel">
+                            <h3 style="margin-top:0">Current trends <span class="empty-state">(multiple sources)</span></h3>
+                            <div id="trendsContainer">Loading…</div>
+                        </div>
+                        <div class="dashboard-section video-glass-panel">
+                            <h3 style="margin-top:0">Trend momentum <span class="empty-state">(rising / falling over this window)</span></h3>
+                            <div id="trendMomentumContainer">Loading…</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Rising trends radar <span class="empty-state">— momentum + forecast confidence merged</span></h3>
+                        </div>
+                        <p class="empty-state">Merges momentum direction with forecast confidence to surface the trends most worth acting on now. Topics pinned as "always pursue" by an admin float to the top; blocklisted topics are hidden.</p>
+                        <div id="risingTrendsContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Trend alerts <span class="empty-state">— high-confidence rising signals</span></h3>
+                        </div>
+                        <p class="empty-state">When a rising trend crosses both a momentum and forecast-confidence threshold, it surfaces here. If a webhook URL is configured (<code>TREND_ALERT_WEBHOOK_URL</code>), alerts are also posted to Discord/Slack.</p>
+                        <div id="trendAlertsContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Trend forecasts <span class="empty-state">— what's likely to happen next</span></h3>
+                        </div>
+                        <p class="empty-state">Nightly, the AI predicts where each trend source is headed over the next week, with a confidence score, grounded in real momentum data and whether trend-jacking has actually paid off in past campaign performance (see <code>social/agents/trendForecastAgent.js</code>). Once a forecast's horizon passes, it's graded against what really happened.</p>
+                        <div id="trendForecastsContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">AI track record <span class="empty-state">— reward when right, punish when wrong</span></h3>
+                        </div>
+                        <p class="empty-state">Every prediction — a trend forecast or a video's popularity score — is graded against reality once the outcome is known, and the result (confidence-weighted reward or penalty) is fed straight back into that agent's next prompt. This is its accuracy so far.</p>
+                        <div id="aiScorecardContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Trend overrides <span class="empty-state">— pin or block topics</span></h3>
+                        </div>
+                        <p class="empty-state">Override the automated pipeline: pin a topic as "always pursue" (it'll be strongly preferred by strategy planning) or blocklist it (it'll never be trend-jacked).</p>
+                        <div id="trendOverridesContainer">Loading…</div>
+                        <div style="margin-top:12px">
+                            <form id="addOverrideForm" class="admin-inline-form" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap">
+                                <div class="form-group" style="flex:1;min-width:200px">
+                                    <label for="overrideTopic">Topic</label>
+                                    <input id="overrideTopic" type="text" placeholder="e.g. Roblox AI scripts" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="overrideMode">Mode</label>
+                                    <select id="overrideMode">
+                                        <option value="always_pursue">Always pursue</option>
+                                        <option value="blocklist">Blocklist</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex:1;min-width:150px">
+                                    <label for="overrideReason">Reason (optional)</label>
+                                    <input id="overrideReason" type="text" placeholder="Why this override?">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add override</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Weekly digest <span class="empty-state">— export trend summary</span></h3>
+                        </div>
+                        <p class="empty-state">Download a summary of trend activity and forecast accuracy for the selected period.</p>
+                        <div style="display:flex;gap:8px;align-items:center">
+                            <label for="digestDays" class="sr-only">Digest period</label>
+                        <select id="digestDays">
+                                <option value="7" selected>Last 7 days</option>
+                                <option value="14">Last 14 days</option>
+                                <option value="30">Last 30 days</option>
+                            </select>
+                            <a id="digestCsvLink" href="/api/trend-insights/digest?format=csv&days=7" class="btn btn-secondary" download>Download CSV</a>
+                            <a id="digestMdLink" href="/api/trend-insights/digest?format=md&days=7" class="btn btn-secondary" download>Download Markdown</a>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <h3 style="margin-top:0">Learned insights</h3>
+                        <div id="insightsContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <h3 style="margin-top:0">Performance</h3>
+                        <div class="stats-grid" id="performanceGrid"></div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header">
+                            <h3 style="margin:0">Ranked renders <span class="empty-state">— predicted popularity, best first</span></h3>
+                        </div>
+                        <p class="empty-state">Every render is scored by an AI popularity prediction right after it finishes (see <code>social/agents/predictionAgent.js</code>), grounded in the real performance data below. Anything scoring under 60 automatically gets one redo with a different video type — if it's still here scoring low, the redo already ran.</p>
+                        <div id="rankedRendersContainer">Loading…</div>
+                    </div>
+
+                    <div class="dashboard-section video-glass-panel">
+                        <div class="section-header"><h3 style="margin:0">Top performing posts</h3></div>
+                        <div id="topPostsContainer">Loading…</div>
+                    </div>
+
+                    <div class="section-header"><h2>What's working — performance by attribute</h2></div>
+                    <p class="empty-state">What high performers have in common, broken down by the render controls that made them (or the AI's own creative pillar for auto-authored posts). A group with only 1-2 posts is a hint, not a rule — check the post count before trusting it.</p>
+                    <div class="video-breakdown-grid" id="breakdownGridContainer">Loading…</div>
                 </div>
 
                 <!-- Settings -->
@@ -223,10 +475,44 @@
                             <input id="setEdgeTtsVoice" type="text" placeholder="e.g. en-US-EmmaMultilingualNeural">
                         </div>
                         <div class="form-group">
-                            <label for="setTtsRate">TTS rate (-10 to 10)</label>
-                            <input id="setTtsRate" type="number" min="-10" max="10" value="0">
+                            <label for="setQuality">Default render quality / effort</label>
+                            <select id="setQuality">
+                                <option value="draft">Draft — cheapest &amp; fastest</option>
+                                <option value="standard">Standard</option>
+                                <option value="high">High</option>
+                                <option value="ultra">Ultra — slowest &amp; best</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="setPacing">Default pacing</label>
+                            <select id="setPacing"></select>
+                            <input type="text" id="setPacingCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 0.5" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="setLength">Default rough length</label>
+                            <select id="setLength"></select>
+                            <input type="text" id="setLengthCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 45s" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="setAngle">Default video type</label>
+                            <select id="setAngle"></select>
+                            <textarea id="setAngleCustom" class="custom-value-input" rows="2" placeholder="e.g. customer testimonial" hidden></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="setSpeed">Default speech speed</label>
+                            <select id="setSpeed"></select>
+                            <input type="text" id="setSpeedCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. -3" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="setAnimation">Default animation flashiness</label>
+                            <select id="setAnimation"></select>
+                            <input type="text" id="setAnimationCustom" class="custom-value-input" autocomplete="off" placeholder="e.g. 1.3" hidden>
                         </div>
                         <label class="checkbox-row"><input type="checkbox" id="setPreferGpu"> Prefer GPU (NVENC) encoding when available</label>
+                        <label class="checkbox-row"><input type="checkbox" id="setCaptionsEnabled" checked> Captions on by default</label>
+                        <label class="checkbox-row"><input type="checkbox" id="setTtsEnabled" checked> Voiceover (TTS) on by default</label>
+                        <label class="checkbox-row"><input type="checkbox" id="setMusicEnabled" checked> Music on by default</label>
+                        <label class="checkbox-row"><input type="checkbox" id="setBeatMatch"> Beat-matched editing on by default</label>
                         <p id="videoSettingsError" class="form-error" role="alert" hidden></p>
                         <button class="btn btn-primary" type="submit">Save settings</button>
                     </form>

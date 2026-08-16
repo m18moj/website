@@ -128,9 +128,9 @@ function synthesize(mood, durationSeconds, seed) {
   return out;
 }
 
-export function generateMusicBed({ moodId, mood, durationSeconds, outPath }) {
+export function generateMusicBed({ moodId, mood, durationSeconds, outPath, variantSeed = "" }) {
   mkdirSync(dirname(outPath), { recursive: true });
-  const seed = seedFromString(`${moodId}:${Math.round(durationSeconds * 10)}`);
+  const seed = seedFromString(`${moodId}:${Math.round(durationSeconds * 10)}:${variantSeed}`);
   const samples = synthesize(mood, durationSeconds, seed);
   writeFileSync(outPath, encodeWav(samples));
   return outPath;

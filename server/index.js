@@ -29,6 +29,8 @@ const discordLinkRoutes = require('./routes/discordLink');
 const botAdminRoutes = require('./routes/botAdmin');
 const socialRoutes = require('./routes/social');
 const videoAdminRoutes = require('./routes/videoAdmin');
+const trendInsightsRoutes = require('./routes/trendInsights');
+const trendOverridesRoutes = require('./routes/trendOverrides');
 const settingsModel = require('./models/settings');
 const errorLogModel = require('./models/errorLog');
 
@@ -145,7 +147,7 @@ app.use('/api', apiLimiter);
 // covers them with a maintenance overlay for anyone who isn't an admin.
 app.use('/api', (req, res, next) => {
   if (!settingsModel.get('maintenanceMode')) return next();
-  const allowedPrefixes = ['/auth', '/admin', '/settings', '/bot-admin', '/social', '/video-admin'];
+  const allowedPrefixes = ['/auth', '/admin', '/settings', '/bot-admin', '/social', '/video-admin', '/trend-insights', '/trend-overrides'];
   if (allowedPrefixes.some((prefix) => req.path.startsWith(prefix))) return next();
   res.status(503).json({ error: 'The site is temporarily down for maintenance. Please check back soon.', maintenanceMode: true });
 });
@@ -164,6 +166,8 @@ app.use('/api/discord', discordLinkRoutes);
 app.use('/api/bot-admin', botAdminRoutes);
 app.use('/api/social', socialRoutes);
 app.use('/api/video-admin', videoAdminRoutes);
+app.use('/api/trend-insights', trendInsightsRoutes);
+app.use('/api/trend-overrides', trendOverridesRoutes);
 
 // Explicit allowlist of static directories/files — deliberately NOT a single
 // express.static(ROOT), which would also serve server/, data/*.db, and .env.

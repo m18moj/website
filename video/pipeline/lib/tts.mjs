@@ -15,6 +15,7 @@ import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { platform } from "node:os";
 import { synthesizeWithElevenLabs, alignmentToCues } from "./tts-elevenlabs.mjs";
+import { speedToElevenLabsMultiplier } from "../config/speed.mjs";
 import { edgeVoiceover, DEFAULT_EDGE_VOICE, isEdgeTtsAvailable } from "./tts-edge.mjs";
 import { synthesizeWithSapi, eventsToCues } from "./tts-sapi.mjs";
 import { readWavDurationMs, rescaleCues } from "./wav.mjs";
@@ -48,7 +49,8 @@ export async function synthesizeVoiceover({ text, outDir, jobId, voiceHint, rate
 
   if ((engine === "elevenlabs" || engine === "auto") && apiKey) {
     const audioPath = `${outDir}/${jobId}-vo.mp3`;
-    const { alignment } = await synthesizeWithElevenLabs({ text, outAudioPath: audioPath, apiKey });
+    const speed = speedToElevenLabsMultiplier(rate);
+    const { alignment } = await synthesizeWithElevenLabs({ text, outAudioPath: audioPath, apiKey, speed });
     const cues = alignmentToCues(alignment);
     return { provider: "elevenlabs", audioPath, cues };
   }

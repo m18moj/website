@@ -74,9 +74,17 @@ const server = http.createServer(async (req, res) => {
       console.error('If there is no refresh_token in the response, revoke this app\'s access at https://myaccount.google.com/permissions and re-run — Google only issues one on the first consent (or with prompt=consent, which this script already sends).');
       process.exit(1);
     }
-    console.log('\nSuccess. Add this to social/.env:\n');
-    console.log(`YOUTUBE_REFRESH_TOKEN=${data.refresh_token}`);
-    console.log('\nYOUTUBE_CHANNEL_ID also needs to be set by hand — find it at https://studio.youtube.com (Settings -> Channel -> Advanced settings).');
+    console.log('\nSuccess.\n');
+    console.log('For the single default account, add this to social/.env:');
+    console.log(`  YOUTUBE_REFRESH_TOKEN=${data.refresh_token}`);
+    console.log('  (YOUTUBE_CHANNEL_ID also needs to be set by hand — find it at https://studio.youtube.com, Settings -> Channel -> Advanced settings.)');
+    console.log('\nTo connect this as an ADDITIONAL account (multi-account posting), instead open');
+    console.log('Video Studio -> Social Hand-off -> Connected accounts -> "+ Add account", pick');
+    console.log('YouTube, and paste in:');
+    console.log(`  Client ID:      ${CLIENT_ID}`);
+    console.log('  Client secret:  (the YOUTUBE_CLIENT_SECRET from social/.env)');
+    console.log(`  Refresh token:  ${data.refresh_token}`);
+    console.log('\nRun this script again, logged into a different Google account in the browser, to mint a token for each additional channel.');
     process.exit(0);
   } catch (err) {
     console.error('\nToken exchange request failed:', err.message);

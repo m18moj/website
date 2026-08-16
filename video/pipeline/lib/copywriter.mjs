@@ -6,7 +6,7 @@
 // the hook/beats/CTA copy, it doesn't invent numbers.
 import Anthropic from "@anthropic-ai/sdk";
 
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
+const DEFAULT_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5";
 
 function client() {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -116,10 +116,10 @@ function normalizeToolInput(input, requiredKeys) {
   return input;
 }
 
-async function callTool(system, userText, tool) {
+async function callTool(system, userText, tool, model) {
   const anthropic = client();
   const msg = await anthropic.messages.create({
-    model: MODEL,
+    model: model || DEFAULT_MODEL,
     max_tokens: 1500,
     system,
     tools: [tool],
@@ -143,20 +143,21 @@ to you. Keep onScreen text punchy (no filler words). Narration should sound
 natural when read aloud by a text-to-speech voice — short sentences, no
 semicolons or parentheticals, avoid abbreviations that are hard to pronounce.`;
 
-export async function generatePackCopy({ platform, pack, scripts }) {
+export async function generatePackCopy({ platform, pack, scripts, model, targetWords, angle }) {
   const scriptList = scripts
     .map((s) => `- id="${s.id}" title="${s.title}" category="${s.category}" desc="${s.description}"`)
     .join("\n");
   const wordBudget =
-    platform === "tiktok" ? 45 : platform === "shorts" ? 95 : 65;
+    targetWords || (platform === "tiktok" ? 45 : platform === "shorts" ? 95 : 65);
   const platformNote =
     platform === "tiktok"
       ? `This is a TikTok cut: fast, hook-heavy. Total spoken narration across hook+beats+stat+cta MUST be under ${wordBudget} words total — count them. Every sentence short and punchy.`
       : platform === "shorts"
       ? `This is a YouTube Shorts cut: a bit more descriptive, but total spoken narration across hook+beats+stat+cta MUST stay under ${wordBudget} words total — count them.`
       : `This is a general pack-promo cut for the catalog page and social. Total spoken narration across hook+beats+stat+cta MUST stay under ${wordBudget} words total — count them.`;
+  const angleNote = angle?.prompt ? `\n${angle.prompt}` : "";
 
-  const userText = `${platformNote}
+  const userText = `${platformNote}${angleNote}
 
 Pack: ${pack.packName} (${pack.gameTitle}, genre: ${pack.genre})
 Pack description: ${pack.description}
@@ -168,10 +169,11 @@ ${scriptList}
 
 Write the hook, 2-3 beats, an optional statNarration for a "script count" number reveal, and the CTA.`;
 
-  return callTool(SYSTEM_PROMPT, userText, PACK_COPY_TOOL);
+  return callTool(SYSTEM_PROMPT, userText, PACK_COPY_TOOL, model);
 }
 
-export async function generateWebsiteCopy({ packs, totalScripts }) {
+export async function generateWebsiteCopy({ packs, totalScripts, model, targetWords }) {
+  const wordBudget = targetWords || 85;
   const packList = packs.map((p) => `- ${p.packName} (${p.genre})`).join("\n");
   const userText = `Write copy for the flagship 16:9 premium promo video for the whole ScripForge storefront (not one pack).
 
@@ -182,7 +184,7 @@ Total real ready-made scripts across the catalog: ${totalScripts}+
 
 The video shows a grid of pack tiles, then three stat counters (pack count, script count, "100% instant delivery"), then a closing CTA to explore the catalog.
 
-Total spoken narration across hook+showcaseNarration+statsNarration+cta MUST stay under 85 words total — count them. Short, confident sentences.`;
+Total spoken narration across hook+showcaseNarration+statsNarration+cta MUST stay under ${wordBudget} words total — count them. Short, confident sentences.`;
 
-  return callTool(SYSTEM_PROMPT, userText, WEBSITE_COPY_TOOL);
+  return callTool(SYSTEM_PROMPT, userText, WEBSITE_COPY_TOOL, model);
 }

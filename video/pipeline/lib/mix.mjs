@@ -24,26 +24,49 @@ function run(cmd, args) {
 }
 
 // cues: [{ sfx: "whoosh.wav" | "bass-hit.wav" | "riser.wav" | "shimmer.wav", atMs, gain }]
+// voPath/musicPath are each independently optional (TTS-off / music-off
+// render options — see pipeline/orchestrate.mjs) but at least one must be
+// present; a silent, musicless video isn't a supported mix.
 export async function mixAudio({ voPath, leadInMs, totalDurationMs, musicPath, sfxDir, cues, outPath }) {
   mkdirSync(dirname(outPath), { recursive: true });
 
-  const inputs = ["-i", voPath, "-i", musicPath];
-  const sfxInputIndex = [];
-  for (const cue of cues) {
-    sfxInputIndex.push(inputs.length / 2);
-    inputs.push("-i", join(sfxDir, cue.sfx));
-  }
+  const inputs = [];
+  const addInput = (p) => {
+    const idx = inputs.length / 2;
+    inputs.push("-i", p);
+    return idx;
+  };
+
+  const voIdx = voPath ? addInput(voPath) : null;
+  const musicIdx = musicPath ? addInput(musicPath) : null;
+  const sfxInputIndex = cues.map((cue) => addInput(join(sfxDir, cue.sfx)));
 
   const filters = [];
-  filters.push(`[0:a]adelay=${Math.max(0, Math.round(leadInMs))}:all=1[vo]`);
-  filters.push(`[1:a]volume=0.55[music_v]`);
-  // Real sidechain ducking: music level drops whenever the VO is actually
-  // speaking, recovers in the gaps — not a blunt fixed-window mute.
-  filters.push(
-    `[music_v][vo]sidechaincompress=threshold=0.02:ratio=12:attack=15:release=350:makeup=1[music_duck]`
-  );
+  const mixLabels = [];
 
-  const mixLabels = ["[vo]", "[music_duck]"];
+  if (voIdx !== null) {
+    filters.push(`[${voIdx}:a]adelay=${Math.max(0, Math.round(leadInMs))}:all=1[vo]`);
+    mixLabels.push("[vo]");
+  }
+
+  if (musicIdx !== null) {
+    filters.push(`[${musicIdx}:a]volume=0.55[music_v]`);
+    if (voIdx !== null) {
+      // Real sidechain ducking: music level drops whenever the VO is actually
+      // speaking, recovers in the gaps — not a blunt fixed-window mute.
+      filters.push(
+        `[music_v][vo]sidechaincompress=threshold=0.02:ratio=12:attack=15:release=350:makeup=1[music_duck]`
+      );
+      mixLabels.push("[music_duck]");
+    } else {
+      mixLabels.push("[music_v]");
+    }
+  }
+
+  if (mixLabels.length === 0) {
+    throw new Error("mixAudio: at least one of voPath/musicPath must be provided.");
+  }
+
   cues.forEach((cue, i) => {
     const idx = sfxInputIndex[i];
     const label = `sfx${i}`;

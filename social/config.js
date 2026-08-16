@@ -42,6 +42,14 @@ module.exports = {
     CHANNEL_ID: process.env.YOUTUBE_CHANNEL_ID || null
   },
 
+  REDDIT: {
+    // Public JSON endpoints need no auth — just a descriptive User-Agent
+    // (Reddit API rules) and a subreddit list scoped to the niche
+    // trendsAgent cares about. Both overridable per-deployment.
+    USER_AGENT: process.env.REDDIT_USER_AGENT || 'scripforge-trend-scanner/1.0 (by /u/scripforge)',
+    SUBREDDITS: (process.env.REDDIT_SUBREDDITS || 'roblox,RobloxDev,robloxgamedev').split(',').map((s) => s.trim()).filter(Boolean)
+  },
+
   TIKTOK: {
     CLIENT_KEY: process.env.TIKTOK_CLIENT_KEY || null,
     CLIENT_SECRET: process.env.TIKTOK_CLIENT_SECRET || null,

@@ -1,6 +1,7 @@
 import React from "react";
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { theme } from "../theme";
+import { useAnimationIntensity } from "../animationContext";
 
 // Radial rays behind the logo mark / hero CTA moment — staggered burst.
 export const Spark: React.FC<{ size?: number; delay?: number; color?: string; rays?: number }> = ({
@@ -11,8 +12,9 @@ export const Spark: React.FC<{ size?: number; delay?: number; color?: string; ra
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
+  const intensity = useAnimationIntensity();
   const container = spring({ frame: frame - delay, fps, config: theme.spring.bouncy });
-  const rot = interpolate1(container, -120, 0);
+  const rot = interpolate1(container, -120 * intensity, 0);
 
   return (
     <div
@@ -38,7 +40,7 @@ export const Spark: React.FC<{ size?: number; delay?: number; color?: string; ra
               left: "50%",
               top: "50%",
               width: size * 0.07,
-              height: size * 0.44 * p,
+              height: size * 0.44 * p * Math.min(1.4, Math.max(0.5, intensity)),
               background: color,
               borderRadius: size,
               transformOrigin: "50% 0%",

@@ -89,7 +89,7 @@ app.use(
 // Not covered by helmet: disables camera/mic/geolocation/payment-handler
 // APIs entirely, so an XSS that got past CSP still can't invoke them.
 app.use((req, res, next) => {
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
   next();
 });
 

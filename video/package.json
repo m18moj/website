@@ -14,7 +14,8 @@
     "render:one": "node pipeline/scripts/render-one.mjs",
     "qa:one": "node pipeline/scripts/qa-one.mjs",
     "generate": "node pipeline/orchestrate.mjs",
-    "list:packs": "node pipeline/scripts/list-packs.mjs"
+    "list:packs": "node pipeline/scripts/list-packs.mjs",
+    "worker": "node pipeline/worker.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
